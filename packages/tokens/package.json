@@ -1,0 +1,26 @@
+{
+  "name": "@atelier/tokens",
+  "version": "0.0.0",
+  "description": "The Atelier design language as a surface-agnostic source of truth.",
+  "license": "MIT",
+  "type": "module",
+  "files": ["dist"],
+  "exports": {
+    "./css": "./dist/tokens.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./theme.css": "./dist/theme.css",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "style-dictionary build --config style-dictionary.config.js",
+    "dev": "style-dictionary build --config style-dictionary.config.js --watch",
+    "test": "echo \"no tests yet\" && exit 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "style-dictionary": "^5.4.4"
+  }
+}
