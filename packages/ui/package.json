@@ -1,0 +1,39 @@
+{
+  "name": "@atelier/ui",
+  "version": "0.0.0",
+  "description": "The Atelier Vue component library.",
+  "license": "MIT",
+  "type": "module",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/atelier-ui.css"
+  },
+  "scripts": {
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "reka-ui": "^2.9.10"
+  },
+  "devDependencies": {
+    "@atelier/tokens": "workspace:*",
+    "@tailwindcss/vite": "^4.3.1",
+    "@testing-library/vue": "^8.1.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "jsdom": "^25.0.1",
+    "tailwindcss": "^4.3.1",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8",
+    "vue": "^3.5.38",
+    "vue-tsc": "^2.2.0"
+  }
+}
