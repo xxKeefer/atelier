@@ -1,0 +1,19 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "test": "echo \"no tests\" && exit 0",
+    "typecheck": "echo \"no typecheck\" && exit 0"
+  },
+  "devDependencies": {
+    "@atelier/tokens": "workspace:*",
+    "@atelier/ui": "workspace:*",
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.38"
+  }
+}
