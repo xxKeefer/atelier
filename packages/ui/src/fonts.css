@@ -1,0 +1,45 @@
+/* Atkinson Hyperlegible (classic): heading/display face, 400 + 700 only. */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/AtkinsonHyperlegible-Italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/AtkinsonHyperlegible-BoldItalic.woff2') format('woff2');
+}
+
+/* JetBrains Mono: body/code face. Variable wght (100-800) covers 400/500/700. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('./fonts/JetBrainsMono-VariableFont_wght.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('./fonts/JetBrainsMono-Italic-VariableFont_wght.woff2') format('woff2');
+}
