@@ -4,7 +4,9 @@
   "description": "The Atelier Vue component library.",
   "license": "MIT",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -16,7 +18,9 @@
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
     "dev": "vite build --watch",
     "test": "vitest run",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
@@ -26,10 +30,12 @@
   },
   "devDependencies": {
     "@atelier/tokens": "workspace:*",
+    "@storybook/vue3-vite": "^9.1.20",
     "@tailwindcss/vite": "^4.3.1",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "jsdom": "^25.0.1",
+    "storybook": "^9.1.20",
     "tailwindcss": "^4.3.1",
     "vite": "^6.0.7",
     "vitest": "^2.1.8",
