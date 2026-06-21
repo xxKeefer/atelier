@@ -9,3 +9,4 @@ coverage/
 storybook-static/
 # Vitest browser screenshot diff/actual byproducts (baselines under __screenshots__/ are committed)
 .vitest-attachments/
+.direnv/
