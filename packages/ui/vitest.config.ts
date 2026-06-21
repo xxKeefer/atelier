@@ -15,6 +15,9 @@ const browser = () => ({
   enabled: true,
   headless: true,
   provider: playwright(),
+  // No auto-screenshot on failure: the contrast test isn't visual, and the
+  // visual test owns its own baselines via toMatchScreenshot.
+  screenshotFailures: false,
   instances: [{ browser: 'chromium' as const }]
 });
 
