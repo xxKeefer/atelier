@@ -148,6 +148,42 @@ export const Loading: Story = {
   }
 };
 
+// href resolves the element to an anchor (role=link) instead of a button.
+export const LinkButton: Story = {
+  args: { href: 'https://example.com' },
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args }),
+    template: '<Button v-bind="args">Visit site</Button>'
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const link = canvas.getByRole('link', { name: 'Visit site' });
+    await expect(link).toHaveAttribute('href', 'https://example.com');
+  }
+};
+
+// A disabled link is inert: aria-disabled marks it, the href is dropped so it
+// isn't navigable, and pointer-events-none blocks the cursor. No native disabled
+// attribute exists on an anchor.
+export const DisabledLink: Story = {
+  args: { href: 'https://example.com', disabled: true },
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args }),
+    template: '<Button v-bind="args">Visit site</Button>'
+  }),
+  play: async ({ canvasElement }) => {
+    // Dropping the href strips the link role on purpose -- the anchor is inert,
+    // so query the element directly rather than by role.
+    const anchor = canvasElement.querySelector('a')!;
+    await expect(anchor).toHaveTextContent('Visit site');
+    await expect(anchor).toHaveAttribute('aria-disabled', 'true');
+    await expect(anchor).not.toHaveAttribute('href');
+    await expect(anchor.className).toContain('pointer-events-none');
+  }
+};
+
 export const Disabled: Story = {
   args: { disabled: true },
   render: (args) => ({

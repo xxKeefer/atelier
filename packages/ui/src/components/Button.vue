@@ -11,6 +11,7 @@ const props = withDefaults(
     variant?: Variant;
     size?: Size;
     type?: 'button' | 'submit' | 'reset';
+    href?: string;
     disabled?: boolean;
     loading?: boolean;
   }>(),
@@ -28,6 +29,20 @@ const props = withDefaults(
 // disabled attribute (and inherits the disabled styling). The skeleton-style
 // pulse on top signals "busy" rather than "off". motion-reduce stills it.
 const isDisabled = computed(() => props.disabled || props.loading);
+
+// An href resolves the root to an <a> (role=link); otherwise a <button>
+// (role=button). The role falls out of the element choice, no aria-role needed.
+const tag = computed(() => (props.href !== undefined ? 'a' : 'button'));
+
+// Per-element root attributes. A <button> carries native type + disabled. An
+// <a> has neither: when inert it drops the href (so it isn't navigable) and
+// announces via aria-disabled; pointer-events-none (added to classes) blocks the
+// cursor.
+const rootProps = computed(() =>
+  props.href !== undefined
+    ? { href: isDisabled.value ? undefined : props.href, 'aria-disabled': isDisabled.value || undefined }
+    : { type: props.type, disabled: isDisabled.value }
+);
 
 // One mutually-exclusive cursor (stacked cursor utilities have unreliable order):
 // busy while loading, blocked while disabled, actionable otherwise.
@@ -139,14 +154,19 @@ const classes = computed(() => [
   // skeleton pulse already dips opacity to .5 at its trough, and dimming to .5
   // statically would pin it there -- killing the pulse's visible range.
   props.disabled && !props.loading && 'opacity-50',
-  props.loading && 'animate-pulse motion-reduce:animate-none'
+  props.loading && 'animate-pulse motion-reduce:animate-none',
+  // Link path only: a button uses its native disabled to go inert; an anchor
+  // needs pointer-events killed since aria-disabled is advisory, not enforced.
+  props.href !== undefined && isDisabled.value && 'pointer-events-none'
 ]);
 </script>
 
 <template>
-  <!-- aria-label (and any other native attr) falls through to the button. It is
-       required for icon-only buttons so they still announce; axe enforces it. -->
-  <button :type="type" :disabled="isDisabled" :class="classes" :style="intentVars[intent]">
+  <!-- Root resolves to <a> when an href is passed, else <button>; rootProps
+       carries the per-element attrs. aria-label (and any other native attr)
+       falls through. It is required for icon-only buttons so they still
+       announce; axe enforces it. -->
+  <component :is="tag" v-bind="rootProps" :class="classes" :style="intentVars[intent]">
     <!-- While loading the #left content (the consumer-supplied spinner icon)
          spins; otherwise the slot renders untouched, preserving icon DOM order. -->
     <span v-if="loading" class="inline-flex animate-spin motion-reduce:animate-none">
@@ -155,5 +175,5 @@ const classes = computed(() => [
     <slot v-else name="left" />
     <slot />
     <slot name="right" />
-  </button>
+  </component>
 </template>
