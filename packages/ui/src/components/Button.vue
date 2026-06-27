@@ -50,7 +50,7 @@ const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
   'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
-  'disabled:opacity-50 disabled:cursor-not-allowed ' +
+  'disabled:cursor-not-allowed ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so
@@ -129,6 +129,10 @@ const classes = computed(() => [
   base,
   iconOnly.value ? iconOnlySizes[props.size] : sizes[props.size],
   variants[props.variant],
+  // Static dim for an explicitly-disabled button. Skipped while loading: the
+  // skeleton pulse already dips opacity to .5 at its trough, and dimming to .5
+  // statically would pin it there -- killing the pulse's visible range.
+  props.disabled && !props.loading && 'opacity-50',
   props.loading && 'animate-pulse motion-reduce:animate-none'
 ]);
 </script>
