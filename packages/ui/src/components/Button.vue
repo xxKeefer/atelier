@@ -29,6 +29,12 @@ const props = withDefaults(
 // pulse on top signals "busy" rather than "off". motion-reduce stills it.
 const isDisabled = computed(() => props.disabled || props.loading);
 
+// One mutually-exclusive cursor (stacked cursor utilities have unreliable order):
+// busy while loading, blocked while disabled, actionable otherwise.
+const cursor = computed(() =>
+  props.loading ? 'cursor-wait' : props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+);
+
 const slots = useSlots();
 // Icon-only when nothing renders in the default slot. The named icon slots
 // (#left/#right) don't count as a label, so a button with only an icon trips
@@ -50,7 +56,6 @@ const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
   'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
-  'disabled:cursor-not-allowed ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so
@@ -127,6 +132,7 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
 
 const classes = computed(() => [
   base,
+  cursor.value,
   iconOnly.value ? iconOnlySizes[props.size] : sizes[props.size],
   variants[props.variant],
   // Static dim for an explicitly-disabled button. Skipped while loading: the
