@@ -20,9 +20,10 @@ const meta = {
     intent: { control: 'select', options: intents },
     variant: { control: 'select', options: variants },
     size: { control: 'select', options: sizes },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
+    loading: { control: 'boolean' }
   },
-  args: { intent: 'primary', variant: 'default', size: 'md', disabled: false }
+  args: { intent: 'primary', variant: 'default', size: 'md', disabled: false, loading: false }
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -124,6 +125,26 @@ export const IconOnly: Story = {
     const button = canvas.getByRole('button', { name: 'Add to favourites' });
     await expect(button).toContainElement(canvas.getByTestId('only-icon'));
     await expect(button).toHaveTextContent('');
+  }
+};
+
+export const Loading: Story = {
+  args: { loading: true },
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args, icon: Star('spinner') }),
+    template: `<Button v-bind="args"><template #left><span v-html="icon" /></template>Saving</Button>`
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+    // loading implies disabled: the button is inert.
+    await expect(button).toBeDisabled();
+    // The spinner is whatever the consumer passes into #left; while loading its
+    // wrapper carries the spin animation.
+    const spinner = canvas.getByTestId('spinner');
+    await expect(button).toContainElement(spinner);
+    await expect(spinner.closest('.animate-spin')).not.toBeNull();
   }
 };
 

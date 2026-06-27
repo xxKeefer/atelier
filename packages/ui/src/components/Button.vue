@@ -12,9 +12,22 @@ const props = withDefaults(
     size?: Size;
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
+    loading?: boolean;
   }>(),
-  { intent: 'primary', variant: 'default', size: 'md', type: 'button', disabled: false }
+  {
+    intent: 'primary',
+    variant: 'default',
+    size: 'md',
+    type: 'button',
+    disabled: false,
+    loading: false
+  }
 );
+
+// loading is an inert state: the button can't be clicked, so it folds into the
+// disabled attribute (and inherits the disabled styling). The skeleton-style
+// pulse on top signals "busy" rather than "off". motion-reduce stills it.
+const isDisabled = computed(() => props.disabled || props.loading);
 
 const slots = useSlots();
 // Icon-only when nothing renders in the default slot. The named icon slots
@@ -115,15 +128,21 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
 const classes = computed(() => [
   base,
   iconOnly.value ? iconOnlySizes[props.size] : sizes[props.size],
-  variants[props.variant]
+  variants[props.variant],
+  props.loading && 'animate-pulse motion-reduce:animate-none'
 ]);
 </script>
 
 <template>
   <!-- aria-label (and any other native attr) falls through to the button. It is
        required for icon-only buttons so they still announce; axe enforces it. -->
-  <button :type="type" :disabled="disabled" :class="classes" :style="intentVars[intent]">
-    <slot name="left" />
+  <button :type="type" :disabled="isDisabled" :class="classes" :style="intentVars[intent]">
+    <!-- While loading the #left content (the consumer-supplied spinner icon)
+         spins; otherwise the slot renders untouched, preserving icon DOM order. -->
+    <span v-if="loading" class="inline-flex animate-spin motion-reduce:animate-none">
+      <slot name="left" />
+    </span>
+    <slot v-else name="left" />
     <slot />
     <slot name="right" />
   </button>
