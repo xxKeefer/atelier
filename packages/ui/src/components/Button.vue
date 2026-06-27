@@ -42,8 +42,10 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
   },
   neutral: {
     '--btn-bg': 'var(--color-bg-raised)',
+    // the fill is already dark, so a darker "side" vanishes into the canvas;
+    // the structural border colour is the visible neutral edge.
     '--btn-fg': 'var(--color-fg-default)',
-    '--btn-edge': 'var(--palette-neutral-950)'
+    '--btn-edge': 'var(--color-border-default)'
   },
   danger: {
     '--btn-bg': 'var(--color-status-danger-solid)',
@@ -87,47 +89,50 @@ const classes = computed(() => [base, sizes[props.size], `btn--${props.variant}`
 }
 
 /* Default: brutal skeuomorphic. A hard, no-blur bottom edge in the fill's own
-   dark shade makes it stand off the page; a soft ambient sells the lift. */
+   dark shade gives the button thickness, extruding it off the page; a soft
+   ambient sells the lift. */
 .btn--default {
   box-shadow:
-    0 4px 0 0 var(--btn-edge),
-    0 5px 8px 0 rgba(0, 0, 0, 0.4);
+    0 7px 0 0 var(--btn-edge),
+    0 8px 8px 0 rgba(0, 0, 0, 0.4);
 }
 
-/* Hover: depress a little -- drop 2px, edge halves, fill lightens to greet the cursor. */
+/* Hover: depress a little -- drop into the recess, edge shrinks, fill lightens. */
 .btn--default:hover:not(:disabled) {
-  transform: translateY(2px);
+  transform: translateY(3px);
   box-shadow:
-    0 2px 0 0 var(--btn-edge),
-    0 3px 6px 0 rgba(0, 0, 0, 0.4);
+    0 4px 0 0 var(--btn-edge),
+    0 5px 6px 0 rgba(0, 0, 0, 0.4);
   filter: brightness(1.08);
 }
 
-/* Active: fully depressed -- sits flush, edge collapses, sinks into the page. */
+/* Active: fully depressed -- sits flush in its footprint, edge collapses, sinks in. */
 .btn--default:active:not(:disabled) {
-  transform: translateY(4px);
+  transform: translateY(7px);
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   filter: brightness(0.95);
 }
 
 /* Disabled: half-depressed and dimmed, inert. */
 .btn--default:disabled {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 0 var(--btn-edge);
+  transform: translateY(3px);
+  box-shadow: 0 4px 0 0 var(--btn-edge);
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Flat: same fill, no lift -- just a subtler intent-tied border. */
+/* Flat: same fill, no lift -- just an intent-tied border, quieter than the extrusion. */
 .btn--flat {
-  border: 2px solid var(--btn-edge);
+  border: 3px solid var(--btn-edge);
 }
 
 .btn--flat:hover:not(:disabled) {
   filter: brightness(1.08);
 }
 
+/* A light 2D bounce on click -- the less-dramatic echo of the default's depress, no extrusion. */
 .btn--flat:active:not(:disabled) {
+  transform: translateY(2px);
   filter: brightness(0.95);
 }
 
