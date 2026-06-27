@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { Comment, computed, useSlots } from 'vue';
 
 type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info';
 type Variant = 'default' | 'flat';
@@ -16,6 +16,18 @@ const props = withDefaults(
   { intent: 'primary', variant: 'default', size: 'md', type: 'button', disabled: false }
 );
 
+const slots = useSlots();
+// Icon-only when nothing renders in the default slot. The named icon slots
+// (#left/#right) don't count as a label, so a button with only an icon trips
+// the square padding + leans on aria-label for its accessible name.
+const iconOnly = computed(() => {
+  const nodes = slots.default?.();
+  if (!nodes) return true;
+  return nodes.every(
+    (n) => n.children === null || n.children === '' || n.type === Comment
+  );
+});
+
 // Fill, text, and transition shared by both variants. The intent vars
 // (--btn-bg/-fg/-edge) are bound per-element via :style below. enabled: gates
 // the interaction states so disabled buttons stay inert. motion-reduce kills
@@ -28,10 +40,18 @@ const base =
   'disabled:opacity-50 disabled:cursor-not-allowed ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
 
+// Text buttons get asymmetric padding; icon-only buttons get equal padding so
+// they read square. gap drives the spacing between icon slots and the label.
 const sizes: Record<Size, string> = {
   sm: 'text-sm px-3 py-1.5 gap-1.5',
   md: 'text-base px-4 py-2 gap-2',
   lg: 'text-lg px-6 py-3 gap-2'
+};
+
+const iconOnlySizes: Record<Size, string> = {
+  sm: 'text-sm p-1.5 gap-1.5',
+  md: 'text-base p-2 gap-2',
+  lg: 'text-lg p-3 gap-2'
 };
 
 // The mechanic -- pop, depress, sink. default extrudes on a hard bottom edge in
@@ -92,11 +112,19 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
   }
 };
 
-const classes = computed(() => [base, sizes[props.size], variants[props.variant]]);
+const classes = computed(() => [
+  base,
+  iconOnly.value ? iconOnlySizes[props.size] : sizes[props.size],
+  variants[props.variant]
+]);
 </script>
 
 <template>
+  <!-- aria-label (and any other native attr) falls through to the button. It is
+       required for icon-only buttons so they still announce; axe enforces it. -->
   <button :type="type" :disabled="disabled" :class="classes" :style="intentVars[intent]">
+    <slot name="left" />
     <slot />
+    <slot name="right" />
   </button>
 </template>

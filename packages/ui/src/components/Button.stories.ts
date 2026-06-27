@@ -2,6 +2,11 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { expect, within } from 'storybook/test';
 import Button from './Button.vue';
 
+// A minimal inline icon for the slot stories. data-testid lets the play fns
+// assert presence and DOM order relative to the label.
+const Star = (testid: string) =>
+  `<svg data-testid="${testid}" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>`;
+
 const intents = ['primary', 'secondary', 'neutral', 'danger', 'success', 'warning', 'info'] as const;
 const variants = ['default', 'flat'] as const;
 const sizes = ['sm', 'md', 'lg'] as const;
@@ -71,6 +76,55 @@ export const Sizes: Story = {
       </div>
     `
   })
+};
+
+export const LeftIcon: Story = {
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args, icon: Star('left-icon') }),
+    template: `<Button v-bind="args"><template #left><span v-html="icon" /></template>Save</Button>`
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+    const icon = canvas.getByTestId('left-icon');
+    await expect(button).toHaveTextContent('Save');
+    await expect(button).toContainElement(icon);
+    // Left icon precedes the label: it is the button's first element child.
+    await expect(button.firstElementChild).toBe(icon.closest('span'));
+  }
+};
+
+export const RightIcon: Story = {
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args, icon: Star('right-icon') }),
+    template: `<Button v-bind="args">Next<template #right><span v-html="icon" /></template></Button>`
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+    const icon = canvas.getByTestId('right-icon');
+    await expect(button).toHaveTextContent('Next');
+    await expect(button).toContainElement(icon);
+    // Right icon follows the label: it is the button's last element child.
+    await expect(button.lastElementChild).toBe(icon.closest('span'));
+  }
+};
+
+export const IconOnly: Story = {
+  render: (args) => ({
+    components: { Button },
+    setup: () => ({ args, icon: Star('only-icon') }),
+    template: `<Button v-bind="args" aria-label="Add to favourites"><template #left><span v-html="icon" /></template></Button>`
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // With no text label, the accessible name comes from aria-label.
+    const button = canvas.getByRole('button', { name: 'Add to favourites' });
+    await expect(button).toContainElement(canvas.getByTestId('only-icon'));
+    await expect(button).toHaveTextContent('');
+  }
 };
 
 export const Disabled: Story = {
