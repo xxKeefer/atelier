@@ -16,8 +16,16 @@ const props = withDefaults(
   { intent: 'primary', variant: 'default', size: 'md', type: 'button', disabled: false }
 );
 
+// Fill, text, and transition shared by both variants. The intent vars
+// (--btn-bg/-fg/-edge) are bound per-element via :style below. enabled: gates
+// the interaction states so disabled buttons stay inert. motion-reduce kills
+// the transition. ease-[ease] preserves the CSS keyword (not Tailwind's default
+// ease-in-out curve).
 const base =
-  'btn inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
+  'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
+  'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
+  'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'disabled:opacity-50 disabled:cursor-not-allowed ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
 
 const sizes: Record<Size, string> = {
@@ -26,9 +34,24 @@ const sizes: Record<Size, string> = {
   lg: 'text-lg px-6 py-3 gap-2'
 };
 
+// The mechanic -- pop, depress, sink. default extrudes on a hard bottom edge in
+// the fill's own dark shade; flat is a quieter intent-tied border. Both drive
+// off --btn-edge.
+const variants: Record<Variant, string> = {
+  default:
+    'shadow-[0_7px_0_0_var(--btn-edge),0_8px_8px_0_rgba(0,0,0,0.4)] ' +
+    'hover:enabled:translate-y-[3px] hover:enabled:shadow-[0_4px_0_0_var(--btn-edge),0_5px_6px_0_rgba(0,0,0,0.4)] hover:enabled:brightness-[1.08] ' +
+    'active:enabled:translate-y-[7px] active:enabled:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)] active:enabled:brightness-95 ' +
+    'disabled:translate-y-[3px] disabled:shadow-[0_4px_0_0_var(--btn-edge)]',
+  flat:
+    'border-[3px] border-solid border-[color:var(--btn-edge)] ' +
+    'hover:enabled:brightness-[1.08] ' +
+    'active:enabled:translate-y-[2px] active:enabled:brightness-95'
+};
+
 // Each intent supplies the fill, the text colour, and its own dark edge (the
-// skeuomorphic "side"). The mechanic -- pop, depress, sink -- is the same for
-// every intent and lives in the scoped style, driven off these three vars.
+// skeuomorphic "side"). The mechanic above is the same for every intent,
+// driven off these three vars.
 const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', string>> = {
   primary: {
     '--btn-bg': 'var(--color-brand-primary-default)',
@@ -69,7 +92,7 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
   }
 };
 
-const classes = computed(() => [base, sizes[props.size], `btn--${props.variant}`]);
+const classes = computed(() => [base, sizes[props.size], variants[props.variant]]);
 </script>
 
 <template>
@@ -77,73 +100,3 @@ const classes = computed(() => [base, sizes[props.size], `btn--${props.variant}`
     <slot />
   </button>
 </template>
-
-<style scoped>
-.btn {
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    filter 120ms ease;
-}
-
-/* Default: brutal skeuomorphic. A hard, no-blur bottom edge in the fill's own
-   dark shade gives the button thickness, extruding it off the page; a soft
-   ambient sells the lift. */
-.btn--default {
-  box-shadow:
-    0 7px 0 0 var(--btn-edge),
-    0 8px 8px 0 rgba(0, 0, 0, 0.4);
-}
-
-/* Hover: depress a little -- drop into the recess, edge shrinks, fill lightens. */
-.btn--default:hover:not(:disabled) {
-  transform: translateY(3px);
-  box-shadow:
-    0 4px 0 0 var(--btn-edge),
-    0 5px 6px 0 rgba(0, 0, 0, 0.4);
-  filter: brightness(1.08);
-}
-
-/* Active: fully depressed -- sits flush in its footprint, edge collapses, sinks in. */
-.btn--default:active:not(:disabled) {
-  transform: translateY(7px);
-  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-  filter: brightness(0.95);
-}
-
-/* Disabled: half-depressed and dimmed, inert. */
-.btn--default:disabled {
-  transform: translateY(3px);
-  box-shadow: 0 4px 0 0 var(--btn-edge);
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Flat: same fill, no lift -- just an intent-tied border, quieter than the extrusion. */
-.btn--flat {
-  border: 3px solid var(--btn-edge);
-}
-
-.btn--flat:hover:not(:disabled) {
-  filter: brightness(1.08);
-}
-
-/* A light 2D bounce on click -- the less-dramatic echo of the default's depress, no extrusion. */
-.btn--flat:active:not(:disabled) {
-  transform: translateY(2px);
-  filter: brightness(0.95);
-}
-
-.btn--flat:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .btn {
-    transition: none;
-  }
-}
-</style>
