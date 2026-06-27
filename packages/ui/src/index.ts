@@ -1,3 +1,3 @@
 import './styles.css';
 
-export {};
+export { default as Button } from './components/Button.vue';
