@@ -7,6 +7,7 @@ dist/
 coverage/
 *.tsbuildinfo
 storybook-static/
+.vitest-attachments/
 # Vitest browser screenshot reference/actual/diff byproducts (baselines under __snaps__/ are committed)
 __snaps__/diffs/
 .direnv/
