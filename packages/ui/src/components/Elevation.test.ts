@@ -4,22 +4,17 @@ import { expect, test } from 'vitest'
 import * as stories from './Elevation.stories'
 import { snapBoard } from '../test/snap'
 
-const { ShadowLadder, SurfaceRamp, Semantics, Snapshot } = composeStories(stories)
+const { Neutral, Semantics, Snapshot } = composeStories(stories)
 
-// Every rung of the ladder renders, labelled by its token name.
-test('renders all five shadow rungs', () => {
-  render(ShadowLadder)
-  for (const name of ['sunk', 'half-sunk', 'default', 'half-pop', 'pop']) {
+// The neutral foundation row renders both families: every surface-ramp step and
+// every shadow-ladder rung, each labelled by its token name.
+test('renders the neutral ramp steps and ladder rungs', () => {
+  render(Neutral)
+  for (const name of ['subtle', 'strong', 'sunk', 'half-sunk', 'half-pop', 'pop']) {
     expect(screen.getByText(name)).toBeInTheDocument()
   }
-})
-
-// Every step of the surface ramp renders, labelled by its token name.
-test('renders all three surface steps', () => {
-  render(SurfaceRamp)
-  for (const name of ['subtle', 'default', 'strong']) {
-    expect(screen.getByText(name)).toBeInTheDocument()
-  }
+  // 'default' labels both a ramp step and a ladder rung -- assert both render.
+  expect(screen.getAllByText('default')).toHaveLength(2)
 })
 
 // Every colourway renders a row, labelled by its name.

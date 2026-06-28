@@ -12,159 +12,249 @@ import { defineComponent } from 'vue'
 // surface is held constant at the resting plane (default) across all rungs so the
 // ladder isolates the shadow variable -- you read the depth, not the plane colour.
 // The 1:1 rung->surface pairing is shown separately in the surface ramp below.
+// Neutral recesses use border-default (700) not border-subtle (800): subtle equals
+// the surface-default plane these tiles sit on, so it reads invisible. 700 contrasts
+// the 800 plane while staying lighter than the strong (600) edge on the lifts.
 const shadows = [
   {
     name: 'sunk',
     shadow: 'shadow-sunk',
     surface: 'bg-surface-default',
-    note: 'lowest -- recessed, inset',
+    border: 'border-border-default',
   },
   {
     name: 'half-sunk',
     shadow: 'shadow-half-sunk',
     surface: 'bg-surface-default',
-    note: 'lower -- shallow recess',
+    border: 'border-border-default',
   },
   {
     name: 'default',
     shadow: 'shadow-default',
     surface: 'bg-surface-default',
-    note: 'flat -- no elevation',
+    border: 'border-border-default',
   },
   {
     name: 'half-pop',
     shadow: 'shadow-half-pop',
-    surface: 'bg-surface-default',
-    note: 'higher -- gentle lift',
+    surface: 'bg-surface-strong',
+    border: 'border-border-strong',
   },
   {
     name: 'pop',
     shadow: 'shadow-pop',
-    surface: 'bg-surface-default',
-    note: 'highest -- hard bottom edge',
+    surface: 'bg-surface-strong',
+    border: 'border-border-strong',
   },
 ] as const
 
 // The surface ramp: three planes the elevation rungs sit on. recesses use subtle
-// (900), the resting rung default (800), lifts strong (700).
+// (900), the resting rung default (800), lifts strong (700). edge is NOT a plane --
+// it's a separator added only when an elevated element's surface matches the flat
+// ground it sits on (e.g. a default-plane element on a default-plane ground), so it
+// doesn't belong in the ramp. Every colourway mirrors this three-plane shape.
 const surfaces = [
   { name: 'subtle', class: 'bg-surface-subtle', note: '900 -- recessed plane' },
   { name: 'default', class: 'bg-surface-default', note: '800 -- resting plane' },
   { name: 'strong', class: 'bg-surface-strong', note: '700 -- lifted plane' },
 ] as const
 
-// The semantic colourways. The surface ramp shows the three tokens that tint a
-// colourway's surfaces, ordered light->dark->vivid: subtle (tinted bg), edge (the
-// dark skeuomorphic side), solid (the vivid fill). Each ladder tile is fully
-// coloured: it sits on the colourway's 900 plane with an 800 (edge) border, and the
-// shadow is the per-colourway --shadow-<cw>-* token. Depth reads from a light/dark
-// split exactly like the neutral ladder -- recesses (sunk/half-sunk) inset the dark
-// 950 tone, lifts (half-pop/pop) drop the bright 600 tone -- so the well looks deep
-// and the popped edge looks lit. The plane/border use the palette 900/800 vars
-// directly (uniform across colourways; the semantic surface tokens stop at
-// subtle/bg, which for status is 950 -- too dark to host a 950 recess).
+// The semantic colourways. The surface ramp mirrors the neutral ramp's shape:
+// subtle (900) / default (solid 500) / strong (700) tinted planes -- the resting
+// swatch shows the vivid solid fill. Each ladder tile carries a per-rung surface,
+// border, and shadow:
+//   - recesses (sunk / half-sunk): the {c}.600 plane (palette var), a SUBTLE border,
+//     and an inset shadow whose recess tone is {c}.800 (see shadow tokens).
+//   - resting (default): the solid fill, a SUBTLE border (same as the recesses --
+//     it sits at rest, not lifted), and a flat shadow.
+//   - lifts (half-pop / pop): the solid fill, a STRONG border, and the lifting
+//     bright-edge shadow.
+// Border tiers and shadows are the per-colourway tokens; only the {c}.600 recess
+// plane has no semantic token, so it reaches the palette var directly.
 // Tailwind only scans literals -- every utility is spelled out in full below.
 const colourways = [
   {
     name: 'primary',
-    surface: 'bg-[var(--palette-magenta-900)]',
-    border: 'border-[var(--palette-magenta-800)]',
+    surface: 'bg-brand-primary-default',
     ramp: [
-      { label: 'subtle', class: 'bg-brand-primary-subtle' },
-      { label: 'edge', class: 'bg-brand-primary-edge' },
-      { label: 'solid', class: 'bg-brand-primary-default' },
+      { label: 'subtle', class: 'bg-brand-primary-surface-subtle' },
+      { label: 'default', class: 'bg-brand-primary-default' },
+      { label: 'strong', class: 'bg-brand-primary-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-primary-sunk' },
-      { name: 'half-sunk', class: 'shadow-primary-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-primary-half-pop' },
-      { name: 'pop', class: 'shadow-primary-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-primary-sunk',
+        surface: 'bg-[var(--palette-magenta-600)]',
+        border: 'border-[var(--palette-magenta-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-primary-half-sunk',
+        surface: 'bg-[var(--palette-magenta-600)]',
+        border: 'border-[var(--palette-magenta-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-brand-primary-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-primary-half-pop',
+        border: 'border-brand-primary-border-strong',
+      },
+      { name: 'pop', class: 'shadow-primary-pop', border: 'border-brand-primary-border-strong' },
     ],
   },
   {
     name: 'secondary',
-    surface: 'bg-[var(--palette-violet-900)]',
-    border: 'border-[var(--palette-violet-800)]',
+    surface: 'bg-brand-secondary-default',
     ramp: [
-      { label: 'subtle', class: 'bg-brand-secondary-subtle' },
-      { label: 'edge', class: 'bg-brand-secondary-edge' },
-      { label: 'solid', class: 'bg-brand-secondary-default' },
+      { label: 'subtle', class: 'bg-brand-secondary-surface-subtle' },
+      { label: 'default', class: 'bg-brand-secondary-default' },
+      { label: 'strong', class: 'bg-brand-secondary-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-secondary-sunk' },
-      { name: 'half-sunk', class: 'shadow-secondary-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-secondary-half-pop' },
-      { name: 'pop', class: 'shadow-secondary-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-secondary-sunk',
+        surface: 'bg-[var(--palette-violet-600)]',
+        border: 'border-[var(--palette-violet-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-secondary-half-sunk',
+        surface: 'bg-[var(--palette-violet-600)]',
+        border: 'border-[var(--palette-violet-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-brand-secondary-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-secondary-half-pop',
+        border: 'border-brand-secondary-border-strong',
+      },
+      {
+        name: 'pop',
+        class: 'shadow-secondary-pop',
+        border: 'border-brand-secondary-border-strong',
+      },
     ],
   },
   {
     name: 'danger',
-    surface: 'bg-[var(--palette-red-900)]',
-    border: 'border-[var(--palette-red-800)]',
+    surface: 'bg-status-danger-solid',
     ramp: [
-      { label: 'subtle', class: 'bg-status-danger-bg' },
-      { label: 'edge', class: 'bg-status-danger-edge' },
-      { label: 'solid', class: 'bg-status-danger-solid' },
+      { label: 'subtle', class: 'bg-status-danger-surface-subtle' },
+      { label: 'default', class: 'bg-status-danger-solid' },
+      { label: 'strong', class: 'bg-status-danger-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-danger-sunk' },
-      { name: 'half-sunk', class: 'shadow-danger-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-danger-half-pop' },
-      { name: 'pop', class: 'shadow-danger-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-danger-sunk',
+        surface: 'bg-[var(--palette-red-600)]',
+        border: 'border-[var(--palette-red-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-danger-half-sunk',
+        surface: 'bg-[var(--palette-red-600)]',
+        border: 'border-[var(--palette-red-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-status-danger-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-danger-half-pop',
+        border: 'border-status-danger-border-strong',
+      },
+      { name: 'pop', class: 'shadow-danger-pop', border: 'border-status-danger-border-strong' },
     ],
   },
   {
     name: 'success',
-    surface: 'bg-[var(--palette-green-900)]',
-    border: 'border-[var(--palette-green-800)]',
+    surface: 'bg-status-success-solid',
     ramp: [
-      { label: 'subtle', class: 'bg-status-success-bg' },
-      { label: 'edge', class: 'bg-status-success-edge' },
-      { label: 'solid', class: 'bg-status-success-solid' },
+      { label: 'subtle', class: 'bg-status-success-surface-subtle' },
+      { label: 'default', class: 'bg-status-success-solid' },
+      { label: 'strong', class: 'bg-status-success-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-success-sunk' },
-      { name: 'half-sunk', class: 'shadow-success-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-success-half-pop' },
-      { name: 'pop', class: 'shadow-success-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-success-sunk',
+        surface: 'bg-[var(--palette-green-600)]',
+        border: 'border-[var(--palette-green-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-success-half-sunk',
+        surface: 'bg-[var(--palette-green-600)]',
+        border: 'border-[var(--palette-green-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-status-success-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-success-half-pop',
+        border: 'border-status-success-border-strong',
+      },
+      { name: 'pop', class: 'shadow-success-pop', border: 'border-status-success-border-strong' },
     ],
   },
   {
     name: 'warning',
-    surface: 'bg-[var(--palette-yellow-900)]',
-    border: 'border-[var(--palette-yellow-800)]',
+    surface: 'bg-status-warning-solid',
     ramp: [
-      { label: 'subtle', class: 'bg-status-warning-bg' },
-      { label: 'edge', class: 'bg-status-warning-edge' },
-      { label: 'solid', class: 'bg-status-warning-solid' },
+      { label: 'subtle', class: 'bg-status-warning-surface-subtle' },
+      { label: 'default', class: 'bg-status-warning-solid' },
+      { label: 'strong', class: 'bg-status-warning-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-warning-sunk' },
-      { name: 'half-sunk', class: 'shadow-warning-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-warning-half-pop' },
-      { name: 'pop', class: 'shadow-warning-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-warning-sunk',
+        surface: 'bg-[var(--palette-yellow-600)]',
+        border: 'border-[var(--palette-yellow-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-warning-half-sunk',
+        surface: 'bg-[var(--palette-yellow-600)]',
+        border: 'border-[var(--palette-yellow-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-status-warning-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-warning-half-pop',
+        border: 'border-status-warning-border-strong',
+      },
+      { name: 'pop', class: 'shadow-warning-pop', border: 'border-status-warning-border-strong' },
     ],
   },
   {
     name: 'info',
-    surface: 'bg-[var(--palette-cyan-900)]',
-    border: 'border-[var(--palette-cyan-800)]',
+    surface: 'bg-status-info-solid',
     ramp: [
-      { label: 'subtle', class: 'bg-status-info-bg' },
-      { label: 'edge', class: 'bg-status-info-edge' },
-      { label: 'solid', class: 'bg-status-info-solid' },
+      { label: 'subtle', class: 'bg-status-info-surface-subtle' },
+      { label: 'default', class: 'bg-status-info-solid' },
+      { label: 'strong', class: 'bg-status-info-surface-strong' },
     ],
     ladder: [
-      { name: 'sunk', class: 'shadow-info-sunk' },
-      { name: 'half-sunk', class: 'shadow-info-half-sunk' },
-      { name: 'default', class: 'shadow-default' },
-      { name: 'half-pop', class: 'shadow-info-half-pop' },
-      { name: 'pop', class: 'shadow-info-pop' },
+      {
+        name: 'sunk',
+        class: 'shadow-info-sunk',
+        surface: 'bg-[var(--palette-cyan-600)]',
+        border: 'border-[var(--palette-cyan-500)]',
+      },
+      {
+        name: 'half-sunk',
+        class: 'shadow-info-half-sunk',
+        surface: 'bg-[var(--palette-cyan-600)]',
+        border: 'border-[var(--palette-cyan-500)]',
+      },
+      { name: 'default', class: 'shadow-default', border: 'border-status-info-border-subtle' },
+      {
+        name: 'half-pop',
+        class: 'shadow-info-half-pop',
+        border: 'border-status-info-border-strong',
+      },
+      { name: 'pop', class: 'shadow-info-pop', border: 'border-status-info-border-strong' },
     ],
   },
 ] as const
@@ -225,31 +315,42 @@ const sink = [
 // standalone story and the Snapshot board, so the snapped image can never drift from
 // the live story. Data lives module-level; each view pulls it in via setup.
 
-// The shadow ladder: five tiles on the resting surface, each carrying one rung.
-const ShadowLadderView = defineComponent({
-  setup: () => ({ shadows }),
+// The neutral foundation, in the same row layout as the semantics: the surface
+// ramp beside the shadow ladder. Borders are tiered by rung in every colourway:
+// the recesses (sunk / half-sunk) take a subtle border, the resting and lifted
+// rungs (default / half-pop / pop) a strong one. The neutral lifts also climb the
+// surface ramp -- half-pop / pop sit on the strong plane (700).
+const NeutralView = defineComponent({
+  setup: () => ({ surfaces, shadows }),
   template: `
-    <div class="flex w-max items-end gap-6 text-fg-default">
-      <div v-for="s in shadows" :key="s.name" class="flex flex-col items-center gap-3">
-        <div class="grid h-24 w-32 place-items-center rounded-lg border border-border-default" :class="[s.shadow, s.surface]">
-          <span class="font-mono text-sm">{{ s.name }}</span>
+    <div class="flex w-max flex-col gap-6 text-fg-default">
+      <p class="max-w-prose font-body text-fg-muted text-sm">
+        Borders are tiered by rung: the recesses and resting rung (sunk / half-sunk /
+        default) take a lighter border, only the lifts (half-pop / pop) a strong one --
+        in each colourway's own border hue. The neutral lifts also rise up the surface
+        ramp: half-pop and pop sit on the strong plane (700).
+      </p>
+      <div class="flex items-start gap-10">
+        <span class="w-20 shrink-0 self-center font-mono text-sm">neutral</span>
+        <div class="flex flex-col gap-2">
+          <span class="font-body text-fg-subtle text-xs">surface ramp</span>
+          <div class="flex items-end gap-3">
+            <div v-for="s in surfaces" :key="s.name" class="flex flex-col items-center gap-2">
+              <div class="h-14 w-14 rounded-md border border-border-default" :class="s.class"></div>
+              <span class="font-body text-fg-subtle text-xs">{{ s.name }}</span>
+            </div>
+          </div>
         </div>
-        <span class="font-body text-fg-subtle text-xs">{{ s.note }}</span>
-      </div>
-    </div>
-  `,
-})
-
-// The surface ramp: the three background planes side by side, each labelled.
-const SurfaceRampView = defineComponent({
-  setup: () => ({ surfaces }),
-  template: `
-    <div class="flex w-max gap-6 text-fg-default">
-      <div v-for="s in surfaces" :key="s.name" class="flex flex-col items-center gap-3">
-        <div class="grid h-24 w-32 place-items-center rounded-lg border border-border-default" :class="s.class">
-          <span class="font-mono text-sm">{{ s.name }}</span>
+        <div class="flex flex-col gap-2">
+          <span class="font-body text-fg-subtle text-xs">shadow ladder</span>
+          <div class="flex items-end gap-3">
+            <div v-for="s in shadows" :key="s.name" class="flex flex-col items-center gap-2">
+              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[s.surface, s.border, s.shadow]">
+                <span class="font-mono text-xs">{{ s.name }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <span class="font-body text-fg-subtle text-xs">{{ s.note }}</span>
       </div>
     </div>
   `,
@@ -261,6 +362,12 @@ const SemanticsView = defineComponent({
   setup: () => ({ colourways }),
   template: `
     <div class="flex w-max flex-col gap-6 text-fg-default">
+      <p class="max-w-prose font-body text-fg-muted text-sm">
+        Each colourway carries the same tiered borders as the neutral ladder: a subtle
+        border on sunk / half-sunk / default, a strong border on the lifts (half-pop /
+        pop) -- in the colourway's own border hue. Rung names are read off the neutral
+        row above; the columns align.
+      </p>
       <div v-for="cw in colourways" :key="cw.name" class="flex items-start gap-10">
         <span class="w-20 shrink-0 self-center font-mono text-sm">{{ cw.name }}</span>
         <div class="flex flex-col gap-2">
@@ -276,9 +383,7 @@ const SemanticsView = defineComponent({
           <span class="font-body text-fg-subtle text-xs">shadow ladder</span>
           <div class="flex items-end gap-3">
             <div v-for="r in cw.ladder" :key="r.name" class="flex flex-col items-center gap-2">
-              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[cw.surface, cw.border, r.class]">
-                <span class="font-mono text-xs">{{ r.name }}</span>
-              </div>
+              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[r.surface || cw.surface, r.border, r.class]"></div>
             </div>
           </div>
         </div>
@@ -296,17 +401,11 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const ShadowLadder: Story = {
+// The neutral foundation: surface ramp + shadow ladder in the semantics row layout.
+export const Neutral: Story = {
   render: () => ({
-    components: { ShadowLadderView },
-    template: `<ShadowLadderView />`,
-  }),
-}
-
-export const SurfaceRamp: Story = {
-  render: () => ({
-    components: { SurfaceRampView },
-    template: `<SurfaceRampView />`,
+    components: { NeutralView },
+    template: `<NeutralView />`,
   }),
 }
 
@@ -342,8 +441,9 @@ export const Animations: Story = {
   }),
 }
 
-// One row per semantic colourway: its surface ramp (subtle / edge / solid) beside
-// its shadow ladder. Reads down the column to compare how each colourway lifts/sinks.
+// One row per semantic colourway: its surface ramp (subtle / default / strong,
+// mirroring the neutral ramp) beside its shadow ladder. Reads down the column to
+// compare how each colourway lifts/sinks.
 export const Semantics: Story = {
   render: () => ({
     components: { SemanticsView },
@@ -351,21 +451,17 @@ export const Semantics: Story = {
   }),
 }
 
-// The visual board: the neutral ladder, the neutral ramp, then the per-colourway
-// semantic rows on one screen -- each from the same shared view as its standalone
-// story. This is the story the snapshot test snaps.
+// The visual board: the neutral foundation row, then the per-colourway semantic
+// rows on one screen -- each from the same shared view as its standalone story.
+// This is the story the snapshot test snaps.
 export const Snapshot: Story = {
   render: () => ({
-    components: { ShadowLadderView, SurfaceRampView, SemanticsView },
+    components: { NeutralView, SemanticsView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Shadow ladder</h2>
-          <ShadowLadderView />
-        </section>
-        <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Surface ramp</h2>
-          <SurfaceRampView />
+          <h2 class="font-heading font-bold text-lg">Neutral</h2>
+          <NeutralView />
         </section>
         <section class="flex flex-col gap-3">
           <h2 class="font-heading font-bold text-lg">Semantics</h2>
