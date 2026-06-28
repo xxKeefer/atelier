@@ -3,7 +3,7 @@ defineProps<{ heading?: string }>();
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 max-w-prose">
+  <section class="flex flex-col gap-4 max-w-prose" data-testid="snap-board">
     <h1 class="font-heading font-bold text-4xl text-fg-default">
       {{ heading ?? 'Atelier' }}
     </h1>

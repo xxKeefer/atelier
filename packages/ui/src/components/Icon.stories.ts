@@ -126,3 +126,47 @@ export const Labeled: Story = {
     expect(canvas.getByRole('img', { name: 'Favourite' })).toBeInTheDocument();
   }
 };
+
+// The visual board: sizes, weights, and colour on one screen in a labelled grid.
+// This is the story the snapshot test snaps.
+export const Snapshot: Story = {
+  render: () => ({
+    components: { Icon },
+    setup: () => ({ sizes, weights, star: PhStar, heart: PhHeart, warning: PhWarningCircle }),
+    template: `
+      <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Sizes</h2>
+          <div class="flex items-end gap-4">
+            <div v-for="size in sizes" :key="size" class="flex flex-col items-center gap-1">
+              <Icon :icon="star" :size="size" />
+              <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
+            </div>
+          </div>
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Weights</h2>
+          <div class="flex items-center gap-6">
+            <div v-for="weight in weights" :key="weight" class="flex flex-col items-center gap-1">
+              <Icon :icon="heart" :weight="weight" size="2xl" />
+              <span class="font-body text-fg-subtle text-xs">{{ weight }}</span>
+            </div>
+          </div>
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Colours</h2>
+          <div class="flex items-center gap-4">
+            <Icon :icon="warning" size="xl" color="var(--color-status-danger-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-status-warning-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-status-success-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-status-info-solid)" />
+            <span class="flex items-center gap-2 text-brand-secondary-default">
+              <Icon :icon="warning" size="xl" />
+              <span class="font-body text-base">inherits parent colour</span>
+            </span>
+          </div>
+        </section>
+      </div>
+    `
+  })
+};

@@ -245,3 +245,93 @@ export const Disabled: Story = {
     `
   })
 };
+
+const states = [
+  { name: 'Resting', props: {} },
+  { name: 'Disabled', props: { disabled: true } },
+  { name: 'Loading', props: { loading: true } }
+] as const;
+
+// The visual board: every axis on one screen in a labelled grid, so a single
+// screenshot covers the whole component. Colours (intent x variant) up top; then
+// the size x variant x icon matrix across resting/disabled/loading; then the same
+// matrix for icon-only. This is the story the snapshot test snaps.
+export const Snapshot: Story = {
+  render: () => ({
+    components: { Button },
+    setup: () => ({ intents, variants, sizes, states, icon: Star('snap-icon') }),
+    template: `
+      <div class="flex w-max flex-col gap-10 bg-bg-default p-6" data-testid="snap-board">
+        <section class="flex flex-col gap-3">
+          <h2 class="font-heading font-bold text-fg-default text-lg">Colours</h2>
+          <div class="grid grid-cols-[6rem_repeat(2,auto)] items-center gap-3">
+            <span></span>
+            <span v-for="v in variants" :key="v" class="font-body text-fg-subtle text-sm capitalize">{{ v }}</span>
+          </div>
+          <div
+            v-for="intent in intents"
+            :key="intent"
+            class="grid grid-cols-[6rem_repeat(2,auto)] items-center gap-3"
+          >
+            <span class="font-body text-fg-muted text-sm capitalize">{{ intent }}</span>
+            <div v-for="variant in variants" :key="variant">
+              <Button :intent="intent" :variant="variant">{{ intent }}</Button>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading font-bold text-fg-default text-lg">Sizes, icons & states</h2>
+          <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
+            <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
+            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto_auto)] items-center gap-x-4 gap-y-3">
+              <span></span>
+              <span
+                v-for="variant in variants"
+                :key="variant"
+                class="col-span-2 font-body text-fg-subtle text-xs capitalize"
+              >{{ variant }}</span>
+              <template v-for="size in sizes" :key="size">
+                <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
+                <template v-for="variant in variants" :key="variant">
+                  <Button :variant="variant" :size="size" v-bind="state.props">Label</Button>
+                  <Button :variant="variant" :size="size" v-bind="state.props">
+                    <template #left><span v-html="icon" /></template>Label
+                  </Button>
+                </template>
+              </template>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading font-bold text-fg-default text-lg">Icon only</h2>
+          <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
+            <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
+            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto)] items-center gap-x-4 gap-y-3">
+              <span></span>
+              <span
+                v-for="variant in variants"
+                :key="variant"
+                class="font-body text-fg-subtle text-xs capitalize"
+              >{{ variant }}</span>
+              <template v-for="size in sizes" :key="size">
+                <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
+                <Button
+                  v-for="variant in variants"
+                  :key="variant"
+                  :variant="variant"
+                  :size="size"
+                  v-bind="state.props"
+                  aria-label="Favourite"
+                >
+                  <template #left><span v-html="icon" /></template>
+                </Button>
+              </template>
+            </div>
+          </div>
+        </section>
+      </div>
+    `
+  })
+};

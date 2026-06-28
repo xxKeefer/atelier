@@ -14,11 +14,38 @@ const setup = `${dirname}.storybook/vitest.setup.ts`;
 const browser = () => ({
   enabled: true,
   headless: true,
-  provider: playwright(),
+  // A large browser-context window. vitest scales the tester iframe down to fit
+  // its window, so a per-board viewport taller than the window gets captured
+  // downscaled (and inconsistently, since each board sizes its own viewport).
+  // Sizing the window past the tallest board keeps every snapBoard() capture 1:1.
+  provider: playwright({ contextOptions: { viewport: { width: 2000, height: 3200 } } }),
   // No auto-screenshot on failure: the contrast test isn't visual, and the
   // visual test owns its own baselines via toMatchScreenshot.
   screenshotFailures: false,
-  instances: [{ browser: 'chromium' as const }]
+  instances: [{ browser: 'chromium' as const }],
+  // Collapse the default per-test-file nesting into one flat bucket:
+  // src/components/__snaps__/{arg}-{browser}-{platform}.png. The browser+platform
+  // suffix stays (we only run nix chromium on linux; the chrome version is
+  // recorded in CLAUDE.md, not the filename).
+  expect: {
+    toMatchScreenshot: {
+      resolveScreenshotPath: ({
+        root,
+        testFileDirectory,
+        arg,
+        ext,
+        browserName,
+        platform
+      }: {
+        root: string;
+        testFileDirectory: string;
+        arg: string;
+        ext: string;
+        browserName: string;
+        platform: string;
+      }) => `${root}/${testFileDirectory}/__snaps__/${arg}-${browserName}-${platform}${ext}`
+    }
+  }
 });
 
 // Two browser-mode projects on one runner:

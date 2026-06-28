@@ -1,7 +1,12 @@
+import { composeStories } from '@storybook/vue3-vite';
 import { render } from '@testing-library/vue';
 import { PhHeart } from '@phosphor-icons/vue';
 import { expect, test } from 'vitest';
 import Icon from './Icon.vue';
+import * as stories from './Icon.stories';
+import { snapBoard } from '../test/snap';
+
+const { Snapshot } = composeStories(stories);
 
 // Sizes bind to the type scale: lg == --text-lg (1.25rem == 20px). font-size on
 // the wrapper drives the glyph, which renders at 1em.
@@ -34,4 +39,11 @@ test('color is applied to the wrapper so the glyph inherits it', () => {
   });
   const wrapper = container.querySelector('span')!;
   expect(getComputedStyle(wrapper).color).toBe('rgb(255, 0, 0)');
+});
+
+// The single visual snap for Icon: the Snapshot story's board (sizes, weights,
+// colour). Baseline: __snaps__/icon-snap-chromium-linux.png. Rebaseline: pnpm test:update.
+test('Snapshot matches the visual board baseline', async () => {
+  render(Snapshot);
+  await snapBoard('snap-board', 'icon-snap');
 });
