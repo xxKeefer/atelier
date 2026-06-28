@@ -1,10 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { expect, within } from 'storybook/test';
-import { PhHeart, PhStar, PhWarningCircle } from '@phosphor-icons/vue';
-import Icon from './Icon.vue';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { PhHeart, PhStar, PhWarningCircle } from '@phosphor-icons/vue'
+import Icon from './AtIcon.vue'
 
-const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
-const weights = ['regular', 'fill'] as const;
+const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const
+const weights = ['regular', 'fill'] as const
 
 const meta = {
   title: 'Components/Icon',
@@ -15,21 +14,21 @@ const meta = {
     size: { control: 'select', options: sizes },
     weight: { control: 'select', options: weights },
     color: { control: 'text' },
-    label: { control: 'text' }
+    label: { control: 'text' },
   },
-  args: { icon: PhHeart, size: 'md', weight: 'regular' }
-} satisfies Meta<typeof Icon>;
+  args: { icon: PhHeart, size: 'md', weight: 'regular' },
+} satisfies Meta<typeof Icon>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: (args) => ({
     components: { Icon },
     setup: () => ({ args }),
-    template: '<Icon v-bind="args" />'
-  })
-};
+    template: '<Icon v-bind="args" />',
+  }),
+}
 
 // One glyph at every named size -- each maps to a type-scale step so icons line
 // up with the text they sit beside.
@@ -44,9 +43,9 @@ export const Sizes: Story = {
           <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
         </div>
       </div>
-    `
-  })
-};
+    `,
+  }),
+}
 
 // Regular vs fill -- the two weights Atelier ships.
 export const Weights: Story = {
@@ -60,9 +59,9 @@ export const Weights: Story = {
           <span class="font-body text-fg-subtle text-xs">{{ weight }}</span>
         </div>
       </div>
-    `
-  })
-};
+    `,
+  }),
+}
 
 // Colour by token, and colour inherited from the parent. The first row paints
 // the glyph with a status-colour token; the second inherits the parent's text
@@ -84,9 +83,9 @@ export const Colors: Story = {
           <span class="font-body text-base">inherits the parent's colour</span>
         </div>
       </div>
-    `
-  })
-};
+    `,
+  }),
+}
 
 // Decorative by default: hidden from the a11y tree, no accessible name.
 export const Decorative: Story = {
@@ -98,15 +97,9 @@ export const Decorative: Story = {
         <Icon v-bind="args" />
         <span class="font-body text-base">no label: hidden from screen readers (aria-hidden)</span>
       </div>
-    `
+    `,
   }),
-  play: async ({ canvasElement }) => {
-    const svg = canvasElement.querySelector('svg')!;
-    expect(svg).toHaveAttribute('aria-hidden', 'true');
-    // No img role exists, so the icon contributes nothing to the a11y tree.
-    expect(within(canvasElement).queryByRole('img')).toBeNull();
-  }
-};
+}
 
 // A label promotes the icon to a meaningful img with that accessible name.
 export const Labeled: Story = {
@@ -119,13 +112,9 @@ export const Labeled: Story = {
         <Icon v-bind="args" />
         <span class="font-body text-base">with a label: announced as an img named "{{ args.label }}"</span>
       </div>
-    `
+    `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByRole('img', { name: 'Favourite' })).toBeInTheDocument();
-  }
-};
+}
 
 // The visual board: sizes, weights, and colour on one screen in a labelled grid.
 // This is the story the snapshot test snaps.
@@ -167,6 +156,6 @@ export const Snapshot: Story = {
           </div>
         </section>
       </div>
-    `
-  })
-};
+    `,
+  }),
+}

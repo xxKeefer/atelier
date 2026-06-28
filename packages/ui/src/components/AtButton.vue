@@ -1,40 +1,41 @@
 <script setup lang="ts">
-import { PhCircleNotch } from '@phosphor-icons/vue';
-import { Comment, computed, useSlots } from 'vue';
-import Icon from './Icon.vue';
+import { PhCircleNotch } from '@phosphor-icons/vue'
+import { Comment, computed, useSlots } from 'vue'
+import Icon from './AtIcon.vue'
 
-type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info';
-type Variant = 'default' | 'flat';
-type Size = 'sm' | 'md' | 'lg';
+type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
+type Variant = 'default' | 'flat'
+type Size = 'sm' | 'md' | 'lg'
 
 const props = withDefaults(
   defineProps<{
-    intent?: Intent;
-    variant?: Variant;
-    size?: Size;
-    type?: 'button' | 'submit' | 'reset';
-    href?: string;
-    disabled?: boolean;
-    loading?: boolean;
+    intent?: Intent
+    variant?: Variant
+    size?: Size
+    type?: 'button' | 'submit' | 'reset'
+    href?: string
+    disabled?: boolean
+    loading?: boolean
   }>(),
   {
     intent: 'primary',
     variant: 'default',
     size: 'md',
     type: 'button',
+    href: undefined,
     disabled: false,
-    loading: false
-  }
-);
+    loading: false,
+  },
+)
 
 // loading is an inert state: the button can't be clicked, so it folds into the
 // disabled attribute (and inherits the disabled styling). The skeleton-style
 // pulse on top signals "busy" rather than "off". motion-reduce stills it.
-const isDisabled = computed(() => props.disabled || props.loading);
+const isDisabled = computed(() => props.disabled || props.loading)
 
 // An href resolves the root to an <a> (role=link); otherwise a <button>
 // (role=button). The role falls out of the element choice, no aria-role needed.
-const tag = computed(() => (props.href !== undefined ? 'a' : 'button'));
+const tag = computed(() => (props.href !== undefined ? 'a' : 'button'))
 
 // Per-element root attributes. A <button> carries native type + disabled. An
 // <a> has neither: it always opens in a new tab (target=_blank + rel guards
@@ -47,28 +48,26 @@ const rootProps = computed(() =>
         href: isDisabled.value ? undefined : props.href,
         target: '_blank',
         rel: 'noopener noreferrer',
-        'aria-disabled': isDisabled.value || undefined
+        'aria-disabled': isDisabled.value || undefined,
       }
-    : { type: props.type, disabled: isDisabled.value }
-);
+    : { type: props.type, disabled: isDisabled.value },
+)
 
 // One mutually-exclusive cursor (stacked cursor utilities have unreliable order):
 // busy while loading, blocked while disabled, actionable otherwise.
 const cursor = computed(() =>
-  props.loading ? 'cursor-wait' : props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-);
+  props.loading ? 'cursor-wait' : props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+)
 
-const slots = useSlots();
+const slots = useSlots()
 // Icon-only when nothing renders in the default slot. The named icon slots
 // (#left/#right) don't count as a label, so a button with only an icon trips
 // the square padding + leans on aria-label for its accessible name.
 const iconOnly = computed(() => {
-  const nodes = slots.default?.();
-  if (!nodes) return true;
-  return nodes.every(
-    (n) => n.children === null || n.children === '' || n.type === Comment
-  );
-});
+  const nodes = slots.default?.()
+  if (!nodes) return true
+  return nodes.every((n) => n.children === null || n.children === '' || n.type === Comment)
+})
 
 // Fill, text, and transition shared by both variants. The intent vars
 // (--btn-bg/-fg/-edge) are bound per-element via :style below. enabled: gates
@@ -79,21 +78,21 @@ const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
   'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus';
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so
 // they read square. gap drives the spacing between icon slots and the label.
 const sizes: Record<Size, string> = {
   sm: 'text-sm px-3 py-1.5 gap-1.5',
   md: 'text-base px-4 py-2 gap-2',
-  lg: 'text-lg px-6 py-3 gap-2'
-};
+  lg: 'text-lg px-6 py-3 gap-2',
+}
 
 const iconOnlySizes: Record<Size, string> = {
   sm: 'text-sm p-1.5 gap-1.5',
   md: 'text-base p-2 gap-2',
-  lg: 'text-lg p-3 gap-2'
-};
+  lg: 'text-lg p-3 gap-2',
+}
 
 // The mechanic -- pop, depress, sink. default extrudes on a hard bottom edge in
 // the fill's own dark shade; flat is a quieter intent-tied border. Both drive
@@ -107,8 +106,8 @@ const variants: Record<Variant, string> = {
   flat:
     'border-[3px] border-solid border-[color:var(--btn-edge)] ' +
     'hover:enabled:brightness-[1.08] ' +
-    'active:enabled:translate-y-[2px] active:enabled:brightness-95'
-};
+    'active:enabled:translate-y-[2px] active:enabled:brightness-95',
+}
 
 // Each intent supplies the fill, the text colour, and its own dark edge (the
 // skeuomorphic "side"). The mechanic above is the same for every intent,
@@ -117,41 +116,41 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
   primary: {
     '--btn-bg': 'var(--color-brand-primary-default)',
     '--btn-fg': 'var(--color-brand-primary-fg)',
-    '--btn-edge': 'var(--color-brand-primary-edge)'
+    '--btn-edge': 'var(--color-brand-primary-edge)',
   },
   secondary: {
     '--btn-bg': 'var(--color-brand-secondary-default)',
     '--btn-fg': 'var(--color-brand-secondary-fg)',
-    '--btn-edge': 'var(--color-brand-secondary-edge)'
+    '--btn-edge': 'var(--color-brand-secondary-edge)',
   },
   neutral: {
     '--btn-bg': 'var(--color-bg-raised)',
     // the fill is already dark, so a darker "side" vanishes into the canvas;
     // the structural border colour is the visible neutral edge.
     '--btn-fg': 'var(--color-fg-default)',
-    '--btn-edge': 'var(--color-border-default)'
+    '--btn-edge': 'var(--color-border-default)',
   },
   danger: {
     '--btn-bg': 'var(--color-status-danger-solid)',
     '--btn-fg': 'var(--color-status-danger-on-solid)',
-    '--btn-edge': 'var(--color-status-danger-edge)'
+    '--btn-edge': 'var(--color-status-danger-edge)',
   },
   success: {
     '--btn-bg': 'var(--color-status-success-solid)',
     '--btn-fg': 'var(--color-status-success-on-solid)',
-    '--btn-edge': 'var(--color-status-success-edge)'
+    '--btn-edge': 'var(--color-status-success-edge)',
   },
   warning: {
     '--btn-bg': 'var(--color-status-warning-solid)',
     '--btn-fg': 'var(--color-status-warning-on-solid)',
-    '--btn-edge': 'var(--color-status-warning-edge)'
+    '--btn-edge': 'var(--color-status-warning-edge)',
   },
   info: {
     '--btn-bg': 'var(--color-status-info-solid)',
     '--btn-fg': 'var(--color-status-info-on-solid)',
-    '--btn-edge': 'var(--color-status-info-edge)'
-  }
-};
+    '--btn-edge': 'var(--color-status-info-edge)',
+  },
+}
 
 const classes = computed(() => [
   base,
@@ -165,8 +164,8 @@ const classes = computed(() => [
   props.loading && 'animate-pulse motion-reduce:animate-none',
   // Link path only: a button uses its native disabled to go inert; an anchor
   // needs pointer-events killed since aria-disabled is advisory, not enforced.
-  props.href !== undefined && isDisabled.value && 'pointer-events-none'
-]);
+  props.href !== undefined && isDisabled.value && 'pointer-events-none',
+])
 </script>
 
 <template>
@@ -178,7 +177,11 @@ const classes = computed(() => [
     <!-- While loading a default circle-notch spinner replaces the #left slot
          (overriding any consumer icon); otherwise the slot renders untouched,
          preserving icon DOM order. -->
-    <span v-if="loading" class="inline-flex animate-spin motion-reduce:animate-none">
+    <span
+      v-if="loading"
+      data-testid="spinner"
+      class="inline-flex animate-spin motion-reduce:animate-none"
+    >
       <Icon :icon="PhCircleNotch" />
     </span>
     <slot v-else name="left" />

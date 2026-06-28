@@ -1,4 +1,4 @@
-import './styles.css';
+import './styles.css'
 
-export { default as Button } from './components/Button.vue';
-export { default as Icon } from './components/Icon.vue';
+export { default as AtButton } from './components/AtButton.vue'
+export { default as AtIcon } from './components/AtIcon.vue'

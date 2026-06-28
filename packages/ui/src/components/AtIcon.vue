@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { computed, type Component } from 'vue';
+import { computed, type Component } from 'vue'
 
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-type Weight = 'regular' | 'fill';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+type Weight = 'regular' | 'fill'
 
 const props = withDefaults(
   defineProps<{
     // A phosphor icon component, e.g. `PhHeart` from @phosphor-icons/vue. Passed
     // as the component (not a name) so consumers import only the glyphs they use.
-    icon: Component;
-    size?: Size;
-    weight?: Weight;
+    icon: Component
+    size?: Size
+    weight?: Weight
     // A CSS colour -- pass a token var (e.g. var(--color-status-danger-solid)) to
     // paint the glyph, or omit to inherit the parent's currentColor.
-    color?: string;
+    color?: string
     // Omit for the common case: the icon is decorative and hidden from the a11y
     // tree. Pass a label only when the icon carries meaning on its own.
-    label?: string;
+    label?: string
   }>(),
-  { size: 'md', weight: 'regular' }
-);
+  { size: 'md', weight: 'regular', color: undefined, label: undefined },
+)
 
 // Sizes map onto the type scale so an icon lines up with the text beside it.
 // font-size drives the glyph: phosphor renders width/height at 1em, so it scales
@@ -30,17 +30,15 @@ const sizes: Record<Size, string> = {
   md: 'text-base',
   lg: 'text-lg',
   xl: 'text-xl',
-  '2xl': 'text-2xl'
-};
+  '2xl': 'text-2xl',
+}
 
 // Decorative by default: aria-hidden, no accessible name -- an icon next to a
 // text label is noise to a screen reader. A label promotes it to an img with
 // that name. Interactivity is never the icon's job; a Button or Link owns that.
 const a11y = computed(() =>
-  props.label !== undefined
-    ? { role: 'img', 'aria-label': props.label }
-    : { 'aria-hidden': true }
-);
+  props.label !== undefined ? { role: 'img', 'aria-label': props.label } : { 'aria-hidden': true },
+)
 </script>
 
 <template>
