@@ -74,12 +74,12 @@ test('interactive cards carry the button-style extruded shadow', () => {
   expect(link.className).not.toContain('shadow-[var(--shadow-raised)]')
 })
 
-// A static card keeps the quiet system shadow, not the extruded button mechanic.
+// A static card rests at half-pop on the elevation ladder, not the extruded button mechanic.
 test('static cards keep the quiet system shadow', () => {
   const { container } = render(Card, { slots: { default: () => 'Static' } })
   // eslint-disable-next-line testing-library/no-node-access
   const root = container.firstElementChild
-  expect(root?.className).toContain('shadow-[var(--shadow-raised)]')
+  expect(root?.className).toContain('shadow-half-pop')
 })
 
 // The header composes actions: a close icon button at its right edge lives

@@ -124,7 +124,7 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
     '--btn-edge': 'var(--color-brand-secondary-edge)',
   },
   neutral: {
-    '--btn-bg': 'var(--color-bg-raised)',
+    '--btn-bg': 'var(--color-surface-strong)',
     // the fill is already dark, so a darker "side" vanishes into the canvas;
     // the structural border colour is the visible neutral edge.
     '--btn-fg': 'var(--color-fg-default)',

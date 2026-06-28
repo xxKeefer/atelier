@@ -44,15 +44,15 @@ const rowClass = computed(() => {
   return props.mediaPosition === 'right' ? 'flex flex-row-reverse' : 'flex flex-row'
 })
 
-// The surface: a bordered panel on bg-surface. overflow-hidden clips full-bleed
-// media to the radius. The drop shadow is set per branch below (static cards
-// rest on the quiet system shadow; interactive ones extrude like a button).
+// The surface: a bordered panel on the default surface. overflow-hidden clips
+// full-bleed media to the radius. The drop shadow is set per branch below (static
+// cards rest at half-pop, one tier below a button's pop; interactive ones extrude).
 const base =
-  'relative flex flex-col bg-[var(--color-bg-surface)] text-fg-default font-body ' +
+  'relative flex flex-col bg-surface-default text-fg-default font-body ' +
   'border-[3px] border-solid border-[color:var(--color-border-default)] rounded-md overflow-hidden'
 
-// Static card: the system's hard-edge drop shadow, one tier quieter than a button.
-const staticShadow = 'shadow-[var(--shadow-raised)]'
+// Static card: half-pop on the elevation ladder, one tier quieter than a button (pop).
+const staticShadow = 'shadow-half-pop'
 
 // Interactive card: the same extruded mechanic as a default button -- a chunky
 // hard bottom edge plus ambient, sinking toward the cursor on hover and pressing
