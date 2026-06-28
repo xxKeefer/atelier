@@ -237,12 +237,22 @@ export const Semantic: Story = {
   }),
 }
 
-// The visual board: sizes, weights, and colour on one screen in a labelled grid.
-// This is the story the snapshot test snaps.
+// The visual board: sizes, weights, colour, and the semantic convention on one
+// screen in a labelled grid. This is the story the snapshot test snaps.
 export const Snapshot: Story = {
   render: () => ({
     components: { Icon },
-    setup: () => ({ sizes, weights, star: PhStar, heart: PhHeart, warning: PhWarningCircle }),
+    setup: () => ({
+      sizes,
+      weights,
+      semantic,
+      groups: Object.keys(semantic) as (keyof typeof semantic)[],
+      star: PhStar,
+      heart: PhHeart,
+      warning: PhWarningCircle,
+      caret: PhCaretDown,
+      spinner: PhCircleNotch,
+    }),
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
@@ -274,6 +284,45 @@ export const Snapshot: Story = {
               <Icon :icon="warning" size="xl" />
               <span class="font-body text-base">inherits parent colour</span>
             </span>
+          </div>
+        </section>
+        <section v-for="group in groups" :key="group" class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">{{ group }}</h2>
+          <div class="flex flex-col gap-2">
+            <div v-for="row in semantic[group]" :key="row.name" class="flex items-center gap-3">
+              <Icon :icon="row.icon" size="xl" :class="row.tone" />
+              <span class="font-body w-40 text-base">{{ row.name }}</span>
+              <span class="font-body text-fg-subtle text-sm">{{ row.note }}</span>
+            </div>
+          </div>
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Loading</h2>
+          <div class="flex items-center gap-3">
+            <Icon :icon="spinner" size="xl" class="animate-spin" />
+            <span class="font-body w-40 text-base">Loading</span>
+            <span class="font-body text-fg-subtle text-sm">never static, always spinning</span>
+          </div>
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Disclosure</h2>
+          <div class="flex items-center gap-6">
+            <div class="flex flex-col items-center gap-1">
+              <Icon :icon="caret" weight="fill" size="xl" />
+              <span class="font-body text-fg-subtle text-xs">expand (select)</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <Icon :icon="caret" weight="fill" size="xl" class="rotate-180" />
+              <span class="font-body text-fg-subtle text-xs">contract</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <Icon :icon="caret" weight="fill" size="xl" class="-rotate-90" />
+              <span class="font-body text-fg-subtle text-xs">drawer (left)</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <Icon :icon="caret" weight="fill" size="xl" class="rotate-90" />
+              <span class="font-body text-fg-subtle text-xs">drawer (right)</span>
+            </div>
           </div>
         </section>
       </div>
