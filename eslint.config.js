@@ -1,5 +1,6 @@
 import pluginVue from 'eslint-plugin-vue'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import testingLibrary from 'eslint-plugin-testing-library'
 import prettier from 'eslint-config-prettier'
 import globals from 'globals'
 
@@ -40,10 +41,17 @@ export default defineConfigWithVueTs(
     },
   },
 
-  // Config and build scripts run outside the typed project graph.
+  // Config and build scripts run outside the typed project graph. Disable the
+  // type-aware rules *and* the project-service lookup -- these files live outside
+  // every tsconfig `include`, so the service can't find a project for them.
   {
-    files: ['**/*.config.{js,ts,mjs}', '**/.storybook/**'],
+    files: ['**/*.config.{js,ts,mjs}', '**/.storybook/**', '**/.vitepress/**'],
     extends: [vueTsConfigs.disableTypeChecked],
+    languageOptions: { parserOptions: { projectService: false } },
+  },
+  {
+    files: ['**/*.test.{ts,tsx}'],
+    extends: [testingLibrary.configs['flat/vue']],
   },
 
   prettier,
