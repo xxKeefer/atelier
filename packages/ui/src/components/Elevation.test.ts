@@ -4,7 +4,7 @@ import { expect, test } from 'vitest'
 import * as stories from './Elevation.stories'
 import { snapBoard } from '../test/snap'
 
-const { ShadowLadder, SurfaceRamp, Snapshot } = composeStories(stories)
+const { ShadowLadder, SurfaceRamp, Semantics, Snapshot } = composeStories(stories)
 
 // Every rung of the ladder renders, labelled by its token name.
 test('renders all five shadow rungs', () => {
@@ -22,8 +22,16 @@ test('renders all three surface steps', () => {
   }
 })
 
+// Every colourway renders a row, labelled by its name.
+test('renders a semantic row for every colourway', () => {
+  render(Semantics)
+  for (const name of ['primary', 'secondary', 'danger', 'success', 'warning', 'info']) {
+    expect(screen.getByText(name)).toBeInTheDocument()
+  }
+})
+
 // The single visual snap for Elevation: the Snapshot story's board (ladder +
-// ramp on one screen). Baseline: __snaps__/elevation-chromium-linux.png.
+// ramp + semantics on one screen). Baseline: __snaps__/elevation-chromium-linux.png.
 // Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
   render(Snapshot)
