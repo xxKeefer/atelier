@@ -14,3 +14,19 @@ test('loading button is not statically dimmed, so the skeleton pulse stays visib
   button.style.animation = 'none';
   expect(getComputedStyle(button).opacity).toBe('1');
 });
+
+// AC: loading defaults to a circle-notch spinner, it overrides a consumer #left
+// icon, and it still appears when there is no #left icon.
+test('loading renders the default spinner, overriding any #left icon', () => {
+  const { container } = render(Loading);
+  // The Loading story renders two buttons: one with a #left icon, one without.
+  const buttons = container.querySelectorAll('button');
+  expect(buttons).toHaveLength(2);
+  buttons.forEach((button) => {
+    const wrapper = button.querySelector('.animate-spin');
+    expect(wrapper).not.toBeNull();
+    expect(wrapper!.querySelector('svg')).not.toBeNull();
+  });
+  // The consumer's own #left icon is replaced by the spinner while loading.
+  expect(container.querySelector('[data-testid="left-icon"]')).toBeNull();
+});

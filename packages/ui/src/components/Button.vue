@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { PhCircleNotch } from '@phosphor-icons/vue';
 import { Comment, computed, useSlots } from 'vue';
+import Icon from './Icon.vue';
 
 type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info';
 type Variant = 'default' | 'flat';
@@ -173,10 +175,11 @@ const classes = computed(() => [
        falls through. It is required for icon-only buttons so they still
        announce; axe enforces it. -->
   <component :is="tag" v-bind="rootProps" :class="classes" :style="intentVars[intent]">
-    <!-- While loading the #left content (the consumer-supplied spinner icon)
-         spins; otherwise the slot renders untouched, preserving icon DOM order. -->
+    <!-- While loading a default circle-notch spinner replaces the #left slot
+         (overriding any consumer icon); otherwise the slot renders untouched,
+         preserving icon DOM order. -->
     <span v-if="loading" class="inline-flex animate-spin motion-reduce:animate-none">
-      <slot name="left" />
+      <Icon :icon="PhCircleNotch" />
     </span>
     <slot v-else name="left" />
     <slot />

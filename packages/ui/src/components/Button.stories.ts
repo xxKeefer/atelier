@@ -149,16 +149,20 @@ export const IconOnly: Story = {
   }
 };
 
+// Loading defaults to a circle-notch spinner. The first button supplies its own
+// #left icon to prove the spinner overrides it while loading; the second has no
+// left icon to prove the spinner still appears.
 export const Loading: Story = {
   args: { loading: true },
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args, variants, icon: Star('spinner') }),
+    setup: () => ({ args, icon: Star('left-icon') }),
     template: `
       <div class="flex items-center gap-4">
-        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">
+        <Button v-bind="args">
           <template #left><span v-html="icon" /></template>Saving
         </Button>
+        <Button v-bind="args">Saving</Button>
       </div>
     `
   }),
@@ -167,11 +171,13 @@ export const Loading: Story = {
     canvas.getAllByRole('button').forEach((button) => {
       // loading implies disabled: the button is inert.
       expect(button).toBeDisabled();
-      // The spinner is whatever the consumer passes into #left; while loading
-      // its wrapper carries the spin animation.
-      const spinner = within(button).getByTestId('spinner');
-      expect(spinner.closest('.animate-spin')).not.toBeNull();
+      // The default circle-notch spinner renders inside the spin wrapper.
+      const wrapper = button.querySelector('.animate-spin');
+      expect(wrapper).not.toBeNull();
+      expect(wrapper!.querySelector('svg')).not.toBeNull();
     });
+    // The consumer's own #left icon is overridden by the spinner while loading.
+    expect(canvas.queryByTestId('left-icon')).toBeNull();
   }
 };
 
