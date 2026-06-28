@@ -14,12 +14,12 @@ No `.cursor.test.ts`, `.loading.test.ts`, `.visual.test.ts` splits. One componen
 
 ### Why
 
-A component's tests are one unit. Splitting by concern fragments the picture, multiplies imports, and makes the trio per component non-obvious. The split also misled on naming: `ThemeProof.visual.test.ts` implied a separate test category when it is just ThemeProof's test file that happens to do a screenshot.
+A component's tests are one unit. Splitting by concern fragments the picture, multiplies imports, and makes the trio per component non-obvious. The split also misled on naming: `Button.visual.test.ts` implied a separate test category when it is just Button's test file that happens to do a screenshot.
 
 ### Test mechanics worth knowing
 
 - Vitest runs two browser-mode projects (see `vitest.config.ts`): `storybook` runs every story (play fns -> behaviour, addon-a11y -> axe), `visual` runs `src/**/*.test.ts`.
-- A `.test.ts` may pull stories via `composeStories` to reuse their setup (e.g. `Button.test.ts`, `ThemeProof.test.ts`). That bakes in the preview theme decorator, so assertions and screenshots run through real tokens + fonts.
+- A `.test.ts` may pull stories via `composeStories` to reuse their setup (e.g. `Button.test.ts`). That bakes in the preview theme decorator, so assertions and screenshots run through real tokens + fonts.
 - `toMatchScreenshot` only exists under Vitest browser mode -- it lives in `.test.ts`, never in story play fns (which also run in Storybook dev).
 - Suite-level tests that aren't tied to one component (`src/test/contrast.test.ts`, `src/test/no-scoped-styles.test.ts`) stay standalone -- the trio rule is per component.
 
