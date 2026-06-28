@@ -1,12 +1,12 @@
-import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitest/config';
-import vue from '@vitejs/plugin-vue';
-import tailwindcss from '@tailwindcss/vite';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitest/config'
+import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
+import { playwright } from '@vitest/browser-playwright'
 
-const dirname = fileURLToPath(new URL('.', import.meta.url));
-const setup = `${dirname}.storybook/vitest.setup.ts`;
+const dirname = fileURLToPath(new URL('.', import.meta.url))
+const setup = `${dirname}.storybook/vitest.setup.ts`
 
 // Nix-provided Playwright chromium for every project. See flake.nix /
 // decisions/0005 for the NixOS browser provisioning. A factory so each project
@@ -35,18 +35,36 @@ const browser = () => ({
         arg,
         ext,
         browserName,
-        platform
+        platform,
       }: {
-        root: string;
-        testFileDirectory: string;
-        arg: string;
-        ext: string;
-        browserName: string;
-        platform: string;
-      }) => `${root}/${testFileDirectory}/__snaps__/${arg}-${browserName}-${platform}${ext}`
-    }
-  }
-});
+        root: string
+        testFileDirectory: string
+        arg: string
+        ext: string
+        browserName: string
+        platform: string
+      }) => `${root}/${testFileDirectory}/__snaps__/${arg}-${browserName}-${platform}${ext}`,
+      // On mismatch the reference/actual/diff copies (arg suffixed
+      // -reference/-actual/-diff) go to a git-ignored diffs/ beside the
+      // baselines, not the default attachmentsDir.
+      resolveDiffPath: ({
+        root,
+        testFileDirectory,
+        arg,
+        ext,
+        browserName,
+        platform,
+      }: {
+        root: string
+        testFileDirectory: string
+        arg: string
+        ext: string
+        browserName: string
+        platform: string
+      }) => `${root}/${testFileDirectory}/__snaps__/diffs/${arg}-${browserName}-${platform}${ext}`,
+    },
+  },
+})
 
 // Two browser-mode projects on one runner:
 // - storybook: runs every story as a test (play fns -> behavior, addon-a11y -> axe).
@@ -62,7 +80,7 @@ export default defineConfig({
       {
         extends: true,
         plugins: [storybookTest({ configDir: `${dirname}.storybook` })],
-        test: { name: 'storybook', setupFiles: [setup], browser: browser() }
+        test: { name: 'storybook', setupFiles: [setup], browser: browser() },
       },
       {
         extends: true,
@@ -70,9 +88,9 @@ export default defineConfig({
           name: 'visual',
           include: ['src/**/*.test.ts'],
           setupFiles: [setup],
-          browser: browser()
-        }
-      }
-    ]
-  }
-});
+          browser: browser(),
+        },
+      },
+    ],
+  },
+})
