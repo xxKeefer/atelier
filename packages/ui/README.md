@@ -27,7 +27,7 @@ chromium (revision 1223) -- they will thrash on a different machine or CI. See
 Consumers import the components and the stylesheet:
 
 ```ts
-import '@atelier/ui/style.css';
+import '@atelier/ui/style.css'
 ```
 
 No components yet -- scaffold only.

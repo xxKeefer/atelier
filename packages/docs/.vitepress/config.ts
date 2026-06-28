@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Atelier',
@@ -6,14 +6,14 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/' },
-      { text: 'Components', link: '/components/' }
+      { text: 'Components', link: '/components/' },
     ],
     sidebar: [
       {
         text: 'Introduction',
-        items: [{ text: 'What is Atelier', link: '/' }]
-      }
+        items: [{ text: 'What is Atelier', link: '/' }],
+      },
     ],
-    socialLinks: [{ icon: 'github', link: 'https://github.com/xxKeefer/atelier' }]
-  }
-});
+    socialLinks: [{ icon: 'github', link: 'https://github.com/xxKeefer/atelier' }],
+  },
+})

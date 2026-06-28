@@ -4,7 +4,9 @@
   "description": "The Atelier design language as a surface-agnostic source of truth.",
   "license": "MIT",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./css": "./dist/tokens.css",
     "./tokens.css": "./dist/tokens.css",

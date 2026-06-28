@@ -9,24 +9,24 @@ export default {
         {
           destination: 'tokens.css',
           format: 'css/variables',
-          options: { selector: ':root' }
+          options: { selector: ':root' },
         },
         {
           // Tailwind v4 surface: same vars wrapped in @theme so semantic
           // --color-* / --text-* / --radius-* etc. generate utilities.
           destination: 'theme.css',
           format: 'css/variables',
-          options: { selector: '@theme' }
-        }
-      ]
+          options: { selector: '@theme' },
+        },
+      ],
     },
     js: {
       transformGroup: 'js',
       buildPath: 'dist/',
       files: [
         { destination: 'index.js', format: 'javascript/esm' },
-        { destination: 'index.d.ts', format: 'typescript/module-declarations' }
-      ]
-    }
-  }
-};
+        { destination: 'index.d.ts', format: 'typescript/module-declarations' },
+      ],
+    },
+  },
+}
