@@ -70,10 +70,12 @@ export const AllColors: Story = {
 export const Sizes: Story = {
   render: () => ({
     components: { Button },
-    setup: () => ({ sizes }),
+    setup: () => ({ sizes, variants }),
     template: `
-      <div class="flex items-center gap-4">
-        <Button v-for="size in sizes" :key="size" :size="size">{{ size }}</Button>
+      <div class="flex flex-col gap-4">
+        <div v-for="variant in variants" :key="variant" class="flex items-center gap-4">
+          <Button v-for="size in sizes" :key="size" :size="size" :variant="variant">{{ size }}</Button>
+        </div>
       </div>
     `
   })
@@ -82,49 +84,68 @@ export const Sizes: Story = {
 export const LeftIcon: Story = {
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args, icon: Star('left-icon') }),
-    template: `<Button v-bind="args"><template #left><span v-html="icon" /></template>Save</Button>`
+    setup: () => ({ args, variants, icon: Star('left-icon') }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">
+          <template #left><span v-html="icon" /></template>Save
+        </Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    const icon = canvas.getByTestId('left-icon');
-    await expect(button).toHaveTextContent('Save');
-    await expect(button).toContainElement(icon);
-    // Left icon precedes the label: it is the button's first element child.
-    await expect(button.firstElementChild).toBe(icon.closest('span'));
+    canvas.getAllByRole('button').forEach((button) => {
+      const icon = within(button).getByTestId('left-icon');
+      expect(button).toHaveTextContent('Save');
+      // Left icon precedes the label: it is the button's first element child.
+      expect(button.firstElementChild).toBe(icon.closest('span'));
+    });
   }
 };
 
 export const RightIcon: Story = {
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args, icon: Star('right-icon') }),
-    template: `<Button v-bind="args">Next<template #right><span v-html="icon" /></template></Button>`
+    setup: () => ({ args, variants, icon: Star('right-icon') }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">
+          Next<template #right><span v-html="icon" /></template>
+        </Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    const icon = canvas.getByTestId('right-icon');
-    await expect(button).toHaveTextContent('Next');
-    await expect(button).toContainElement(icon);
-    // Right icon follows the label: it is the button's last element child.
-    await expect(button.lastElementChild).toBe(icon.closest('span'));
+    canvas.getAllByRole('button').forEach((button) => {
+      const icon = within(button).getByTestId('right-icon');
+      expect(button).toHaveTextContent('Next');
+      // Right icon follows the label: it is the button's last element child.
+      expect(button.lastElementChild).toBe(icon.closest('span'));
+    });
   }
 };
 
 export const IconOnly: Story = {
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args, icon: Star('only-icon') }),
-    template: `<Button v-bind="args" aria-label="Add to favourites"><template #left><span v-html="icon" /></template></Button>`
+    setup: () => ({ args, variants, icon: Star('only-icon') }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant" aria-label="Add to favourites">
+          <template #left><span v-html="icon" /></template>
+        </Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // With no text label, the accessible name comes from aria-label.
-    const button = canvas.getByRole('button', { name: 'Add to favourites' });
-    await expect(button).toContainElement(canvas.getByTestId('only-icon'));
-    await expect(button).toHaveTextContent('');
+    canvas.getAllByRole('button', { name: 'Add to favourites' }).forEach((button) => {
+      expect(within(button).getByTestId('only-icon')).toBeInTheDocument();
+      expect(button).toHaveTextContent('');
+    });
   }
 };
 
@@ -132,19 +153,25 @@ export const Loading: Story = {
   args: { loading: true },
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args, icon: Star('spinner') }),
-    template: `<Button v-bind="args"><template #left><span v-html="icon" /></template>Saving</Button>`
+    setup: () => ({ args, variants, icon: Star('spinner') }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">
+          <template #left><span v-html="icon" /></template>Saving
+        </Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    // loading implies disabled: the button is inert.
-    await expect(button).toBeDisabled();
-    // The spinner is whatever the consumer passes into #left; while loading its
-    // wrapper carries the spin animation.
-    const spinner = canvas.getByTestId('spinner');
-    await expect(button).toContainElement(spinner);
-    await expect(spinner.closest('.animate-spin')).not.toBeNull();
+    canvas.getAllByRole('button').forEach((button) => {
+      // loading implies disabled: the button is inert.
+      expect(button).toBeDisabled();
+      // The spinner is whatever the consumer passes into #left; while loading
+      // its wrapper carries the spin animation.
+      const spinner = within(button).getByTestId('spinner');
+      expect(spinner.closest('.animate-spin')).not.toBeNull();
+    });
   }
 };
 
@@ -153,13 +180,22 @@ export const LinkButton: Story = {
   args: { href: 'https://example.com' },
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args">Visit site</Button>'
+    setup: () => ({ args, variants }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">Visit site</Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const link = canvas.getByRole('link', { name: 'Visit site' });
-    await expect(link).toHaveAttribute('href', 'https://example.com');
+    const links = canvas.getAllByRole('link', { name: 'Visit site' });
+    links.forEach((link) => {
+      expect(link).toHaveAttribute('href', 'https://example.com');
+      // Link buttons always open in a new tab, guarded against tabnabbing.
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    });
   }
 };
 
@@ -170,17 +206,24 @@ export const DisabledLink: Story = {
   args: { href: 'https://example.com', disabled: true },
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args">Visit site</Button>'
+    setup: () => ({ args, variants }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">Visit site</Button>
+      </div>
+    `
   }),
   play: async ({ canvasElement }) => {
     // Dropping the href strips the link role on purpose -- the anchor is inert,
-    // so query the element directly rather than by role.
-    const anchor = canvasElement.querySelector('a')!;
-    await expect(anchor).toHaveTextContent('Visit site');
-    await expect(anchor).toHaveAttribute('aria-disabled', 'true');
-    await expect(anchor).not.toHaveAttribute('href');
-    await expect(anchor.className).toContain('pointer-events-none');
+    // so query the elements directly rather than by role.
+    const anchors = canvasElement.querySelectorAll('a');
+    expect(anchors).toHaveLength(variants.length);
+    anchors.forEach((anchor) => {
+      expect(anchor).toHaveTextContent('Visit site');
+      expect(anchor).toHaveAttribute('aria-disabled', 'true');
+      expect(anchor).not.toHaveAttribute('href');
+      expect(anchor.className).toContain('pointer-events-none');
+    });
   }
 };
 
@@ -188,7 +231,11 @@ export const Disabled: Story = {
   args: { disabled: true },
   render: (args) => ({
     components: { Button },
-    setup: () => ({ args }),
-    template: '<Button v-bind="args">Disabled</Button>'
+    setup: () => ({ args, variants }),
+    template: `
+      <div class="flex items-center gap-4">
+        <Button v-for="variant in variants" :key="variant" v-bind="args" :variant="variant">Disabled</Button>
+      </div>
+    `
   })
 };

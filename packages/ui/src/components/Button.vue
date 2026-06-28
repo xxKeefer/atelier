@@ -35,12 +35,18 @@ const isDisabled = computed(() => props.disabled || props.loading);
 const tag = computed(() => (props.href !== undefined ? 'a' : 'button'));
 
 // Per-element root attributes. A <button> carries native type + disabled. An
-// <a> has neither: when inert it drops the href (so it isn't navigable) and
+// <a> has neither: it always opens in a new tab (target=_blank + rel guards
+// reverse-tabnabbing); when inert it drops the href (so it isn't navigable) and
 // announces via aria-disabled; pointer-events-none (added to classes) blocks the
 // cursor.
 const rootProps = computed(() =>
   props.href !== undefined
-    ? { href: isDisabled.value ? undefined : props.href, 'aria-disabled': isDisabled.value || undefined }
+    ? {
+        href: isDisabled.value ? undefined : props.href,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        'aria-disabled': isDisabled.value || undefined
+      }
     : { type: props.type, disabled: isDisabled.value }
 );
 
