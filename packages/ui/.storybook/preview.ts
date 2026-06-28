@@ -9,7 +9,7 @@ const preview: Preview = {
     (story) => ({
       components: { story },
       template:
-        '<div style="background: var(--color-bg-canvas); color: var(--color-fg-default); font-family: var(--font-body); padding: var(--spacing-8); min-height: 100vh;"><story /></div>',
+        '<div style="background: var(--color-surface-default); color: var(--color-fg-default); font-family: var(--font-body); padding: var(--spacing-8); min-height: 100vh;"><story /></div>',
     }),
   ],
 }

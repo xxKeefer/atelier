@@ -8,8 +8,9 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 // inset band at the top recessing to the subtle tone (lower); above = a solid
 // neutral-border block dropped below (higher). default is flat. Each maps to a
 // shadow-* utility off the token of the same name.
-// surface is the plane each rung is shown on -- all sit on the default plane;
-// the recesses step down to subtle, the lifts read against the canvas.
+// surface is held constant at the resting plane (default) across all rungs so the
+// ladder isolates the shadow variable -- you read the depth, not the plane colour.
+// The 1:1 rung->surface pairing is shown separately in the surface ramp below.
 const shadows = [
   {
     name: 'sunk',
@@ -43,12 +44,12 @@ const shadows = [
   },
 ] as const
 
-// The surface ramp: the three background steps depth pairs with. subtle (950) is
-// also the page floor; strong (800) is the most lifted plane.
+// The surface ramp: three planes the elevation rungs sit on. recesses use subtle
+// (900), the resting rung default (800), lifts strong (700).
 const surfaces = [
-  { name: 'subtle', class: 'bg-surface-subtle', note: '950 -- page floor' },
-  { name: 'default', class: 'bg-surface-default', note: '900 -- resting plane' },
-  { name: 'strong', class: 'bg-surface-strong', note: '800 -- lifted plane' },
+  { name: 'subtle', class: 'bg-surface-subtle', note: '900 -- recessed plane' },
+  { name: 'default', class: 'bg-surface-default', note: '800 -- resting plane' },
+  { name: 'strong', class: 'bg-surface-strong', note: '700 -- lifted plane' },
 ] as const
 
 const meta = {
