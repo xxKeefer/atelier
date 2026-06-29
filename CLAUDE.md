@@ -27,6 +27,7 @@ Pattern is fixed -- mirror `packages/ui/src/components/AtIcon.vue` and `AtButton
 
 - `<script setup lang="ts">` + `withDefaults(defineProps<...>(), ...)`.
 - NO `<style>` block. Tailwind classes only (enforced by `src/test/no-scoped-styles.test.ts`). Style via token CSS vars (`var(--color-...)`).
+- NEVER consume a raw palette var in a class -- `border-[var(--palette-green-800)]`, `bg-[var(--palette-magenta-600)]` and the like are banned. The palette layer is private to the token definitions; components and stories consume only semantic/component tokens (`--color-*`, `--shadow-*`, `--spacing-*`). A reach for `--palette-*` means the token you need does not exist yet -- add the semantic token in `@atelier/tokens`, then consume that. The same goes for hand-rolled arbitrary values that encode a design decision (`shadow-[0_6px_0_0_...]`, `duration-[120ms]`): if it carries meaning, it wants a token.
 - Build on a reka-ui primitive where one exists; let the primitive own the a11y contract.
 - Each component ships `.vue` + `.stories.ts` + `.test.ts` and an export from `src/index.ts`.
 - Stories carry a `Snapshot` story with a `data-testid="snap-board"` board; the test snaps it via `snapBoard` (baseline in `__snaps__/`, regenerate with `test:update`).
