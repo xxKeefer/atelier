@@ -74,10 +74,16 @@ const iconOnly = computed(() => {
 // the interaction states so disabled buttons stay inert. motion-reduce kills
 // the transition. ease-[ease] preserves the CSS keyword (not Tailwind's default
 // ease-in-out curve).
+// Only filter (brightness) is transitioned. The shadow edge and the lift
+// translate must change in lockstep to keep the edge's bottom pinned, but
+// Tailwind's box-shadow rides --tw-shadow (syntax "*", non-interpolable) so it
+// can never tween -- it snaps. Were transform tweened on its own it would lag
+// the snapping shadow, unpinning the base mid-transition (shadow jumps up, then
+// the cap drifts down). So the geometry snaps as one; only the glow eases.
 const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
-  'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so
@@ -94,19 +100,42 @@ const iconOnlySizes: Record<Size, string> = {
   lg: 'text-lg p-3 gap-2',
 }
 
-// The mechanic -- pop, depress, sink. default extrudes on a hard bottom edge in
-// the fill's own dark shade; flat is a quieter intent-tied border. Both drive
-// off --btn-edge.
+// The mechanic -- rest, press, depress. default rides the elevation lift util off
+// the shadow + lift tokens: every state pins the hard edge's bottom to the same
+// baseline (translate-up == shadow-down). Rest sits popped at the `higher` rung
+// (lift-full); hover presses halfway to `high` (lift-half); active drops flush
+// (translate-0) onto the colourway's inset `low`, so the press travel reads as a
+// real key sinking into the surface. The coloured edge comes from the per-intent
+// shadow tokens (intentShadows below); flat is a quieter intent-tied border off
+// --btn-edge.
 const variants: Record<Variant, string> = {
   default:
-    'shadow-[0_7px_0_0_var(--btn-edge),0_8px_8px_0_rgba(0,0,0,0.4)] ' +
-    'hover:enabled:translate-y-[3px] hover:enabled:shadow-[0_4px_0_0_var(--btn-edge),0_5px_6px_0_rgba(0,0,0,0.4)] hover:enabled:brightness-[1.08] ' +
-    'active:enabled:translate-y-[7px] active:enabled:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)] active:enabled:brightness-95 ' +
-    'disabled:translate-y-[3px] disabled:shadow-[0_4px_0_0_var(--btn-edge)]',
+    '-translate-y-lift-full ' +
+    'hover:enabled:-translate-y-lift-half hover:enabled:brightness-[1.08] ' +
+    'active:enabled:translate-y-0 active:enabled:brightness-95 ' +
+    'disabled:translate-y-0 disabled:shadow-flat',
   flat:
     'border-[3px] border-solid border-[color:var(--btn-edge)] ' +
     'hover:enabled:brightness-[1.08] ' +
-    'active:enabled:translate-y-[2px] active:enabled:brightness-95',
+    'active:enabled:translate-y-lift-half active:enabled:brightness-95',
+}
+
+// The default variant's coloured edge ladder, per intent. Rest = `higher` (4px
+// edge), hover = `high` (2px), active = the inset `low` recess. Tailwind only
+// scans literals, so every utility is spelled out. neutral takes the plain
+// neutral ladder; the rest take their colourway's hue-matched edge.
+const intentShadows: Record<Intent, string> = {
+  primary:
+    'shadow-primary-higher hover:enabled:shadow-primary-high active:enabled:shadow-primary-low',
+  secondary:
+    'shadow-secondary-higher hover:enabled:shadow-secondary-high active:enabled:shadow-secondary-low',
+  neutral: 'shadow-higher hover:enabled:shadow-high active:enabled:shadow-low',
+  danger: 'shadow-danger-higher hover:enabled:shadow-danger-high active:enabled:shadow-danger-low',
+  success:
+    'shadow-success-higher hover:enabled:shadow-success-high active:enabled:shadow-success-low',
+  warning:
+    'shadow-warning-higher hover:enabled:shadow-warning-high active:enabled:shadow-warning-low',
+  info: 'shadow-info-higher hover:enabled:shadow-info-high active:enabled:shadow-info-low',
 }
 
 // Each intent supplies the fill, the text colour, and its own dark edge (the
@@ -157,6 +186,9 @@ const classes = computed(() => [
   cursor.value,
   iconOnly.value ? iconOnlySizes[props.size] : sizes[props.size],
   variants[props.variant],
+  // The default variant's edge is intent-coloured, so it can't live in the
+  // shared variant string -- pull the per-intent shadow ladder here.
+  props.variant === 'default' && intentShadows[props.intent],
   // Static dim for an explicitly-disabled button. Skipped while loading: the
   // skeleton pulse already dips opacity to .5 at its trough, and dimming to .5
   // statically would pin it there -- killing the pulse's visible range.
