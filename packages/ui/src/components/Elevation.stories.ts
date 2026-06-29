@@ -311,10 +311,12 @@ const colourways = [
 // The grid runs every colourway (neutral, then the semantics) down the rows; the
 // columns are the eight transitions, sink first (higher down to lower) then lift (lower
 // up to higher). Two rules make the skeuomorphism read:
-//   1. Surface stays the colourway's resting fill -- only the shadow changes, so you
-//      read depth, not plane colour. Each row's shadow tokens carry that colourway's
-//      tint (shadow-primary-*, shadow-danger-*, ...); the flat rung is the shared
-//      shadow-flat in every row.
+//   1. Surface AND border tier by rung, mirroring the Semantics ladder: the recess
+//      group (lower / low / flat) sits on the colourway's recess plane with its dimmer
+//      lit rim (border-default); the lifts (high / higher) rise to the solid fill with
+//      the brighter rim (border-strong). Both transition on hover in lockstep with the
+//      shadow, so a tile that sinks from a lift into the recess group drops its plane
+//      and rim too, not just the shadow -- the same depth read as Semantics, animated.
 //   2. Lifted rungs translate up by the shadow's drop distance, in lockstep with
 //      the hard bottom-edge shadow. The translate consumes the generated
 //      translate-y-lift-* utilities (from --spacing-lift-*, the spacing namespace
@@ -323,121 +325,114 @@ const colourways = [
 //      can never drift. The element rises while the shadow's outer edge stays pinned
 //      to the baseline, so it extrudes from the plane instead of the plane falling away.
 // Class strings are spelled out in full -- Tailwind only scans literals, so the
-// `hover:` utilities must appear verbatim.
+// `hover:` surface / border / shadow / translate utilities must all appear verbatim.
 const sinkLabels = ['higher -> high', 'high -> flat', 'flat -> low', 'low -> lower'] as const
 const liftLabels = ['lower -> low', 'low -> flat', 'flat -> high', 'high -> higher'] as const
 
 const animationGrid = [
   {
     name: 'neutral',
-    surface: 'bg-surface-default',
     sink: [
-      'shadow-higher -translate-y-lift-full hover:shadow-high hover:-translate-y-lift-half',
-      'shadow-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-low',
-      'shadow-low hover:shadow-lower',
+      'bg-surface-strong border-border-strong shadow-higher -translate-y-lift-full hover:bg-surface-strong hover:border-border-strong hover:shadow-high hover:-translate-y-lift-half',
+      'bg-surface-strong border-border-strong shadow-high -translate-y-lift-half hover:bg-surface-default hover:border-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-surface-default border-border-default shadow-flat hover:bg-surface-default hover:border-border-default hover:shadow-low',
+      'bg-surface-default border-border-default shadow-low hover:bg-surface-default hover:border-border-default hover:shadow-lower',
     ],
     lift: [
-      'shadow-lower hover:shadow-low',
-      'shadow-low hover:shadow-flat',
-      'shadow-flat hover:shadow-high hover:-translate-y-lift-half',
-      'shadow-high -translate-y-lift-half hover:shadow-higher hover:-translate-y-lift-full',
+      'bg-surface-default border-border-default shadow-lower hover:bg-surface-default hover:border-border-default hover:shadow-low',
+      'bg-surface-default border-border-default shadow-low hover:bg-surface-default hover:border-border-default hover:shadow-flat',
+      'bg-surface-default border-border-default shadow-flat hover:bg-surface-strong hover:border-border-strong hover:shadow-high hover:-translate-y-lift-half',
+      'bg-surface-strong border-border-strong shadow-high -translate-y-lift-half hover:bg-surface-strong hover:border-border-strong hover:shadow-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'primary',
-    surface: 'bg-brand-primary-default',
     sink: [
-      'shadow-primary-higher -translate-y-lift-full hover:shadow-primary-high hover:-translate-y-lift-half',
-      'shadow-primary-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-primary-low',
-      'shadow-primary-low hover:shadow-primary-lower',
+      'bg-brand-primary-default border-brand-primary-border-strong shadow-primary-higher -translate-y-lift-full hover:bg-brand-primary-default hover:border-brand-primary-border-strong hover:shadow-primary-high hover:-translate-y-lift-half',
+      'bg-brand-primary-default border-brand-primary-border-strong shadow-primary-high -translate-y-lift-half hover:bg-brand-primary-surface-recess hover:border-brand-primary-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-brand-primary-surface-recess border-brand-primary-border-default shadow-flat hover:bg-brand-primary-surface-recess hover:border-brand-primary-border-default hover:shadow-primary-low',
+      'bg-brand-primary-surface-recess border-brand-primary-border-default shadow-primary-low hover:bg-brand-primary-surface-recess hover:border-brand-primary-border-default hover:shadow-primary-lower',
     ],
     lift: [
-      'shadow-primary-lower hover:shadow-primary-low',
-      'shadow-primary-low hover:shadow-flat',
-      'shadow-flat hover:shadow-primary-high hover:-translate-y-lift-half',
-      'shadow-primary-high -translate-y-lift-half hover:shadow-primary-higher hover:-translate-y-lift-full',
+      'bg-brand-primary-surface-recess border-brand-primary-border-default shadow-primary-lower hover:bg-brand-primary-surface-recess hover:border-brand-primary-border-default hover:shadow-primary-low',
+      'bg-brand-primary-surface-recess border-brand-primary-border-default shadow-primary-low hover:bg-brand-primary-surface-recess hover:border-brand-primary-border-default hover:shadow-flat',
+      'bg-brand-primary-surface-recess border-brand-primary-border-default shadow-flat hover:bg-brand-primary-default hover:border-brand-primary-border-strong hover:shadow-primary-high hover:-translate-y-lift-half',
+      'bg-brand-primary-default border-brand-primary-border-strong shadow-primary-high -translate-y-lift-half hover:bg-brand-primary-default hover:border-brand-primary-border-strong hover:shadow-primary-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'secondary',
-    surface: 'bg-brand-secondary-default',
     sink: [
-      'shadow-secondary-higher -translate-y-lift-full hover:shadow-secondary-high hover:-translate-y-lift-half',
-      'shadow-secondary-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-secondary-low',
-      'shadow-secondary-low hover:shadow-secondary-lower',
+      'bg-brand-secondary-default border-brand-secondary-border-strong shadow-secondary-higher -translate-y-lift-full hover:bg-brand-secondary-default hover:border-brand-secondary-border-strong hover:shadow-secondary-high hover:-translate-y-lift-half',
+      'bg-brand-secondary-default border-brand-secondary-border-strong shadow-secondary-high -translate-y-lift-half hover:bg-brand-secondary-surface-recess hover:border-brand-secondary-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-brand-secondary-surface-recess border-brand-secondary-border-default shadow-flat hover:bg-brand-secondary-surface-recess hover:border-brand-secondary-border-default hover:shadow-secondary-low',
+      'bg-brand-secondary-surface-recess border-brand-secondary-border-default shadow-secondary-low hover:bg-brand-secondary-surface-recess hover:border-brand-secondary-border-default hover:shadow-secondary-lower',
     ],
     lift: [
-      'shadow-secondary-lower hover:shadow-secondary-low',
-      'shadow-secondary-low hover:shadow-flat',
-      'shadow-flat hover:shadow-secondary-high hover:-translate-y-lift-half',
-      'shadow-secondary-high -translate-y-lift-half hover:shadow-secondary-higher hover:-translate-y-lift-full',
+      'bg-brand-secondary-surface-recess border-brand-secondary-border-default shadow-secondary-lower hover:bg-brand-secondary-surface-recess hover:border-brand-secondary-border-default hover:shadow-secondary-low',
+      'bg-brand-secondary-surface-recess border-brand-secondary-border-default shadow-secondary-low hover:bg-brand-secondary-surface-recess hover:border-brand-secondary-border-default hover:shadow-flat',
+      'bg-brand-secondary-surface-recess border-brand-secondary-border-default shadow-flat hover:bg-brand-secondary-default hover:border-brand-secondary-border-strong hover:shadow-secondary-high hover:-translate-y-lift-half',
+      'bg-brand-secondary-default border-brand-secondary-border-strong shadow-secondary-high -translate-y-lift-half hover:bg-brand-secondary-default hover:border-brand-secondary-border-strong hover:shadow-secondary-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'danger',
-    surface: 'bg-status-danger-solid',
     sink: [
-      'shadow-danger-higher -translate-y-lift-full hover:shadow-danger-high hover:-translate-y-lift-half',
-      'shadow-danger-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-danger-low',
-      'shadow-danger-low hover:shadow-danger-lower',
+      'bg-status-danger-solid border-status-danger-border-strong shadow-danger-higher -translate-y-lift-full hover:bg-status-danger-solid hover:border-status-danger-border-strong hover:shadow-danger-high hover:-translate-y-lift-half',
+      'bg-status-danger-solid border-status-danger-border-strong shadow-danger-high -translate-y-lift-half hover:bg-status-danger-surface-recess hover:border-status-danger-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-status-danger-surface-recess border-status-danger-border-default shadow-flat hover:bg-status-danger-surface-recess hover:border-status-danger-border-default hover:shadow-danger-low',
+      'bg-status-danger-surface-recess border-status-danger-border-default shadow-danger-low hover:bg-status-danger-surface-recess hover:border-status-danger-border-default hover:shadow-danger-lower',
     ],
     lift: [
-      'shadow-danger-lower hover:shadow-danger-low',
-      'shadow-danger-low hover:shadow-flat',
-      'shadow-flat hover:shadow-danger-high hover:-translate-y-lift-half',
-      'shadow-danger-high -translate-y-lift-half hover:shadow-danger-higher hover:-translate-y-lift-full',
+      'bg-status-danger-surface-recess border-status-danger-border-default shadow-danger-lower hover:bg-status-danger-surface-recess hover:border-status-danger-border-default hover:shadow-danger-low',
+      'bg-status-danger-surface-recess border-status-danger-border-default shadow-danger-low hover:bg-status-danger-surface-recess hover:border-status-danger-border-default hover:shadow-flat',
+      'bg-status-danger-surface-recess border-status-danger-border-default shadow-flat hover:bg-status-danger-solid hover:border-status-danger-border-strong hover:shadow-danger-high hover:-translate-y-lift-half',
+      'bg-status-danger-solid border-status-danger-border-strong shadow-danger-high -translate-y-lift-half hover:bg-status-danger-solid hover:border-status-danger-border-strong hover:shadow-danger-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'success',
-    surface: 'bg-status-success-solid',
     sink: [
-      'shadow-success-higher -translate-y-lift-full hover:shadow-success-high hover:-translate-y-lift-half',
-      'shadow-success-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-success-low',
-      'shadow-success-low hover:shadow-success-lower',
+      'bg-status-success-solid border-status-success-border-strong shadow-success-higher -translate-y-lift-full hover:bg-status-success-solid hover:border-status-success-border-strong hover:shadow-success-high hover:-translate-y-lift-half',
+      'bg-status-success-solid border-status-success-border-strong shadow-success-high -translate-y-lift-half hover:bg-status-success-surface-recess hover:border-status-success-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-status-success-surface-recess border-status-success-border-default shadow-flat hover:bg-status-success-surface-recess hover:border-status-success-border-default hover:shadow-success-low',
+      'bg-status-success-surface-recess border-status-success-border-default shadow-success-low hover:bg-status-success-surface-recess hover:border-status-success-border-default hover:shadow-success-lower',
     ],
     lift: [
-      'shadow-success-lower hover:shadow-success-low',
-      'shadow-success-low hover:shadow-flat',
-      'shadow-flat hover:shadow-success-high hover:-translate-y-lift-half',
-      'shadow-success-high -translate-y-lift-half hover:shadow-success-higher hover:-translate-y-lift-full',
+      'bg-status-success-surface-recess border-status-success-border-default shadow-success-lower hover:bg-status-success-surface-recess hover:border-status-success-border-default hover:shadow-success-low',
+      'bg-status-success-surface-recess border-status-success-border-default shadow-success-low hover:bg-status-success-surface-recess hover:border-status-success-border-default hover:shadow-flat',
+      'bg-status-success-surface-recess border-status-success-border-default shadow-flat hover:bg-status-success-solid hover:border-status-success-border-strong hover:shadow-success-high hover:-translate-y-lift-half',
+      'bg-status-success-solid border-status-success-border-strong shadow-success-high -translate-y-lift-half hover:bg-status-success-solid hover:border-status-success-border-strong hover:shadow-success-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'warning',
-    surface: 'bg-status-warning-solid',
     sink: [
-      'shadow-warning-higher -translate-y-lift-full hover:shadow-warning-high hover:-translate-y-lift-half',
-      'shadow-warning-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-warning-low',
-      'shadow-warning-low hover:shadow-warning-lower',
+      'bg-status-warning-solid border-status-warning-border-strong shadow-warning-higher -translate-y-lift-full hover:bg-status-warning-solid hover:border-status-warning-border-strong hover:shadow-warning-high hover:-translate-y-lift-half',
+      'bg-status-warning-solid border-status-warning-border-strong shadow-warning-high -translate-y-lift-half hover:bg-status-warning-surface-recess hover:border-status-warning-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-status-warning-surface-recess border-status-warning-border-default shadow-flat hover:bg-status-warning-surface-recess hover:border-status-warning-border-default hover:shadow-warning-low',
+      'bg-status-warning-surface-recess border-status-warning-border-default shadow-warning-low hover:bg-status-warning-surface-recess hover:border-status-warning-border-default hover:shadow-warning-lower',
     ],
     lift: [
-      'shadow-warning-lower hover:shadow-warning-low',
-      'shadow-warning-low hover:shadow-flat',
-      'shadow-flat hover:shadow-warning-high hover:-translate-y-lift-half',
-      'shadow-warning-high -translate-y-lift-half hover:shadow-warning-higher hover:-translate-y-lift-full',
+      'bg-status-warning-surface-recess border-status-warning-border-default shadow-warning-lower hover:bg-status-warning-surface-recess hover:border-status-warning-border-default hover:shadow-warning-low',
+      'bg-status-warning-surface-recess border-status-warning-border-default shadow-warning-low hover:bg-status-warning-surface-recess hover:border-status-warning-border-default hover:shadow-flat',
+      'bg-status-warning-surface-recess border-status-warning-border-default shadow-flat hover:bg-status-warning-solid hover:border-status-warning-border-strong hover:shadow-warning-high hover:-translate-y-lift-half',
+      'bg-status-warning-solid border-status-warning-border-strong shadow-warning-high -translate-y-lift-half hover:bg-status-warning-solid hover:border-status-warning-border-strong hover:shadow-warning-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'info',
-    surface: 'bg-status-info-solid',
     sink: [
-      'shadow-info-higher -translate-y-lift-full hover:shadow-info-high hover:-translate-y-lift-half',
-      'shadow-info-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
-      'shadow-flat hover:shadow-info-low',
-      'shadow-info-low hover:shadow-info-lower',
+      'bg-status-info-solid border-status-info-border-strong shadow-info-higher -translate-y-lift-full hover:bg-status-info-solid hover:border-status-info-border-strong hover:shadow-info-high hover:-translate-y-lift-half',
+      'bg-status-info-solid border-status-info-border-strong shadow-info-high -translate-y-lift-half hover:bg-status-info-surface-recess hover:border-status-info-border-default hover:shadow-flat hover:translate-y-0',
+      'bg-status-info-surface-recess border-status-info-border-default shadow-flat hover:bg-status-info-surface-recess hover:border-status-info-border-default hover:shadow-info-low',
+      'bg-status-info-surface-recess border-status-info-border-default shadow-info-low hover:bg-status-info-surface-recess hover:border-status-info-border-default hover:shadow-info-lower',
     ],
     lift: [
-      'shadow-info-lower hover:shadow-info-low',
-      'shadow-info-low hover:shadow-flat',
-      'shadow-flat hover:shadow-info-high hover:-translate-y-lift-half',
-      'shadow-info-high -translate-y-lift-half hover:shadow-info-higher hover:-translate-y-lift-full',
+      'bg-status-info-surface-recess border-status-info-border-default shadow-info-lower hover:bg-status-info-surface-recess hover:border-status-info-border-default hover:shadow-info-low',
+      'bg-status-info-surface-recess border-status-info-border-default shadow-info-low hover:bg-status-info-surface-recess hover:border-status-info-border-default hover:shadow-flat',
+      'bg-status-info-surface-recess border-status-info-border-default shadow-flat hover:bg-status-info-solid hover:border-status-info-border-strong hover:shadow-info-high hover:-translate-y-lift-half',
+      'bg-status-info-solid border-status-info-border-strong shadow-info-high -translate-y-lift-half hover:bg-status-info-solid hover:border-status-info-border-strong hover:shadow-info-higher hover:-translate-y-lift-full',
     ],
   },
 ] as const
@@ -570,10 +565,10 @@ export const Animations: Story = {
           <span class="w-20 shrink-0 font-mono text-sm">{{ row.name }}</span>
           <div class="flex gap-8">
             <div class="flex gap-4">
-              <div v-for="(c, i) in row.sink" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border border-border-default transition-all duration-200 ease-out" :class="[row.surface, c]"></div>
+              <div v-for="(c, i) in row.sink" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border transition-all duration-200 ease-out" :class="c"></div>
             </div>
             <div class="flex gap-4">
-              <div v-for="(c, i) in row.lift" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border border-border-default transition-all duration-200 ease-out" :class="[row.surface, c]"></div>
+              <div v-for="(c, i) in row.lift" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border transition-all duration-200 ease-out" :class="c"></div>
             </div>
           </div>
         </div>
