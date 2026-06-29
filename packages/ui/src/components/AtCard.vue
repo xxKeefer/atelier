@@ -46,13 +46,13 @@ const rowClass = computed(() => {
 
 // The surface: a bordered panel on the default surface. overflow-hidden clips
 // full-bleed media to the radius. The drop shadow is set per branch below (static
-// cards rest at half-pop, one tier below a button's pop; interactive ones extrude).
+// cards rest at high, one tier below a button's higher; interactive ones extrude).
 const base =
   'relative flex flex-col bg-surface-default text-fg-default font-body ' +
   'border-[3px] border-solid border-[color:var(--color-border-default)] rounded-md overflow-hidden'
 
-// Static card: half-pop on the elevation ladder, one tier quieter than a button (pop).
-const staticShadow = 'shadow-half-pop'
+// Static card: high on the elevation ladder, one tier quieter than a button (higher).
+const staticShadow = 'shadow-high'
 
 // Interactive card: the same extruded mechanic as a default button -- a chunky
 // hard bottom edge plus ambient, sinking toward the cursor on hover and pressing

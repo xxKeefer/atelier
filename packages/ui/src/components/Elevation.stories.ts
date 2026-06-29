@@ -5,9 +5,9 @@ import { defineComponent } from 'vue'
 // stories render the two families that compose skeuomorphic depth so they can be
 // eyeballed and snapped: the shadow ladder and the surface ramp.
 
-// The symmetric shadow ladder, hard-edged (no blur). Below default = a solid
+// The symmetric shadow ladder, hard-edged (no blur). Below flat = a solid
 // inset band at the top recessing to the subtle tone (lower); above = a solid
-// neutral-border block dropped below (higher). default is flat. Each maps to a
+// neutral-border block dropped below (higher). flat is the resting no-op rung. Each maps to a
 // shadow-* utility off the token of the same name.
 // surface is held constant at the resting plane (default) across all rungs so the
 // ladder isolates the shadow variable -- you read the depth, not the plane colour.
@@ -17,39 +17,39 @@ import { defineComponent } from 'vue'
 // the 800 plane while staying lighter than the strong (600) edge on the lifts.
 const shadows = [
   {
-    name: 'sunk',
-    shadow: 'shadow-sunk',
+    name: 'lower',
+    shadow: 'shadow-lower',
     surface: 'bg-surface-default',
     border: 'border-border-default',
   },
   {
-    name: 'half-sunk',
-    shadow: 'shadow-half-sunk',
+    name: 'low',
+    shadow: 'shadow-low',
     surface: 'bg-surface-default',
     border: 'border-border-default',
   },
   {
-    name: 'default',
-    shadow: 'shadow-default',
+    name: 'flat',
+    shadow: 'shadow-flat',
     surface: 'bg-surface-default',
     border: 'border-border-default',
   },
   {
-    name: 'half-pop',
-    shadow: 'shadow-half-pop',
+    name: 'high',
+    shadow: 'shadow-high',
     surface: 'bg-surface-strong',
     border: 'border-border-strong',
   },
   {
-    name: 'pop',
-    shadow: 'shadow-pop',
+    name: 'higher',
+    shadow: 'shadow-higher',
     surface: 'bg-surface-strong',
     border: 'border-border-strong',
   },
 ] as const
 
 // The surface ramp: three planes the elevation rungs sit on. recesses use subtle
-// (900), the resting rung default (800), lifts strong (700). edge is NOT a plane --
+// (900), the resting rung flat (800), lifts strong (700). edge is NOT a plane --
 // it's a separator added only when an elevated element's surface matches the flat
 // ground it sits on (e.g. a default-plane element on a default-plane ground), so it
 // doesn't belong in the ramp. Every colourway mirrors this three-plane shape.
@@ -63,11 +63,11 @@ const surfaces = [
 // subtle (900) / default (solid 500) / strong (700) tinted planes -- the resting
 // swatch shows the vivid solid fill. Each ladder tile carries a per-rung surface,
 // border, and shadow:
-//   - recesses (sunk / half-sunk): the {c}.600 plane (palette var), a SUBTLE border,
+//   - recesses (lower / low): the {c}.600 plane (palette var), a SUBTLE border,
 //     and an inset shadow whose recess tone is {c}.800 (see shadow tokens).
-//   - resting (default): the solid fill, a SUBTLE border (same as the recesses --
+//   - resting (flat): the solid fill, a SUBTLE border (same as the recesses --
 //     it sits at rest, not lifted), and a flat shadow.
-//   - lifts (half-pop / pop): the solid fill, a STRONG border, and the lifting
+//   - lifts (high / higher): the solid fill, a STRONG border, and the lifting
 //     bright-edge shadow.
 // Border tiers and shadows are the per-colourway tokens; only the {c}.600 recess
 // plane has no semantic token, so it reaches the palette var directly.
@@ -83,24 +83,28 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-primary-sunk',
+        name: 'lower',
+        class: 'shadow-primary-lower',
         surface: 'bg-[var(--palette-magenta-600)]',
         border: 'border-[var(--palette-magenta-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-primary-half-sunk',
+        name: 'low',
+        class: 'shadow-primary-low',
         surface: 'bg-[var(--palette-magenta-600)]',
         border: 'border-[var(--palette-magenta-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-brand-primary-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-brand-primary-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-primary-half-pop',
+        name: 'high',
+        class: 'shadow-primary-high',
         border: 'border-brand-primary-border-strong',
       },
-      { name: 'pop', class: 'shadow-primary-pop', border: 'border-brand-primary-border-strong' },
+      {
+        name: 'higher',
+        class: 'shadow-primary-higher',
+        border: 'border-brand-primary-border-strong',
+      },
     ],
   },
   {
@@ -113,26 +117,26 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-secondary-sunk',
+        name: 'lower',
+        class: 'shadow-secondary-lower',
         surface: 'bg-[var(--palette-violet-600)]',
         border: 'border-[var(--palette-violet-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-secondary-half-sunk',
+        name: 'low',
+        class: 'shadow-secondary-low',
         surface: 'bg-[var(--palette-violet-600)]',
         border: 'border-[var(--palette-violet-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-brand-secondary-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-brand-secondary-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-secondary-half-pop',
+        name: 'high',
+        class: 'shadow-secondary-high',
         border: 'border-brand-secondary-border-strong',
       },
       {
-        name: 'pop',
-        class: 'shadow-secondary-pop',
+        name: 'higher',
+        class: 'shadow-secondary-higher',
         border: 'border-brand-secondary-border-strong',
       },
     ],
@@ -147,24 +151,28 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-danger-sunk',
+        name: 'lower',
+        class: 'shadow-danger-lower',
         surface: 'bg-[var(--palette-red-600)]',
         border: 'border-[var(--palette-red-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-danger-half-sunk',
+        name: 'low',
+        class: 'shadow-danger-low',
         surface: 'bg-[var(--palette-red-600)]',
         border: 'border-[var(--palette-red-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-status-danger-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-status-danger-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-danger-half-pop',
+        name: 'high',
+        class: 'shadow-danger-high',
         border: 'border-status-danger-border-strong',
       },
-      { name: 'pop', class: 'shadow-danger-pop', border: 'border-status-danger-border-strong' },
+      {
+        name: 'higher',
+        class: 'shadow-danger-higher',
+        border: 'border-status-danger-border-strong',
+      },
     ],
   },
   {
@@ -177,24 +185,28 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-success-sunk',
+        name: 'lower',
+        class: 'shadow-success-lower',
         surface: 'bg-[var(--palette-green-600)]',
         border: 'border-[var(--palette-green-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-success-half-sunk',
+        name: 'low',
+        class: 'shadow-success-low',
         surface: 'bg-[var(--palette-green-600)]',
         border: 'border-[var(--palette-green-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-status-success-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-status-success-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-success-half-pop',
+        name: 'high',
+        class: 'shadow-success-high',
         border: 'border-status-success-border-strong',
       },
-      { name: 'pop', class: 'shadow-success-pop', border: 'border-status-success-border-strong' },
+      {
+        name: 'higher',
+        class: 'shadow-success-higher',
+        border: 'border-status-success-border-strong',
+      },
     ],
   },
   {
@@ -207,24 +219,28 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-warning-sunk',
+        name: 'lower',
+        class: 'shadow-warning-lower',
         surface: 'bg-[var(--palette-yellow-600)]',
         border: 'border-[var(--palette-yellow-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-warning-half-sunk',
+        name: 'low',
+        class: 'shadow-warning-low',
         surface: 'bg-[var(--palette-yellow-600)]',
         border: 'border-[var(--palette-yellow-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-status-warning-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-status-warning-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-warning-half-pop',
+        name: 'high',
+        class: 'shadow-warning-high',
         border: 'border-status-warning-border-strong',
       },
-      { name: 'pop', class: 'shadow-warning-pop', border: 'border-status-warning-border-strong' },
+      {
+        name: 'higher',
+        class: 'shadow-warning-higher',
+        border: 'border-status-warning-border-strong',
+      },
     ],
   },
   {
@@ -237,169 +253,159 @@ const colourways = [
     ],
     ladder: [
       {
-        name: 'sunk',
-        class: 'shadow-info-sunk',
+        name: 'lower',
+        class: 'shadow-info-lower',
         surface: 'bg-[var(--palette-cyan-600)]',
         border: 'border-[var(--palette-cyan-500)]',
       },
       {
-        name: 'half-sunk',
-        class: 'shadow-info-half-sunk',
+        name: 'low',
+        class: 'shadow-info-low',
         surface: 'bg-[var(--palette-cyan-600)]',
         border: 'border-[var(--palette-cyan-500)]',
       },
-      { name: 'default', class: 'shadow-default', border: 'border-status-info-border-subtle' },
+      { name: 'flat', class: 'shadow-flat', border: 'border-status-info-border-subtle' },
       {
-        name: 'half-pop',
-        class: 'shadow-info-half-pop',
+        name: 'high',
+        class: 'shadow-info-high',
         border: 'border-status-info-border-strong',
       },
-      { name: 'pop', class: 'shadow-info-pop', border: 'border-status-info-border-strong' },
+      { name: 'higher', class: 'shadow-info-higher', border: 'border-status-info-border-strong' },
     ],
   },
 ] as const
 
 // Hover animations: a tile rests at one rung and transitions one level on hover.
 // The grid runs every colourway (neutral, then the semantics) down the rows; the
-// columns are the eight transitions, sink first (pop down to sunk) then lift (sunk
-// up to pop). Two rules make the skeuomorphism read:
+// columns are the eight transitions, sink first (higher down to lower) then lift (lower
+// up to higher). Two rules make the skeuomorphism read:
 //   1. Surface stays the colourway's resting fill -- only the shadow changes, so you
 //      read depth, not plane colour. Each row's shadow tokens carry that colourway's
-//      tint (shadow-primary-*, shadow-danger-*, ...); the default rung is the shared
-//      flat shadow-default in every row.
+//      tint (shadow-primary-*, shadow-danger-*, ...); the flat rung is the shared
+//      shadow-flat in every row.
 //   2. Lifted rungs translate up by the shadow's drop distance, in lockstep with
 //      the hard bottom-edge shadow. The translate consumes the generated
 //      translate-y-lift-* utilities (from --spacing-lift-*, the spacing namespace
 //      Tailwind translate reads), whose values equal the matching shadow's edge
-//      height -- half-pop pairs with lift-half, pop with lift-full -- so the two
+//      height -- high pairs with lift-half, higher with lift-full -- so the two
 //      can never drift. The element rises while the shadow's outer edge stays pinned
 //      to the baseline, so it extrudes from the plane instead of the plane falling away.
 // Class strings are spelled out in full -- Tailwind only scans literals, so the
 // `hover:` utilities must appear verbatim.
-const sinkLabels = [
-  'pop -> half-pop',
-  'half-pop -> default',
-  'default -> half-sunk',
-  'half-sunk -> sunk',
-] as const
-const liftLabels = [
-  'sunk -> half-sunk',
-  'half-sunk -> default',
-  'default -> half-pop',
-  'half-pop -> pop',
-] as const
+const sinkLabels = ['higher -> high', 'high -> flat', 'flat -> low', 'low -> lower'] as const
+const liftLabels = ['lower -> low', 'low -> flat', 'flat -> high', 'high -> higher'] as const
 
 const animationGrid = [
   {
     name: 'neutral',
     surface: 'bg-surface-default',
     sink: [
-      'shadow-pop -translate-y-lift-full hover:shadow-half-pop hover:-translate-y-lift-half',
-      'shadow-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-half-sunk',
-      'shadow-half-sunk hover:shadow-sunk',
+      'shadow-higher -translate-y-lift-full hover:shadow-high hover:-translate-y-lift-half',
+      'shadow-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-low',
+      'shadow-low hover:shadow-lower',
     ],
     lift: [
-      'shadow-sunk hover:shadow-half-sunk',
-      'shadow-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-half-pop hover:-translate-y-lift-half',
-      'shadow-half-pop -translate-y-lift-half hover:shadow-pop hover:-translate-y-lift-full',
+      'shadow-lower hover:shadow-low',
+      'shadow-low hover:shadow-flat',
+      'shadow-flat hover:shadow-high hover:-translate-y-lift-half',
+      'shadow-high -translate-y-lift-half hover:shadow-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'primary',
     surface: 'bg-brand-primary-default',
     sink: [
-      'shadow-primary-pop -translate-y-lift-full hover:shadow-primary-half-pop hover:-translate-y-lift-half',
-      'shadow-primary-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-primary-half-sunk',
-      'shadow-primary-half-sunk hover:shadow-primary-sunk',
+      'shadow-primary-higher -translate-y-lift-full hover:shadow-primary-high hover:-translate-y-lift-half',
+      'shadow-primary-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-primary-low',
+      'shadow-primary-low hover:shadow-primary-lower',
     ],
     lift: [
-      'shadow-primary-sunk hover:shadow-primary-half-sunk',
-      'shadow-primary-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-primary-half-pop hover:-translate-y-lift-half',
-      'shadow-primary-half-pop -translate-y-lift-half hover:shadow-primary-pop hover:-translate-y-lift-full',
+      'shadow-primary-lower hover:shadow-primary-low',
+      'shadow-primary-low hover:shadow-flat',
+      'shadow-flat hover:shadow-primary-high hover:-translate-y-lift-half',
+      'shadow-primary-high -translate-y-lift-half hover:shadow-primary-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'secondary',
     surface: 'bg-brand-secondary-default',
     sink: [
-      'shadow-secondary-pop -translate-y-lift-full hover:shadow-secondary-half-pop hover:-translate-y-lift-half',
-      'shadow-secondary-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-secondary-half-sunk',
-      'shadow-secondary-half-sunk hover:shadow-secondary-sunk',
+      'shadow-secondary-higher -translate-y-lift-full hover:shadow-secondary-high hover:-translate-y-lift-half',
+      'shadow-secondary-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-secondary-low',
+      'shadow-secondary-low hover:shadow-secondary-lower',
     ],
     lift: [
-      'shadow-secondary-sunk hover:shadow-secondary-half-sunk',
-      'shadow-secondary-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-secondary-half-pop hover:-translate-y-lift-half',
-      'shadow-secondary-half-pop -translate-y-lift-half hover:shadow-secondary-pop hover:-translate-y-lift-full',
+      'shadow-secondary-lower hover:shadow-secondary-low',
+      'shadow-secondary-low hover:shadow-flat',
+      'shadow-flat hover:shadow-secondary-high hover:-translate-y-lift-half',
+      'shadow-secondary-high -translate-y-lift-half hover:shadow-secondary-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'danger',
     surface: 'bg-status-danger-solid',
     sink: [
-      'shadow-danger-pop -translate-y-lift-full hover:shadow-danger-half-pop hover:-translate-y-lift-half',
-      'shadow-danger-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-danger-half-sunk',
-      'shadow-danger-half-sunk hover:shadow-danger-sunk',
+      'shadow-danger-higher -translate-y-lift-full hover:shadow-danger-high hover:-translate-y-lift-half',
+      'shadow-danger-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-danger-low',
+      'shadow-danger-low hover:shadow-danger-lower',
     ],
     lift: [
-      'shadow-danger-sunk hover:shadow-danger-half-sunk',
-      'shadow-danger-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-danger-half-pop hover:-translate-y-lift-half',
-      'shadow-danger-half-pop -translate-y-lift-half hover:shadow-danger-pop hover:-translate-y-lift-full',
+      'shadow-danger-lower hover:shadow-danger-low',
+      'shadow-danger-low hover:shadow-flat',
+      'shadow-flat hover:shadow-danger-high hover:-translate-y-lift-half',
+      'shadow-danger-high -translate-y-lift-half hover:shadow-danger-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'success',
     surface: 'bg-status-success-solid',
     sink: [
-      'shadow-success-pop -translate-y-lift-full hover:shadow-success-half-pop hover:-translate-y-lift-half',
-      'shadow-success-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-success-half-sunk',
-      'shadow-success-half-sunk hover:shadow-success-sunk',
+      'shadow-success-higher -translate-y-lift-full hover:shadow-success-high hover:-translate-y-lift-half',
+      'shadow-success-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-success-low',
+      'shadow-success-low hover:shadow-success-lower',
     ],
     lift: [
-      'shadow-success-sunk hover:shadow-success-half-sunk',
-      'shadow-success-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-success-half-pop hover:-translate-y-lift-half',
-      'shadow-success-half-pop -translate-y-lift-half hover:shadow-success-pop hover:-translate-y-lift-full',
+      'shadow-success-lower hover:shadow-success-low',
+      'shadow-success-low hover:shadow-flat',
+      'shadow-flat hover:shadow-success-high hover:-translate-y-lift-half',
+      'shadow-success-high -translate-y-lift-half hover:shadow-success-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'warning',
     surface: 'bg-status-warning-solid',
     sink: [
-      'shadow-warning-pop -translate-y-lift-full hover:shadow-warning-half-pop hover:-translate-y-lift-half',
-      'shadow-warning-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-warning-half-sunk',
-      'shadow-warning-half-sunk hover:shadow-warning-sunk',
+      'shadow-warning-higher -translate-y-lift-full hover:shadow-warning-high hover:-translate-y-lift-half',
+      'shadow-warning-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-warning-low',
+      'shadow-warning-low hover:shadow-warning-lower',
     ],
     lift: [
-      'shadow-warning-sunk hover:shadow-warning-half-sunk',
-      'shadow-warning-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-warning-half-pop hover:-translate-y-lift-half',
-      'shadow-warning-half-pop -translate-y-lift-half hover:shadow-warning-pop hover:-translate-y-lift-full',
+      'shadow-warning-lower hover:shadow-warning-low',
+      'shadow-warning-low hover:shadow-flat',
+      'shadow-flat hover:shadow-warning-high hover:-translate-y-lift-half',
+      'shadow-warning-high -translate-y-lift-half hover:shadow-warning-higher hover:-translate-y-lift-full',
     ],
   },
   {
     name: 'info',
     surface: 'bg-status-info-solid',
     sink: [
-      'shadow-info-pop -translate-y-lift-full hover:shadow-info-half-pop hover:-translate-y-lift-half',
-      'shadow-info-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
-      'shadow-default hover:shadow-info-half-sunk',
-      'shadow-info-half-sunk hover:shadow-info-sunk',
+      'shadow-info-higher -translate-y-lift-full hover:shadow-info-high hover:-translate-y-lift-half',
+      'shadow-info-high -translate-y-lift-half hover:shadow-flat hover:translate-y-0',
+      'shadow-flat hover:shadow-info-low',
+      'shadow-info-low hover:shadow-info-lower',
     ],
     lift: [
-      'shadow-info-sunk hover:shadow-info-half-sunk',
-      'shadow-info-half-sunk hover:shadow-default',
-      'shadow-default hover:shadow-info-half-pop hover:-translate-y-lift-half',
-      'shadow-info-half-pop -translate-y-lift-half hover:shadow-info-pop hover:-translate-y-lift-full',
+      'shadow-info-lower hover:shadow-info-low',
+      'shadow-info-low hover:shadow-flat',
+      'shadow-flat hover:shadow-info-high hover:-translate-y-lift-half',
+      'shadow-info-high -translate-y-lift-half hover:shadow-info-higher hover:-translate-y-lift-full',
     ],
   },
 ] as const
@@ -410,18 +416,18 @@ const animationGrid = [
 
 // The neutral foundation, in the same row layout as the semantics: the surface
 // ramp beside the shadow ladder. Borders are tiered by rung in every colourway:
-// the recesses (sunk / half-sunk) take a subtle border, the resting and lifted
-// rungs (default / half-pop / pop) a strong one. The neutral lifts also climb the
-// surface ramp -- half-pop / pop sit on the strong plane (700).
+// the recesses (lower / low) take a subtle border, the resting and lifted
+// rungs (flat / high / higher) a strong one. The neutral lifts also climb the
+// surface ramp -- high / higher sit on the strong plane (700).
 const NeutralView = defineComponent({
   setup: () => ({ surfaces, shadows }),
   template: `
     <div class="flex w-max flex-col gap-6 text-fg-default">
       <p class="max-w-prose font-body text-fg-muted text-sm">
-        Borders are tiered by rung: the recesses and resting rung (sunk / half-sunk /
-        default) take a lighter border, only the lifts (half-pop / pop) a strong one --
+        Borders are tiered by rung: the recesses and resting rung (lower / low /
+        flat) take a lighter border, only the lifts (high / higher) a strong one --
         in each colourway's own border hue. The neutral lifts also rise up the surface
-        ramp: half-pop and pop sit on the strong plane (700).
+        ramp: high and higher sit on the strong plane (700).
       </p>
       <div class="flex items-start gap-10">
         <span class="w-20 shrink-0 self-center font-mono text-sm">neutral</span>
@@ -457,8 +463,8 @@ const SemanticsView = defineComponent({
     <div class="flex w-max flex-col gap-6 text-fg-default">
       <p class="max-w-prose font-body text-fg-muted text-sm">
         Each colourway carries the same tiered borders as the neutral ladder: a subtle
-        border on sunk / half-sunk / default, a strong border on the lifts (half-pop /
-        pop) -- in the colourway's own border hue. Rung names are read off the neutral
+        border on lower / low / flat, a strong border on the lifts (high /
+        higher) -- in the colourway's own border hue. Rung names are read off the neutral
         row above; the columns align.
       </p>
       <div v-for="cw in colourways" :key="cw.name" class="flex items-start gap-10">

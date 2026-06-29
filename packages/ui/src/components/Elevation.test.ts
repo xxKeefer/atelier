@@ -10,11 +10,12 @@ const { Neutral, Semantics, Snapshot } = composeStories(stories)
 // every shadow-ladder rung, each labelled by its token name.
 test('renders the neutral ramp steps and ladder rungs', () => {
   render(Neutral)
-  for (const name of ['subtle', 'strong', 'sunk', 'half-sunk', 'half-pop', 'pop']) {
+  for (const name of ['subtle', 'strong', 'lower', 'low', 'high', 'higher']) {
     expect(screen.getByText(name)).toBeInTheDocument()
   }
-  // 'default' labels both a ramp step and a ladder rung -- assert both render.
-  expect(screen.getAllByText('default')).toHaveLength(2)
+  // 'default' labels the ramp step; 'flat' the matching ladder rung.
+  expect(screen.getByText('default')).toBeInTheDocument()
+  expect(screen.getByText('flat')).toBeInTheDocument()
 })
 
 // Every colourway renders a row, labelled by its name.
