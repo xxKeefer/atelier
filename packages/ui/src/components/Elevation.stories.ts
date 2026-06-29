@@ -59,18 +59,20 @@ const surfaces = [
   { name: 'strong', class: 'bg-surface-strong', note: '700 -- lifted plane' },
 ] as const
 
-// The semantic colourways. The surface ramp mirrors the neutral ramp's shape:
-// subtle (900) / default (solid 500) / strong (700) tinted planes -- the resting
-// swatch shows the vivid solid fill. Each ladder tile carries a per-rung surface,
-// border, and shadow:
-//   - recesses (lower / low): the {c}.600 plane (palette var), a SUBTLE border,
-//     and an inset shadow whose recess tone is {c}.800 (see shadow tokens).
-//   - resting (flat): the solid fill, a SUBTLE border (same as the recesses --
-//     it sits at rest, not lifted), and a flat shadow.
-//   - lifts (high / higher): the solid fill, a STRONG border, and the lifting
-//     bright-edge shadow.
-// Border tiers and shadows are the per-colourway tokens; only the {c}.600 recess
-// plane has no semantic token, so it reaches the palette var directly.
+// The semantic colourways mirror the neutral ladder rung-for-rung. The neutral
+// ladder groups lower / low / flat onto ONE surface (default, 800) with ONE rim
+// (border-default, 700), and lifts high / higher onto a brighter surface (strong,
+// 700) with a brighter rim (border-strong, 600). Both rims are lighter than their
+// fill -- a lit highlight, dimmer on the flat group, brighter on the lifts. The
+// colour ladder carries that exact two-tier shape, hue-matched:
+//   - lower / low / flat: the SHARED {c}.600 plane (surface-recess), the DIMMER
+//     lit rim (border-default, {c}.500 -- one step lighter than the plane). lower /
+//     low add their inset shadow; flat is the resting no-op.
+//   - high / higher: the brighter solid fill ({c}.500, secondary .400), the
+//     BRIGHTER lit rim (border-strong, {c}.400, secondary .300 -- one step lighter
+//     than the solid), and the bright-edge lifting shadow.
+// Border tiers and shadows are the per-colourway tokens; the {c}.600 shared plane
+// is reached via the surface-recess token.
 // Tailwind only scans literals -- every utility is spelled out in full below.
 const colourways = [
   {
@@ -85,16 +87,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-primary-lower',
-        surface: 'bg-[var(--palette-magenta-600)]',
-        border: 'border-[var(--palette-magenta-500)]',
+        surface: 'bg-brand-primary-surface-recess',
+        border: 'border-brand-primary-border-default',
       },
       {
         name: 'low',
         class: 'shadow-primary-low',
-        surface: 'bg-[var(--palette-magenta-600)]',
-        border: 'border-[var(--palette-magenta-500)]',
+        surface: 'bg-brand-primary-surface-recess',
+        border: 'border-brand-primary-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-brand-primary-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-brand-primary-surface-recess',
+        border: 'border-brand-primary-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-primary-high',
@@ -119,16 +126,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-secondary-lower',
-        surface: 'bg-[var(--palette-violet-600)]',
-        border: 'border-[var(--palette-violet-500)]',
+        surface: 'bg-brand-secondary-surface-recess',
+        border: 'border-brand-secondary-border-default',
       },
       {
         name: 'low',
         class: 'shadow-secondary-low',
-        surface: 'bg-[var(--palette-violet-600)]',
-        border: 'border-[var(--palette-violet-500)]',
+        surface: 'bg-brand-secondary-surface-recess',
+        border: 'border-brand-secondary-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-brand-secondary-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-brand-secondary-surface-recess',
+        border: 'border-brand-secondary-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-secondary-high',
@@ -153,16 +165,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-danger-lower',
-        surface: 'bg-[var(--palette-red-600)]',
-        border: 'border-[var(--palette-red-500)]',
+        surface: 'bg-status-danger-surface-recess',
+        border: 'border-status-danger-border-default',
       },
       {
         name: 'low',
         class: 'shadow-danger-low',
-        surface: 'bg-[var(--palette-red-600)]',
-        border: 'border-[var(--palette-red-500)]',
+        surface: 'bg-status-danger-surface-recess',
+        border: 'border-status-danger-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-status-danger-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-status-danger-surface-recess',
+        border: 'border-status-danger-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-danger-high',
@@ -187,16 +204,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-success-lower',
-        surface: 'bg-[var(--palette-green-600)]',
-        border: 'border-[var(--palette-green-500)]',
+        surface: 'bg-status-success-surface-recess',
+        border: 'border-status-success-border-default',
       },
       {
         name: 'low',
         class: 'shadow-success-low',
-        surface: 'bg-[var(--palette-green-600)]',
-        border: 'border-[var(--palette-green-500)]',
+        surface: 'bg-status-success-surface-recess',
+        border: 'border-status-success-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-status-success-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-status-success-surface-recess',
+        border: 'border-status-success-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-success-high',
@@ -221,16 +243,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-warning-lower',
-        surface: 'bg-[var(--palette-yellow-600)]',
-        border: 'border-[var(--palette-yellow-500)]',
+        surface: 'bg-status-warning-surface-recess',
+        border: 'border-status-warning-border-default',
       },
       {
         name: 'low',
         class: 'shadow-warning-low',
-        surface: 'bg-[var(--palette-yellow-600)]',
-        border: 'border-[var(--palette-yellow-500)]',
+        surface: 'bg-status-warning-surface-recess',
+        border: 'border-status-warning-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-status-warning-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-status-warning-surface-recess',
+        border: 'border-status-warning-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-warning-high',
@@ -255,16 +282,21 @@ const colourways = [
       {
         name: 'lower',
         class: 'shadow-info-lower',
-        surface: 'bg-[var(--palette-cyan-600)]',
-        border: 'border-[var(--palette-cyan-500)]',
+        surface: 'bg-status-info-surface-recess',
+        border: 'border-status-info-border-default',
       },
       {
         name: 'low',
         class: 'shadow-info-low',
-        surface: 'bg-[var(--palette-cyan-600)]',
-        border: 'border-[var(--palette-cyan-500)]',
+        surface: 'bg-status-info-surface-recess',
+        border: 'border-status-info-border-default',
       },
-      { name: 'flat', class: 'shadow-flat', border: 'border-status-info-border-subtle' },
+      {
+        name: 'flat',
+        class: 'shadow-flat',
+        surface: 'bg-status-info-surface-recess',
+        border: 'border-status-info-border-default',
+      },
       {
         name: 'high',
         class: 'shadow-info-high',
@@ -462,10 +494,10 @@ const SemanticsView = defineComponent({
   template: `
     <div class="flex w-max flex-col gap-6 text-fg-default">
       <p class="max-w-prose font-body text-fg-muted text-sm">
-        Each colourway carries the same tiered borders as the neutral ladder: a subtle
-        border on lower / low / flat, a strong border on the lifts (high /
-        higher) -- in the colourway's own border hue. Rung names are read off the neutral
-        row above; the columns align.
+        Each colourway mirrors the neutral ladder, hue-matched: lower / low / flat share
+        one plane and a dimmer lit rim; high / higher rise to the brighter solid fill and
+        a brighter lit rim. Both rims sit one step lighter than their fill, exactly as the
+        neutral row does. Rung names are read off the neutral row above; the columns align.
       </p>
       <div v-for="cw in colourways" :key="cw.name" class="flex items-start gap-10">
         <span class="w-20 shrink-0 self-center font-mono text-sm">{{ cw.name }}</span>
