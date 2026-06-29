@@ -260,10 +260,13 @@ const colourways = [
 ] as const
 
 // Hover animations: a tile rests at one rung and transitions one level on hover.
-// The lift row climbs (sunk->half-sunk, half-sunk->default, ...); the sink row
-// drops (pop->half-pop, half-pop->default, ...). Two rules make the skeuomorphism
-// read:
-//   1. Surface is always bg-surface-default -- only the shadow changes.
+// The grid runs every colourway (neutral, then the semantics) down the rows; the
+// columns are the eight transitions, sink first (pop down to sunk) then lift (sunk
+// up to pop). Two rules make the skeuomorphism read:
+//   1. Surface stays the colourway's resting fill -- only the shadow changes, so you
+//      read depth, not plane colour. Each row's shadow tokens carry that colourway's
+//      tint (shadow-primary-*, shadow-danger-*, ...); the default rung is the shared
+//      flat shadow-default in every row.
 //   2. Lifted rungs translate up by the shadow's drop distance, in lockstep with
 //      the hard bottom-edge shadow. The translate consumes the generated
 //      translate-y-lift-* utilities (from --spacing-lift-*, the spacing namespace
@@ -273,41 +276,131 @@ const colourways = [
 //      to the baseline, so it extrudes from the plane instead of the plane falling away.
 // Class strings are spelled out in full -- Tailwind only scans literals, so the
 // `hover:` utilities must appear verbatim.
-const lift = [
-  {
-    label: 'sunk -> half-sunk',
-    class: 'shadow-sunk hover:shadow-half-sunk',
-  },
-  {
-    label: 'half-sunk -> default',
-    class: 'shadow-half-sunk hover:shadow-default',
-  },
-  {
-    label: 'default -> half-pop',
-    class: 'shadow-default hover:shadow-half-pop hover:-translate-y-lift-half',
-  },
-  {
-    label: 'half-pop -> pop',
-    class: 'shadow-half-pop -translate-y-lift-half hover:shadow-pop hover:-translate-y-lift-full',
-  },
+const sinkLabels = [
+  'pop -> half-pop',
+  'half-pop -> default',
+  'default -> half-sunk',
+  'half-sunk -> sunk',
+] as const
+const liftLabels = [
+  'sunk -> half-sunk',
+  'half-sunk -> default',
+  'default -> half-pop',
+  'half-pop -> pop',
 ] as const
 
-const sink = [
+const animationGrid = [
   {
-    label: 'pop -> half-pop',
-    class: 'shadow-pop -translate-y-lift-full hover:shadow-half-pop hover:-translate-y-lift-half',
+    name: 'neutral',
+    surface: 'bg-surface-default',
+    sink: [
+      'shadow-pop -translate-y-lift-full hover:shadow-half-pop hover:-translate-y-lift-half',
+      'shadow-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-half-sunk',
+      'shadow-half-sunk hover:shadow-sunk',
+    ],
+    lift: [
+      'shadow-sunk hover:shadow-half-sunk',
+      'shadow-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-half-pop hover:-translate-y-lift-half',
+      'shadow-half-pop -translate-y-lift-half hover:shadow-pop hover:-translate-y-lift-full',
+    ],
   },
   {
-    label: 'half-pop -> default',
-    class: 'shadow-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+    name: 'primary',
+    surface: 'bg-brand-primary-default',
+    sink: [
+      'shadow-primary-pop -translate-y-lift-full hover:shadow-primary-half-pop hover:-translate-y-lift-half',
+      'shadow-primary-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-primary-half-sunk',
+      'shadow-primary-half-sunk hover:shadow-primary-sunk',
+    ],
+    lift: [
+      'shadow-primary-sunk hover:shadow-primary-half-sunk',
+      'shadow-primary-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-primary-half-pop hover:-translate-y-lift-half',
+      'shadow-primary-half-pop -translate-y-lift-half hover:shadow-primary-pop hover:-translate-y-lift-full',
+    ],
   },
   {
-    label: 'default -> half-sunk',
-    class: 'shadow-default hover:shadow-half-sunk',
+    name: 'secondary',
+    surface: 'bg-brand-secondary-default',
+    sink: [
+      'shadow-secondary-pop -translate-y-lift-full hover:shadow-secondary-half-pop hover:-translate-y-lift-half',
+      'shadow-secondary-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-secondary-half-sunk',
+      'shadow-secondary-half-sunk hover:shadow-secondary-sunk',
+    ],
+    lift: [
+      'shadow-secondary-sunk hover:shadow-secondary-half-sunk',
+      'shadow-secondary-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-secondary-half-pop hover:-translate-y-lift-half',
+      'shadow-secondary-half-pop -translate-y-lift-half hover:shadow-secondary-pop hover:-translate-y-lift-full',
+    ],
   },
   {
-    label: 'half-sunk -> sunk',
-    class: 'shadow-half-sunk hover:shadow-sunk',
+    name: 'danger',
+    surface: 'bg-status-danger-solid',
+    sink: [
+      'shadow-danger-pop -translate-y-lift-full hover:shadow-danger-half-pop hover:-translate-y-lift-half',
+      'shadow-danger-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-danger-half-sunk',
+      'shadow-danger-half-sunk hover:shadow-danger-sunk',
+    ],
+    lift: [
+      'shadow-danger-sunk hover:shadow-danger-half-sunk',
+      'shadow-danger-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-danger-half-pop hover:-translate-y-lift-half',
+      'shadow-danger-half-pop -translate-y-lift-half hover:shadow-danger-pop hover:-translate-y-lift-full',
+    ],
+  },
+  {
+    name: 'success',
+    surface: 'bg-status-success-solid',
+    sink: [
+      'shadow-success-pop -translate-y-lift-full hover:shadow-success-half-pop hover:-translate-y-lift-half',
+      'shadow-success-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-success-half-sunk',
+      'shadow-success-half-sunk hover:shadow-success-sunk',
+    ],
+    lift: [
+      'shadow-success-sunk hover:shadow-success-half-sunk',
+      'shadow-success-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-success-half-pop hover:-translate-y-lift-half',
+      'shadow-success-half-pop -translate-y-lift-half hover:shadow-success-pop hover:-translate-y-lift-full',
+    ],
+  },
+  {
+    name: 'warning',
+    surface: 'bg-status-warning-solid',
+    sink: [
+      'shadow-warning-pop -translate-y-lift-full hover:shadow-warning-half-pop hover:-translate-y-lift-half',
+      'shadow-warning-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-warning-half-sunk',
+      'shadow-warning-half-sunk hover:shadow-warning-sunk',
+    ],
+    lift: [
+      'shadow-warning-sunk hover:shadow-warning-half-sunk',
+      'shadow-warning-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-warning-half-pop hover:-translate-y-lift-half',
+      'shadow-warning-half-pop -translate-y-lift-half hover:shadow-warning-pop hover:-translate-y-lift-full',
+    ],
+  },
+  {
+    name: 'info',
+    surface: 'bg-status-info-solid',
+    sink: [
+      'shadow-info-pop -translate-y-lift-full hover:shadow-info-half-pop hover:-translate-y-lift-half',
+      'shadow-info-half-pop -translate-y-lift-half hover:shadow-default hover:translate-y-0',
+      'shadow-default hover:shadow-info-half-sunk',
+      'shadow-info-half-sunk hover:shadow-info-sunk',
+    ],
+    lift: [
+      'shadow-info-sunk hover:shadow-info-half-sunk',
+      'shadow-info-half-sunk hover:shadow-default',
+      'shadow-default hover:shadow-info-half-pop hover:-translate-y-lift-half',
+      'shadow-info-half-pop -translate-y-lift-half hover:shadow-info-pop hover:-translate-y-lift-full',
+    ],
   },
 ] as const
 
@@ -409,33 +502,43 @@ export const Neutral: Story = {
   }),
 }
 
-// Hover each tile to play its elevation transition: the lift row rises one rung,
-// the sink row drops one. Not snapped -- hover state can't be captured statically.
+// Hover each tile to play its elevation transition. Rows are the colourways
+// (neutral, then the semantics); columns are the eight transitions, sink first
+// (drop one rung) then lift (rise one rung). Not snapped -- hover state can't be
+// captured statically.
 export const Animations: Story = {
   render: () => ({
-    setup: () => ({ lift, sink }),
+    setup: () => ({ animationGrid, sinkLabels, liftLabels }),
     template: `
-      <div class="flex w-max flex-col gap-8 text-fg-default">
-        <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Lift on hover</h2>
-          <div class="flex w-max items-end gap-6">
-            <div v-for="t in lift" :key="t.label" class="flex flex-col items-center gap-3">
-              <div class="grid h-24 w-36 cursor-pointer place-items-center rounded-lg border border-border-default bg-surface-default transition-all duration-200 ease-out" :class="t.class">
-                <span class="font-mono text-sm">{{ t.label }}</span>
+      <div class="flex w-max flex-col gap-4 text-fg-default">
+        <div class="flex items-end gap-4">
+          <span class="w-20 shrink-0"></span>
+          <div class="flex gap-8">
+            <div class="flex flex-col gap-1">
+              <span class="font-heading font-bold text-sm">Sink on hover</span>
+              <div class="flex gap-4">
+                <span v-for="l in sinkLabels" :key="l" class="w-28 text-center font-mono text-fg-subtle text-xs">{{ l }}</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="font-heading font-bold text-sm">Lift on hover</span>
+              <div class="flex gap-4">
+                <span v-for="l in liftLabels" :key="l" class="w-28 text-center font-mono text-fg-subtle text-xs">{{ l }}</span>
               </div>
             </div>
           </div>
-        </section>
-        <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Sink on hover</h2>
-          <div class="flex w-max items-end gap-6">
-            <div v-for="t in sink" :key="t.label" class="flex flex-col items-center gap-3">
-              <div class="grid h-24 w-36 cursor-pointer place-items-center rounded-lg border border-border-default bg-surface-default transition-all duration-200 ease-out" :class="t.class">
-                <span class="font-mono text-sm">{{ t.label }}</span>
-              </div>
+        </div>
+        <div v-for="row in animationGrid" :key="row.name" class="flex items-center gap-4">
+          <span class="w-20 shrink-0 font-mono text-sm">{{ row.name }}</span>
+          <div class="flex gap-8">
+            <div class="flex gap-4">
+              <div v-for="(c, i) in row.sink" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border border-border-default transition-all duration-200 ease-out" :class="[row.surface, c]"></div>
+            </div>
+            <div class="flex gap-4">
+              <div v-for="(c, i) in row.lift" :key="i" class="h-20 w-28 cursor-pointer rounded-lg border border-border-default transition-all duration-200 ease-out" :class="[row.surface, c]"></div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
     `,
   }),
