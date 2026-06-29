@@ -48,6 +48,13 @@ const shadows = [
   },
 ] as const
 
+// The lifted rungs (high / higher) must translate up by their shadow's drop height
+// so the shadow's bottom edge lands on the flat baseline, not below it -- otherwise a
+// lifted tile reads as physically lower, not popped. Mirrors the Animations grid, where
+// the resting lifts carry the same translate. Recesses and flat sit flush (no translate).
+const liftFor = (name: string): string =>
+  name === 'high' ? '-translate-y-lift-half' : name === 'higher' ? '-translate-y-lift-full' : ''
+
 // The surface ramp: three planes the elevation rungs sit on. recesses use subtle
 // (900), the resting rung flat (800), lifts strong (700). edge is NOT a plane --
 // it's a separator added only when an elevated element's surface matches the flat
@@ -447,7 +454,7 @@ const animationGrid = [
 // rungs (flat / high / higher) a strong one. The neutral lifts also climb the
 // surface ramp -- high / higher sit on the strong plane (700).
 const NeutralView = defineComponent({
-  setup: () => ({ surfaces, shadows }),
+  setup: () => ({ surfaces, shadows, liftFor }),
   template: `
     <div class="flex w-max flex-col gap-6 text-fg-default">
       <p class="max-w-prose font-body text-fg-muted text-sm">
@@ -471,7 +478,7 @@ const NeutralView = defineComponent({
           <span class="font-body text-fg-subtle text-xs">shadow ladder</span>
           <div class="flex items-end gap-3">
             <div v-for="s in shadows" :key="s.name" class="flex flex-col items-center gap-2">
-              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[s.surface, s.border, s.shadow]">
+              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[s.surface, s.border, s.shadow, liftFor(s.name)]">
                 <span class="font-mono text-xs">{{ s.name }}</span>
               </div>
             </div>
@@ -485,7 +492,7 @@ const NeutralView = defineComponent({
 // One row per semantic colourway: its surface ramp beside its (fully coloured)
 // shadow ladder.
 const SemanticsView = defineComponent({
-  setup: () => ({ colourways }),
+  setup: () => ({ colourways, liftFor }),
   template: `
     <div class="flex w-max flex-col gap-6 text-fg-default">
       <p class="max-w-prose font-body text-fg-muted text-sm">
@@ -509,7 +516,7 @@ const SemanticsView = defineComponent({
           <span class="font-body text-fg-subtle text-xs">shadow ladder</span>
           <div class="flex items-end gap-3">
             <div v-for="r in cw.ladder" :key="r.name" class="flex flex-col items-center gap-2">
-              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[r.surface || cw.surface, r.border, r.class]"></div>
+              <div class="grid h-14 w-20 place-items-center rounded-md border" :class="[r.surface || cw.surface, r.border, r.class, liftFor(r.name)]"></div>
             </div>
           </div>
         </div>
