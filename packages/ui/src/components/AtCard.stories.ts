@@ -9,8 +9,8 @@ const mediaPositions = ['top', 'left', 'right'] as const
 
 // A stand-in media block: a flat coloured panel standing in for an image so the
 // stories carry no asset dependency. Full-bleed on top, fixed-width on the side.
-const mediaTop = `<div class="h-32 w-full bg-brand-secondary-default"></div>`
-const mediaSide = `<div class="w-32 bg-brand-secondary-default"></div>`
+const mediaTop = `<div class="h-32 w-full bg-secondary-default"></div>`
+const mediaSide = `<div class="w-32 bg-secondary-default"></div>`
 
 const meta = {
   title: 'Components/Card',
@@ -159,12 +159,12 @@ export const CardList: Story = {
 // recolour-by-utility pattern the Divider uses. The default light text sits on
 // each dark tint. Not part of the snapshot board.
 const semantics = [
-  { name: 'Primary', class: 'bg-brand-primary-subtle border-brand-primary-default' },
-  { name: 'Secondary', class: 'bg-brand-secondary-subtle border-brand-secondary-default' },
-  { name: 'Danger', class: 'bg-status-danger-bg border-status-danger-border' },
-  { name: 'Success', class: 'bg-status-success-bg border-status-success-border' },
-  { name: 'Warning', class: 'bg-status-warning-bg border-status-warning-border' },
-  { name: 'Info', class: 'bg-status-info-bg border-status-info-border' },
+  { name: 'Primary', class: 'bg-primary-subtle border-primary-default' },
+  { name: 'Secondary', class: 'bg-secondary-subtle border-secondary-default' },
+  { name: 'Danger', class: 'bg-danger-bg border-danger-border' },
+  { name: 'Success', class: 'bg-success-bg border-success-border' },
+  { name: 'Warning', class: 'bg-warning-bg border-warning-border' },
+  { name: 'Info', class: 'bg-info-bg border-info-border' },
 ] as const
 
 export const SemanticColors: Story = {
@@ -217,12 +217,12 @@ export const Snapshot: Story = {
         </div>
         <div class="flex flex-col gap-6">
           <Card class="w-80">
-            <template #media><div class="h-32 w-full bg-brand-secondary-default"></div></template>
+            <template #media><div class="h-32 w-full bg-secondary-default"></div></template>
             <h3 class="font-heading text-lg font-bold">Media top</h3>
             <p class="mt-2 text-base text-fg-muted">Full-bleed band.</p>
           </Card>
           <Card class="w-96" media-position="left">
-            <template #media><div class="w-32 bg-brand-secondary-default"></div></template>
+            <template #media><div class="w-32 bg-secondary-default"></div></template>
             <h3 class="font-heading text-lg font-bold">Media side</h3>
             <p class="mt-2 text-base text-fg-muted">Beside the content.</p>
           </Card>

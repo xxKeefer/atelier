@@ -92,12 +92,12 @@ export const Colors: Story = {
     template: `
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-4">
-          <Icon :icon="icon" size="xl" color="var(--color-status-danger-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-status-warning-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-status-success-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-status-info-solid)" />
+          <Icon :icon="icon" size="xl" color="var(--color-danger-solid)" />
+          <Icon :icon="icon" size="xl" color="var(--color-warning-solid)" />
+          <Icon :icon="icon" size="xl" color="var(--color-success-solid)" />
+          <Icon :icon="icon" size="xl" color="var(--color-info-solid)" />
         </div>
-        <div class="flex items-center gap-2 text-brand-secondary-default">
+        <div class="flex items-center gap-2 text-secondary-default">
           <Icon :icon="icon" size="xl" />
           <span class="font-body text-base">inherits the parent's colour</span>
         </div>
@@ -144,20 +144,20 @@ const semantic = {
       icon: PhCheckSquare,
       name: 'Success',
       note: 'success status',
-      tone: 'text-status-success-solid',
+      tone: 'text-success-solid',
     },
-    { icon: PhInfo, name: 'Info', note: 'informational status', tone: 'text-status-info-solid' },
+    { icon: PhInfo, name: 'Info', note: 'informational status', tone: 'text-info-solid' },
     {
       icon: PhWarning,
       name: 'Warning',
       note: 'warning status',
-      tone: 'text-status-warning-solid',
+      tone: 'text-warning-solid',
     },
     {
       icon: PhWarningDiamond,
       name: 'Error',
       note: 'error / danger status',
-      tone: 'text-status-danger-solid',
+      tone: 'text-danger-solid',
     },
   ],
   Navigation: [
@@ -276,11 +276,11 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Colours</h2>
           <div class="flex items-center gap-4">
-            <Icon :icon="warning" size="xl" color="var(--color-status-danger-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-status-warning-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-status-success-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-status-info-solid)" />
-            <span class="flex items-center gap-2 text-brand-secondary-default">
+            <Icon :icon="warning" size="xl" color="var(--color-danger-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-warning-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-success-solid)" />
+            <Icon :icon="warning" size="xl" color="var(--color-info-solid)" />
+            <span class="flex items-center gap-2 text-secondary-default">
               <Icon :icon="warning" size="xl" />
               <span class="font-body text-base">inherits parent colour</span>
             </span>

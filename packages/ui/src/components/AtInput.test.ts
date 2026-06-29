@@ -61,7 +61,7 @@ test('renders help text below the field', () => {
 test('renders error text in the danger colour when present', () => {
   render(Input, { props: { label: 'Email', error: 'Invalid address' } })
   const msg = screen.getByText('Invalid address')
-  expect(msg.className).toContain('text-status-danger-fg')
+  expect(msg.className).toContain('text-danger-fg')
 })
 
 // A messaged field (label/help/error in use) reserves a fixed line of space for

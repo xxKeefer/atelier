@@ -11,7 +11,7 @@ const props = withDefaults(
     icon: Component
     size?: Size
     weight?: Weight
-    // A CSS colour -- pass a token var (e.g. var(--color-status-danger-solid)) to
+    // A CSS colour -- pass a token var (e.g. var(--color-danger-solid)) to
     // paint the glyph, or omit to inherit the parent's currentColor.
     color?: string
     // Omit for the common case: the icon is decorative and hidden from the a11y

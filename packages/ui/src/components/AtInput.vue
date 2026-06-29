@@ -112,7 +112,7 @@ const labelSizes: Record<Size, string> = {
       v-if="messaged"
       data-testid="input-message"
       class="min-h-[1lh] text-xs"
-      :class="error ? 'text-status-danger-fg' : 'text-fg-subtle'"
+      :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
     >
       {{ error || help }}
     </p>

@@ -114,14 +114,14 @@ const variants: Record<Variant, string> = {
 // driven off these three vars.
 const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', string>> = {
   primary: {
-    '--btn-bg': 'var(--color-brand-primary-default)',
-    '--btn-fg': 'var(--color-brand-primary-fg)',
-    '--btn-edge': 'var(--color-brand-primary-edge)',
+    '--btn-bg': 'var(--color-primary-default)',
+    '--btn-fg': 'var(--color-primary-fg)',
+    '--btn-edge': 'var(--color-primary-edge)',
   },
   secondary: {
-    '--btn-bg': 'var(--color-brand-secondary-default)',
-    '--btn-fg': 'var(--color-brand-secondary-fg)',
-    '--btn-edge': 'var(--color-brand-secondary-edge)',
+    '--btn-bg': 'var(--color-secondary-default)',
+    '--btn-fg': 'var(--color-secondary-fg)',
+    '--btn-edge': 'var(--color-secondary-edge)',
   },
   neutral: {
     '--btn-bg': 'var(--color-surface-default)',
@@ -131,24 +131,24 @@ const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', 
     '--btn-edge': 'var(--color-border-default)',
   },
   danger: {
-    '--btn-bg': 'var(--color-status-danger-solid)',
-    '--btn-fg': 'var(--color-status-danger-on-solid)',
-    '--btn-edge': 'var(--color-status-danger-edge)',
+    '--btn-bg': 'var(--color-danger-solid)',
+    '--btn-fg': 'var(--color-danger-on-solid)',
+    '--btn-edge': 'var(--color-danger-edge)',
   },
   success: {
-    '--btn-bg': 'var(--color-status-success-solid)',
-    '--btn-fg': 'var(--color-status-success-on-solid)',
-    '--btn-edge': 'var(--color-status-success-edge)',
+    '--btn-bg': 'var(--color-success-solid)',
+    '--btn-fg': 'var(--color-success-on-solid)',
+    '--btn-edge': 'var(--color-success-edge)',
   },
   warning: {
-    '--btn-bg': 'var(--color-status-warning-solid)',
-    '--btn-fg': 'var(--color-status-warning-on-solid)',
-    '--btn-edge': 'var(--color-status-warning-edge)',
+    '--btn-bg': 'var(--color-warning-solid)',
+    '--btn-fg': 'var(--color-warning-on-solid)',
+    '--btn-edge': 'var(--color-warning-edge)',
   },
   info: {
-    '--btn-bg': 'var(--color-status-info-solid)',
-    '--btn-fg': 'var(--color-status-info-on-solid)',
-    '--btn-edge': 'var(--color-status-info-edge)',
+    '--btn-bg': 'var(--color-info-solid)',
+    '--btn-fg': 'var(--color-info-on-solid)',
+    '--btn-edge': 'var(--color-info-edge)',
   },
 }
 
