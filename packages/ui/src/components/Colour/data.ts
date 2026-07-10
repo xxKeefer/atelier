@@ -106,6 +106,27 @@ export const brands = [
   },
 ] as const
 
+// Icon/text usage examples: an icon and a text sample coloured to match, laid over
+// the surface they're meant to sit on. Reuses only the fg/on-solid pairings already
+// validated by src/test/contrast.test.ts in Status/Brand above -- e.g. brand rows
+// stop at their `default` fill + `fg`, since surface-subtle/strong + fg was never
+// contrast-checked there.
+export const iconsAndText = [
+  { name: 'neutral surface-subtle', bg: 'bg-surface-subtle', tone: 'text-fg-default' },
+  { name: 'neutral surface-default', bg: 'bg-surface-default', tone: 'text-fg-default' },
+  { name: 'neutral surface-strong', bg: 'bg-surface-strong', tone: 'text-fg-default' },
+  { name: 'danger bg', bg: 'bg-danger-bg', tone: 'text-danger-fg' },
+  { name: 'danger solid', bg: 'bg-danger-solid', tone: 'text-danger-on-solid' },
+  { name: 'success bg', bg: 'bg-success-bg', tone: 'text-success-fg' },
+  { name: 'success solid', bg: 'bg-success-solid', tone: 'text-success-on-solid' },
+  { name: 'warning bg', bg: 'bg-warning-bg', tone: 'text-warning-fg' },
+  { name: 'warning solid', bg: 'bg-warning-solid', tone: 'text-warning-on-solid' },
+  { name: 'info bg', bg: 'bg-info-bg', tone: 'text-info-fg' },
+  { name: 'info solid', bg: 'bg-info-solid', tone: 'text-info-on-solid' },
+  { name: 'primary default', bg: 'bg-primary-default', tone: 'text-primary-fg' },
+  { name: 'secondary default', bg: 'bg-secondary-default', tone: 'text-secondary-fg' },
+] as const
+
 export const statuses = [
   {
     name: 'danger',

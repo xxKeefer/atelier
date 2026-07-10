@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/vue'
 import { expect, test } from 'vitest'
 import * as stories from './Colour.stories'
 
-const { Primitives, Status, Brand } = composeStories(stories)
+const { Primitives, Status, Brand, IconsAndText } = composeStories(stories)
 
 // Every colourway renders as a labelled row.
 test('renders a row for every palette colourway', () => {
@@ -84,5 +84,27 @@ test('renders a column for every brand token', () => {
     'fg',
   ]) {
     expect(screen.getByText(label)).toBeInTheDocument()
+  }
+})
+
+// Every icon/text example row renders with its labelled name.
+test('renders a row for every icons-and-text example', () => {
+  render(IconsAndText)
+  for (const name of [
+    'neutral surface-subtle',
+    'neutral surface-default',
+    'neutral surface-strong',
+    'danger bg',
+    'danger solid',
+    'success bg',
+    'success solid',
+    'warning bg',
+    'warning solid',
+    'info bg',
+    'info solid',
+    'primary default',
+    'secondary default',
+  ]) {
+    expect(screen.getByText(name)).toBeInTheDocument()
   }
 })
