@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/vue'
 import { expect, test } from 'vitest'
 import * as stories from './Colour.stories'
 
-const { Primitives, Status } = composeStories(stories)
+const { Primitives, Status, Brand } = composeStories(stories)
 
 // Every colourway renders as a labelled row.
 test('renders a row for every palette colourway', () => {
@@ -57,6 +57,31 @@ test('renders a column for every status token', () => {
     'edge',
     'fg',
     'on-solid',
+  ]) {
+    expect(screen.getByText(label)).toBeInTheDocument()
+  }
+})
+
+// Every brand row renders as a labelled row.
+test('renders a row for every brand', () => {
+  render(Brand)
+  for (const name of ['primary', 'secondary', 'neutral']) {
+    expect(screen.getByText(name)).toBeInTheDocument()
+  }
+})
+
+// Every surface/border/edge/fg token renders as a labelled column (shared header row).
+test('renders a column for every brand token', () => {
+  render(Brand)
+  for (const label of [
+    'surface-subtle',
+    'surface-default',
+    'surface-strong',
+    'border-subtle',
+    'border-default',
+    'border-strong',
+    'edge',
+    'fg',
   ]) {
     expect(screen.getByText(label)).toBeInTheDocument()
   }

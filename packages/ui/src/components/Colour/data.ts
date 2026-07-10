@@ -44,6 +44,68 @@ export const statusColumnLabels = [
   'on-solid',
 ] as const
 
+// The three brand rows: primary and secondary carry the same tier-2 shape as the
+// statuses above (surface ramp + border tiers + edge + fg), minus a `solid`/`bg`/
+// `on-solid` split -- brand's `default` fill IS the surface-default plane, there's
+// no separate solid/bg distinction. Neutral has no such `color.neutral` object in
+// color-semantic.json -- its equivalent keys are spread across the top-level
+// `color.bg`/`color.surface`/`color.border`/`color.fg` groups, and it has no `edge`
+// token at all (edge is "skeuomorphic shadowed side of a lit fill" -- neutral has no
+// lit fill to shadow). That cell renders empty (kind: 'none') rather than faking a
+// substitute -- a documented asymmetry, not a bug.
+export const brandColumnLabels = [
+  'surface-subtle',
+  'surface-default',
+  'surface-strong',
+  'border-subtle',
+  'border-default',
+  'border-strong',
+  'edge',
+  'fg',
+] as const
+
+export const brands = [
+  {
+    name: 'primary',
+    columns: [
+      { label: 'surface-subtle', kind: 'fill', class: 'bg-primary-surface-subtle' },
+      { label: 'surface-default', kind: 'fill', class: 'bg-primary-default' },
+      { label: 'surface-strong', kind: 'fill', class: 'bg-primary-surface-strong' },
+      { label: 'border-subtle', kind: 'border', class: 'border-primary-border-subtle' },
+      { label: 'border-default', kind: 'border', class: 'border-primary-border-default' },
+      { label: 'border-strong', kind: 'border', class: 'border-primary-border-strong' },
+      { label: 'edge', kind: 'border', class: 'border-primary-edge' },
+      { label: 'fg', kind: 'text', class: 'bg-primary-default text-primary-fg' },
+    ],
+  },
+  {
+    name: 'secondary',
+    columns: [
+      { label: 'surface-subtle', kind: 'fill', class: 'bg-secondary-surface-subtle' },
+      { label: 'surface-default', kind: 'fill', class: 'bg-secondary-default' },
+      { label: 'surface-strong', kind: 'fill', class: 'bg-secondary-surface-strong' },
+      { label: 'border-subtle', kind: 'border', class: 'border-secondary-border-subtle' },
+      { label: 'border-default', kind: 'border', class: 'border-secondary-border-default' },
+      { label: 'border-strong', kind: 'border', class: 'border-secondary-border-strong' },
+      { label: 'edge', kind: 'border', class: 'border-secondary-edge' },
+      { label: 'fg', kind: 'text', class: 'bg-secondary-default text-secondary-fg' },
+    ],
+  },
+  {
+    name: 'neutral',
+    columns: [
+      { label: 'surface-subtle', kind: 'fill', class: 'bg-surface-subtle' },
+      { label: 'surface-default', kind: 'fill', class: 'bg-surface-default' },
+      { label: 'surface-strong', kind: 'fill', class: 'bg-surface-strong' },
+      { label: 'border-subtle', kind: 'border', class: 'border-border-subtle' },
+      { label: 'border-default', kind: 'border', class: 'border-border-default' },
+      { label: 'border-strong', kind: 'border', class: 'border-border-strong' },
+      { label: 'edge', kind: 'none', class: null },
+      { label: 'fg', kind: 'text', class: 'text-fg-default' },
+    ],
+  },
+] as const
+
 export const statuses = [
   {
     name: 'danger',
