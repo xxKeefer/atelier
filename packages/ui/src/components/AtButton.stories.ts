@@ -218,7 +218,7 @@ export const Snapshot: Story = {
           <h2 class="font-heading font-bold text-fg-default text-lg">Sizes, icons & states</h2>
           <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
             <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
-            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto_auto)] items-center gap-x-4 gap-y-3">
+            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto_auto)] items-center justify-items-start gap-x-4 gap-y-3">
               <span></span>
               <span
                 v-for="variant in variants"
@@ -242,7 +242,7 @@ export const Snapshot: Story = {
           <h2 class="font-heading font-bold text-fg-default text-lg">Icon only</h2>
           <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
             <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
-            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto)] items-center gap-x-4 gap-y-3">
+            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto)] items-center justify-items-start gap-x-4 gap-y-3">
               <span></span>
               <span
                 v-for="variant in variants"
