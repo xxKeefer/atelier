@@ -1,16 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { defineComponent } from 'vue'
-import { PhX } from '@phosphor-icons/vue'
 import Card from './AtCard.vue'
-import Button from './AtButton.vue'
-import Icon from './AtIcon.vue'
+import { BasicView } from './views/BasicView'
+import { HeaderAndFooterView } from './views/HeaderAndFooterView'
+import { FooterSummaryView } from './views/FooterSummaryView'
+import { MediaTopView } from './views/MediaTopView'
+import { MediaSideView } from './views/MediaSideView'
+import { InteractiveView } from './views/InteractiveView'
 
 const mediaPositions = ['top', 'left', 'right'] as const
-
-// A stand-in media block: a flat coloured panel standing in for an image so the
-// stories carry no asset dependency. Full-bleed on top, fixed-width on the side.
-const mediaTop = `<div class="h-32 w-full bg-secondary-default"></div>`
-const mediaSide = `<div class="w-32 bg-secondary-default"></div>`
 
 const meta = {
   title: 'Components/Card',
@@ -38,99 +35,6 @@ export const Playground: Story = {
     `,
   }),
 }
-
-// Shared view fragments. Each block is authored once here and reused by both its
-// standalone story and the Snapshot board, so the snapped image can never drift
-// from the live story.
-
-// Body only: the simplest card -- a bordered surface holding arbitrary content.
-const BasicView = defineComponent({
-  components: { Card },
-  template: `
-    <Card class="w-80">
-      <h3 class="font-heading text-lg font-bold">Card title</h3>
-      <p class="mt-2 text-base text-fg-muted">Supporting copy describing the subject this card groups.</p>
-    </Card>
-  `,
-})
-
-// Header + footer: each parted from the body by a flush divider. The header
-// composes a title with a close icon button at its right edge; the footer
-// composes trailing action buttons.
-const HeaderAndFooterView = defineComponent({
-  // eslint-disable-next-line vue/no-reserved-component-names -- registering the real Button component, not defining one named "Button"
-  components: { Card, Button, Icon },
-  setup: () => ({ PhX }),
-  template: `
-    <Card class="w-80">
-      <template #header>
-        <h3 class="font-heading text-lg font-bold">Settings</h3>
-        <Button intent="neutral" variant="flat" size="sm" aria-label="Close">
-          <template #left><Icon :icon="PhX" /></template>
-        </Button>
-      </template>
-      <p class="text-base text-fg-muted">The body sits between the two dividers.</p>
-      <template #footer>
-        <div class="flex w-full justify-end gap-2">
-          <Button intent="neutral" size="sm">Cancel</Button>
-          <Button intent="primary" size="sm">Save</Button>
-        </div>
-      </template>
-    </Card>
-  `,
-})
-
-// A footer carrying a summary instead of actions -- the slot is flexible enough
-// for either, or both.
-const FooterSummaryView = defineComponent({
-  components: { Card },
-  template: `
-    <Card class="w-80">
-      <h3 class="font-heading text-lg font-bold">Invoice #1024</h3>
-      <p class="mt-2 text-base text-fg-muted">3 line items.</p>
-      <template #footer>
-        <span class="text-sm text-fg-subtle">Updated today</span>
-        <span class="font-bold">$420.00</span>
-      </template>
-    </Card>
-  `,
-})
-
-// Full-bleed media band on top, clipped to the card radius.
-const MediaTopView = defineComponent({
-  components: { Card },
-  template: `
-    <Card class="w-80">
-      <template #media>${mediaTop}</template>
-      <h3 class="font-heading text-lg font-bold">With media</h3>
-      <p class="mt-2 text-base text-fg-muted">A full-width media area sits above the content.</p>
-    </Card>
-  `,
-})
-
-// Media flush to one side of the content column.
-const MediaSideView = defineComponent({
-  components: { Card },
-  template: `
-    <Card class="w-96" media-position="left">
-      <template #media>${mediaSide}</template>
-      <h3 class="font-heading text-lg font-bold">Side media</h3>
-      <p class="mt-2 text-base text-fg-muted">The media sits beside the content instead of above it.</p>
-    </Card>
-  `,
-})
-
-// The whole card is one tappable action: an anchor with the lift/press
-// affordance. No nested links or buttons in this shape.
-const InteractiveView = defineComponent({
-  components: { Card },
-  template: `
-    <Card href="https://example.com" class="w-80">
-      <h3 class="font-heading text-lg font-bold">Tappable card</h3>
-      <p class="mt-2 text-base text-fg-muted">The entire card navigates on click.</p>
-    </Card>
-  `,
-})
 
 export const Basic: Story = {
   render: () => ({ components: { BasicView }, template: `<BasicView />` }),

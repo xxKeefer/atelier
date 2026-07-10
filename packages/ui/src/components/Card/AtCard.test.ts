@@ -4,7 +4,7 @@ import { expect, test } from 'vitest'
 import { h } from 'vue'
 import Card from './AtCard.vue'
 import * as stories from './AtCard.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Snapshot } = composeStories(stories)
 

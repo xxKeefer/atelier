@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/vue'
 import { expect, test } from 'vitest'
 import Divider from './AtDivider.vue'
 import * as stories from './AtDivider.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Snapshot } = composeStories(stories)
 

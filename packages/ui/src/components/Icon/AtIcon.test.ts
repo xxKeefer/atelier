@@ -4,7 +4,7 @@ import { PhHeart } from '@phosphor-icons/vue'
 import { expect, test } from 'vitest'
 import Icon from './AtIcon.vue'
 import * as stories from './AtIcon.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Snapshot } = composeStories(stories)
 

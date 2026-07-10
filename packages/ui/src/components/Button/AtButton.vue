@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PhCircleNotch } from '@phosphor-icons/vue'
 import { Comment, computed, useSlots } from 'vue'
-import Icon from './AtIcon.vue'
+import Icon from '../Icon/AtIcon.vue'
 
 type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
 type Variant = 'default' | 'flat'

@@ -2,7 +2,7 @@ import { composeStories } from '@storybook/vue3-vite'
 import { render, screen } from '@testing-library/vue'
 import { expect, test } from 'vitest'
 import * as stories from './Elevation.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Neutral, Semantics, Snapshot } = composeStories(stories)
 

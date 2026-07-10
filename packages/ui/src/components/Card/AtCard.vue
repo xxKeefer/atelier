@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue'
-import Divider from './AtDivider.vue'
+import Divider from '../Divider/AtDivider.vue'
 
 type MediaPosition = 'top' | 'left' | 'right'
 

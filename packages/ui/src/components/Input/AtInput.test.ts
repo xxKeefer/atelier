@@ -4,7 +4,7 @@ import { userEvent } from 'vitest/browser'
 import { expect, test } from 'vitest'
 import Input from './AtInput.vue'
 import * as stories from './AtInput.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Snapshot } = composeStories(stories)
 

@@ -4,7 +4,7 @@ import { expect, test } from 'vitest'
 import { h } from 'vue'
 import Button from './AtButton.vue'
 import * as stories from './AtButton.stories'
-import { snapBoard } from '../test/snap'
+import { snapBoard } from '../../test/snap'
 
 const { Loading, Snapshot } = composeStories(stories)
 

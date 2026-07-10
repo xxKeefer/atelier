@@ -23,7 +23,8 @@ const browser = () => ({
   // visual test owns its own baselines via toMatchScreenshot.
   screenshotFailures: false,
   instances: [{ browser: 'chromium' as const }],
-  // Collapse the default per-test-file nesting into one flat bucket:
+  // Collapse the default per-test-file nesting into one flat bucket, regardless
+  // of which component folder the test file lives in:
   // src/components/__snaps__/{arg}-{browser}-{platform}.png. The browser+platform
   // suffix stays (we only run nix chromium on linux; the chrome version is
   // recorded in CLAUDE.md, not the filename).
@@ -31,37 +32,33 @@ const browser = () => ({
     toMatchScreenshot: {
       resolveScreenshotPath: ({
         root,
-        testFileDirectory,
         arg,
         ext,
         browserName,
         platform,
       }: {
         root: string
-        testFileDirectory: string
         arg: string
         ext: string
         browserName: string
         platform: string
-      }) => `${root}/${testFileDirectory}/__snaps__/${arg}-${browserName}-${platform}${ext}`,
+      }) => `${root}/src/components/__snaps__/${arg}-${browserName}-${platform}${ext}`,
       // On mismatch the reference/actual/diff copies (arg suffixed
       // -reference/-actual/-diff) go to a git-ignored diffs/ beside the
       // baselines, not the default attachmentsDir.
       resolveDiffPath: ({
         root,
-        testFileDirectory,
         arg,
         ext,
         browserName,
         platform,
       }: {
         root: string
-        testFileDirectory: string
         arg: string
         ext: string
         browserName: string
         platform: string
-      }) => `${root}/${testFileDirectory}/__snaps__/diffs/${arg}-${browserName}-${platform}${ext}`,
+      }) => `${root}/src/components/__snaps__/diffs/${arg}-${browserName}-${platform}${ext}`,
     },
   },
 })
