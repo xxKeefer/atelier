@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { defineComponent } from 'vue'
 import Divider from './AtDivider.vue'
 
 const orientations = ['horizontal', 'vertical'] as const
@@ -84,56 +85,66 @@ export const Playground: Story = {
   }),
 }
 
+// Shared view fragments. Each block is authored once here and reused by both its
+// standalone story and the Snapshot board, so the snapped image can never drift
+// from the live story.
+
 // Horizontal: a full-width rule parting stacked content.
-export const Horizontal: Story = {
-  render: () => ({
-    components: { Divider },
-    template: `
-      <div class="flex w-64 flex-col gap-4 text-fg-default">
-        <p class="font-body text-base">First block of content.</p>
-        <Divider />
-        <p class="font-body text-base">Second block of content.</p>
-      </div>
-    `,
-  }),
-}
+const HorizontalView = defineComponent({
+  components: { Divider },
+  template: `
+    <div class="flex w-64 flex-col gap-4 text-fg-default">
+      <p class="font-body text-base">First block of content.</p>
+      <Divider />
+      <p class="font-body text-base">Second block of content.</p>
+    </div>
+  `,
+})
 
 // Vertical: a self-stretching rule between inline items. The flex parent supplies
 // the height the rule stretches to.
-export const Vertical: Story = {
-  render: () => ({
-    components: { Divider },
-    template: `
-      <div class="flex h-8 items-center gap-4 text-fg-default">
-        <span class="font-body text-base">Home</span>
-        <Divider orientation="vertical" />
-        <span class="font-body text-base">Docs</span>
-        <Divider orientation="vertical" />
-        <span class="font-body text-base">About</span>
-      </div>
-    `,
-  }),
-}
+const VerticalView = defineComponent({
+  components: { Divider },
+  template: `
+    <div class="flex h-8 items-center gap-4 text-fg-default">
+      <span class="font-body text-base">Home</span>
+      <Divider orientation="vertical" />
+      <span class="font-body text-base">Docs</span>
+      <Divider orientation="vertical" />
+      <span class="font-body text-base">About</span>
+    </div>
+  `,
+})
 
 // Colour by Tailwind class: the rule defaults to the strong border, but any
 // bg-* utility on the fallthrough class recolours it -- the border ramp
 // (subtle/default/strong) plus the focus pink for emphasis.
-export const Colors: Story = {
-  render: () => ({
-    components: { Divider },
-    setup: () => ({ ramps, steps }),
-    template: `
-      <div class="flex w-72 flex-col gap-5 text-fg-default">
-        <div v-for="ramp in ramps" :key="ramp.name" class="flex flex-col gap-2">
-          <span class="font-body font-bold text-sm">{{ ramp.name }}</span>
-          <div v-for="step in steps" :key="step" class="flex flex-col gap-1">
-            <span class="font-body text-fg-subtle text-xs">{{ step }}</span>
-            <Divider :class="ramp[step]" />
-          </div>
+const ColorsView = defineComponent({
+  components: { Divider },
+  setup: () => ({ ramps, steps }),
+  template: `
+    <div class="flex w-72 flex-col gap-5 text-fg-default">
+      <div v-for="ramp in ramps" :key="ramp.name" class="flex flex-col gap-2">
+        <span class="font-body font-bold text-sm">{{ ramp.name }}</span>
+        <div v-for="step in steps" :key="step" class="flex flex-col gap-1">
+          <span class="font-body text-fg-subtle text-xs">{{ step }}</span>
+          <Divider :class="ramp[step]" />
         </div>
       </div>
-    `,
-  }),
+    </div>
+  `,
+})
+
+export const Horizontal: Story = {
+  render: () => ({ components: { HorizontalView }, template: `<HorizontalView />` }),
+}
+
+export const Vertical: Story = {
+  render: () => ({ components: { VerticalView }, template: `<VerticalView />` }),
+}
+
+export const Colors: Story = {
+  render: () => ({ components: { ColorsView }, template: `<ColorsView />` }),
 }
 
 // Decorative: pure visual garnish, hidden from assistive tech (role=none).
@@ -153,38 +164,20 @@ export const Decorative: Story = {
 // This is the story the snapshot test snaps.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Divider },
-    setup: () => ({ ramps, steps }),
+    components: { HorizontalView, VerticalView, ColorsView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Horizontal</h2>
-          <div class="flex w-64 flex-col gap-4">
-            <p class="font-body text-base">First block of content.</p>
-            <Divider />
-            <p class="font-body text-base">Second block of content.</p>
-          </div>
+          <HorizontalView />
         </section>
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Vertical</h2>
-          <div class="flex h-8 items-center gap-4">
-            <span class="font-body text-base">Home</span>
-            <Divider orientation="vertical" />
-            <span class="font-body text-base">Docs</span>
-            <Divider orientation="vertical" />
-            <span class="font-body text-base">About</span>
-          </div>
+          <VerticalView />
         </section>
         <section class="flex flex-col gap-3">
           <h2 class="font-heading font-bold text-lg">Colours</h2>
-          <div class="grid grid-cols-[auto_repeat(3,16rem)] items-center gap-x-4 gap-y-2">
-            <span></span>
-            <span v-for="step in steps" :key="step" class="font-body text-fg-subtle text-xs">{{ step }}</span>
-            <template v-for="ramp in ramps" :key="ramp.name">
-              <span class="font-body font-bold text-sm">{{ ramp.name }}</span>
-              <Divider v-for="step in steps" :key="step" :class="ramp[step]" />
-            </template>
-          </div>
+          <ColorsView />
         </section>
       </div>
     `,

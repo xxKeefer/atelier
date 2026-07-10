@@ -43,3 +43,36 @@ One snap per component, of a purpose-built board.
 ### Provenance
 
 Browser is pinned by Playwright 1.60.0 -> Chromium 148.0.7778.96 (rev 1223), provisioned via the flake (decisions/0005). Baselines are valid only for that build on linux; a Chromium bump will need `pnpm test:update`.
+
+## Shared render views (ADR)
+
+A `.stories.ts` file's markup lives in one place, not two. Every visual block that appears in both a standalone story and the `Snapshot` board is authored once, as a locally-defined component in the stories file, and both call sites render it.
+
+```ts
+import { defineComponent } from 'vue'
+
+// Shared view fragment. Authored once here and reused by both its standalone
+// story and the Snapshot board, so the snapped image can never drift from the
+// live story.
+const ColorsView = defineComponent({
+  components: { Button },
+  setup: () => ({ intents, variants }),
+  template: `...`,
+})
+
+export const AllColors: Story = {
+  render: () => ({ components: { ColorsView }, template: `<ColorsView />` }),
+}
+
+export const Snapshot: Story = {
+  render: () => ({
+    components: { ColorsView /* , ...other views */ },
+    template: `<div data-testid="snap-board"><ColorsView /><!-- ... --></div>`,
+  }),
+}
+```
+
+- Data (arrays of intents/sizes/colourways/etc.) stays module-level, as it already did -- only the template + its `setup` move into the view.
+- A view earns extraction when a story's markup is fully reused verbatim inside the Snapshot board. Don't force it: `Snapshot` boards that combine several stories into one novel layout (e.g. Button's size x variant x state matrix) have nothing to deduplicate against and stay inline.
+- Pattern originates in `Elevation.stories.ts` (`NeutralView`, `SemanticsView`), and now covers `AtButton` (`ColorsView`), `AtCard` (`BasicView`, `HeaderAndFooterView`, `FooterSummaryView`, `MediaTopView`, `MediaSideView`, `InteractiveView`), `AtDivider` (`HorizontalView`, `VerticalView`, `ColorsView`), `AtIcon` (`SizesView`, `WeightsView`, `ColorsView`, `SemanticView`), and `AtInput` (`SizesView`).
+- Registering the real `Button`/`Input` component inside a `defineComponent`'s `components` option trips `vue/no-reserved-component-names` (it only fires on `defineComponent`-wrapped definitions, not the bare object literals other `render()` functions return) -- silence it inline with `// eslint-disable-next-line vue/no-reserved-component-names`, since the name being registered is the imported component, not a new one being defined.

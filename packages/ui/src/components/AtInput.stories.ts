@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { defineComponent } from 'vue'
 import Input from './AtInput.vue'
 
 const sizes = ['sm', 'md', 'lg'] as const
@@ -80,31 +81,36 @@ export const Bare: Story = {
   }),
 }
 
+// Shared view fragment. Authored once here and reused by both the standalone
+// story and the Snapshot board, so the snapped image can never drift from the
+// live story.
+const SizesView = defineComponent({
+  // eslint-disable-next-line vue/no-reserved-component-names -- registering the real Input component, not defining one named "Input"
+  components: { Input },
+  setup: () => ({ sizes }),
+  template: `
+    <div class="flex items-start gap-6">
+      <Input
+        v-for="size in sizes"
+        :key="size"
+        :size="size"
+        :label="size"
+        :placeholder="'Size ' + size"
+        class="w-64"
+      />
+    </div>
+  `,
+})
+
 export const Sizes: Story = {
-  render: () => ({
-    components: { Input },
-    setup: () => ({ sizes }),
-    template: `
-      <div class="flex flex-col gap-4">
-        <Input
-          v-for="size in sizes"
-          :key="size"
-          :size="size"
-          :label="size"
-          :placeholder="'Size ' + size"
-          class="w-80"
-        />
-      </div>
-    `,
-  }),
+  render: () => ({ components: { SizesView }, template: `<SizesView />` }),
 }
 
 // The visual board: every shape on one screen. This is the story the snapshot
 // test snaps. Baseline: __snaps__/input-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Input },
-    setup: () => ({ sizes }),
+    components: { Input, SizesView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
@@ -119,9 +125,7 @@ export const Snapshot: Story = {
 
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">Sizes</h2>
-          <div class="flex items-start gap-6">
-            <Input v-for="size in sizes" :key="size" :size="size" :label="size" :placeholder="'Size ' + size" class="w-64" />
-          </div>
+          <SizesView />
         </section>
       </div>
     `,

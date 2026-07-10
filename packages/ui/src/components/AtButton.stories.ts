@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { defineComponent } from 'vue'
 import Button from './AtButton.vue'
 
 // A minimal inline icon for the slot stories. data-testid mirrors the slot used,
@@ -36,30 +37,36 @@ export const Playground: Story = {
   }),
 }
 
-// The review story: every intent x variant rendered on the canvas, axe-checked.
-export const AllColors: Story = {
-  render: () => ({
-    components: { Button },
-    setup: () => ({ intents, variants }),
-    template: `
-      <div class="flex flex-col gap-3">
-        <div class="grid grid-cols-[6rem_repeat(2,minmax(0,1fr))] items-center gap-3">
-          <span></span>
-          <span v-for="v in variants" :key="v" class="font-body text-fg-subtle text-sm capitalize">{{ v }}</span>
-        </div>
-        <div
-          v-for="intent in intents"
-          :key="intent"
-          class="grid grid-cols-[6rem_repeat(2,minmax(0,1fr))] items-center gap-3"
-        >
-          <span class="font-body text-fg-muted text-sm capitalize">{{ intent }}</span>
-          <div v-for="variant in variants" :key="variant">
-            <Button :intent="intent" :variant="variant">{{ intent }}</Button>
-          </div>
+// Shared view fragment. Authored once here and reused by both the standalone
+// story (axe-checked on the canvas) and the Snapshot board, so the snapped image
+// can never drift from the live story.
+const ColorsView = defineComponent({
+  // eslint-disable-next-line vue/no-reserved-component-names -- registering the real Button component, not defining one named "Button"
+  components: { Button },
+  setup: () => ({ intents, variants }),
+  template: `
+    <div class="flex flex-col gap-3">
+      <div class="grid grid-cols-[6rem_repeat(2,minmax(0,1fr))] items-center gap-3">
+        <span></span>
+        <span v-for="v in variants" :key="v" class="font-body text-fg-subtle text-sm capitalize">{{ v }}</span>
+      </div>
+      <div
+        v-for="intent in intents"
+        :key="intent"
+        class="grid grid-cols-[6rem_repeat(2,minmax(0,1fr))] items-center gap-3"
+      >
+        <span class="font-body text-fg-muted text-sm capitalize">{{ intent }}</span>
+        <div v-for="variant in variants" :key="variant">
+          <Button :intent="intent" :variant="variant">{{ intent }}</Button>
         </div>
       </div>
-    `,
-  }),
+    </div>
+  `,
+})
+
+// The review story: every intent x variant rendered on the canvas, axe-checked.
+export const AllColors: Story = {
+  render: () => ({ components: { ColorsView }, template: `<ColorsView />` }),
 }
 
 export const Sizes: Story = {
@@ -192,26 +199,13 @@ const states = [
 // matrix for icon-only. This is the story the snapshot test snaps.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Button },
+    components: { Button, ColorsView },
     setup: () => ({ intents, variants, sizes, states, icon: Star('snap-icon') }),
     template: `
       <div class="flex w-max flex-col gap-10 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-3">
           <h2 class="font-heading font-bold text-fg-default text-lg">Colours</h2>
-          <div class="grid grid-cols-[6rem_repeat(7,auto)] items-center gap-3">
-            <span></span>
-            <span v-for="intent in intents" :key="intent" class="font-body text-fg-subtle text-sm capitalize">{{ intent }}</span>
-          </div>
-          <div
-            v-for="variant in variants"
-            :key="variant"
-            class="grid grid-cols-[6rem_repeat(7,auto)] items-center gap-3"
-          >
-            <span class="font-body text-fg-muted text-sm capitalize">{{ variant }}</span>
-            <div v-for="intent in intents" :key="intent">
-              <Button :intent="intent" :variant="variant">{{ intent }}</Button>
-            </div>
-          </div>
+          <ColorsView />
         </section>
 
         <section class="flex flex-col gap-4">

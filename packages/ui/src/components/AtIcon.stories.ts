@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { defineComponent } from 'vue'
 import {
   PhArrowLeft,
   PhArrowRight,
@@ -49,61 +50,71 @@ export const Playground: Story = {
   }),
 }
 
+// Shared view fragments. Each block is authored once here and reused by both its
+// standalone story and the Snapshot board, so the snapped image can never drift
+// from the live story.
+
 // One glyph at every named size -- each maps to a type-scale step so icons line
 // up with the text they sit beside.
-export const Sizes: Story = {
-  render: () => ({
-    components: { Icon },
-    setup: () => ({ sizes, icon: PhStar }),
-    template: `
-      <div class="flex items-end gap-4 text-fg-default">
-        <div v-for="size in sizes" :key="size" class="flex flex-col items-center gap-1">
-          <Icon :icon="icon" :size="size" />
-          <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
-        </div>
+const SizesView = defineComponent({
+  components: { Icon },
+  setup: () => ({ sizes, icon: PhStar }),
+  template: `
+    <div class="flex items-end gap-4 text-fg-default">
+      <div v-for="size in sizes" :key="size" class="flex flex-col items-center gap-1">
+        <Icon :icon="icon" :size="size" />
+        <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
       </div>
-    `,
-  }),
-}
+    </div>
+  `,
+})
 
 // Regular vs fill -- the two weights Atelier ships.
-export const Weights: Story = {
-  render: () => ({
-    components: { Icon },
-    setup: () => ({ weights, icon: PhHeart }),
-    template: `
-      <div class="flex items-center gap-6 text-fg-default">
-        <div v-for="weight in weights" :key="weight" class="flex flex-col items-center gap-1">
-          <Icon :icon="icon" :weight="weight" size="2xl" />
-          <span class="font-body text-fg-subtle text-xs">{{ weight }}</span>
-        </div>
+const WeightsView = defineComponent({
+  components: { Icon },
+  setup: () => ({ weights, icon: PhHeart }),
+  template: `
+    <div class="flex items-center gap-6 text-fg-default">
+      <div v-for="weight in weights" :key="weight" class="flex flex-col items-center gap-1">
+        <Icon :icon="icon" :weight="weight" size="2xl" />
+        <span class="font-body text-fg-subtle text-xs">{{ weight }}</span>
       </div>
-    `,
-  }),
-}
+    </div>
+  `,
+})
 
 // Colour by token, and colour inherited from the parent. The first row paints
 // the glyph with a status-colour token; the second inherits the parent's text
 // colour (no color prop).
-export const Colors: Story = {
-  render: () => ({
-    components: { Icon },
-    setup: () => ({ icon: PhWarningCircle }),
-    template: `
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-4">
-          <Icon :icon="icon" size="xl" color="var(--color-danger-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-warning-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-success-solid)" />
-          <Icon :icon="icon" size="xl" color="var(--color-info-solid)" />
-        </div>
-        <div class="flex items-center gap-2 text-secondary-default">
-          <Icon :icon="icon" size="xl" />
-          <span class="font-body text-base">inherits the parent's colour</span>
-        </div>
+const ColorsView = defineComponent({
+  components: { Icon },
+  setup: () => ({ icon: PhWarningCircle }),
+  template: `
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center gap-4">
+        <Icon :icon="icon" size="xl" color="var(--color-danger-solid)" />
+        <Icon :icon="icon" size="xl" color="var(--color-warning-solid)" />
+        <Icon :icon="icon" size="xl" color="var(--color-success-solid)" />
+        <Icon :icon="icon" size="xl" color="var(--color-info-solid)" />
       </div>
-    `,
-  }),
+      <div class="flex items-center gap-2 text-secondary-default">
+        <Icon :icon="icon" size="xl" />
+        <span class="font-body text-base">inherits the parent's colour</span>
+      </div>
+    </div>
+  `,
+})
+
+export const Sizes: Story = {
+  render: () => ({ components: { SizesView }, template: `<SizesView />` }),
+}
+
+export const Weights: Story = {
+  render: () => ({ components: { WeightsView }, template: `<WeightsView />` }),
+}
+
+export const Colors: Story = {
+  render: () => ({ components: { ColorsView }, template: `<ColorsView />` }),
 }
 
 // Decorative by default: hidden from the a11y tree, no accessible name.
@@ -175,65 +186,72 @@ const semantic = {
   ],
 } as const
 
+// This story is the documentation -- the source of truth other components defer
+// to. Reused wholesale (groups + loading + disclosure) by the Snapshot board.
+const SemanticView = defineComponent({
+  components: { Icon },
+  setup: () => ({
+    semantic,
+    groups: Object.keys(semantic) as (keyof typeof semantic)[],
+    caret: PhCaretDown,
+    spinner: PhCircleNotch,
+  }),
+  template: `
+    <div class="flex w-max flex-col gap-8 text-fg-default">
+      <section v-for="group in groups" :key="group" class="flex flex-col gap-3">
+        <h2 class="font-heading font-bold text-lg">{{ group }}</h2>
+        <div class="flex flex-col gap-3">
+          <div v-for="row in semantic[group]" :key="row.name" class="flex items-center gap-3">
+            <Icon :icon="row.icon" size="xl" :class="row.tone" />
+            <span class="font-body w-40 text-base">{{ row.name }}</span>
+            <span class="font-body text-fg-subtle text-sm">{{ row.note }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="font-heading font-bold text-lg">Loading</h2>
+        <div class="flex items-center gap-3">
+          <Icon :icon="spinner" size="xl" class="animate-spin" />
+          <span class="font-body w-40 text-base">Loading</span>
+          <span class="font-body text-fg-subtle text-sm">never static, always spinning</span>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="font-heading font-bold text-lg">Disclosure</h2>
+        <p class="font-body max-w-prose text-fg-subtle text-sm">
+          One glyph, fill weight, rotated by CSS to point where the panel goes:
+          down for a select (a menu sits below), up for a closing accordion, left
+          and right for drawers. The icon never changes -- only its rotation.
+        </p>
+        <div class="flex items-center gap-6">
+          <div class="flex flex-col items-center gap-1">
+            <Icon :icon="caret" weight="fill" size="xl" />
+            <span class="font-body text-fg-subtle text-xs">expand (select)</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <Icon :icon="caret" weight="fill" size="xl" class="rotate-180" />
+            <span class="font-body text-fg-subtle text-xs">contract</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <Icon :icon="caret" weight="fill" size="xl" class="-rotate-90" />
+            <span class="font-body text-fg-subtle text-xs">drawer (left)</span>
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <Icon :icon="caret" weight="fill" size="xl" class="rotate-90" />
+            <span class="font-body text-fg-subtle text-xs">drawer (right)</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  `,
+})
+
 export const Semantic: Story = {
   render: () => ({
-    components: { Icon },
-    setup: () => ({
-      semantic,
-      groups: Object.keys(semantic) as (keyof typeof semantic)[],
-      caret: PhCaretDown,
-      spinner: PhCircleNotch,
-    }),
-    template: `
-      <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default">
-        <section v-for="group in groups" :key="group" class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">{{ group }}</h2>
-          <div class="flex flex-col gap-3">
-            <div v-for="row in semantic[group]" :key="row.name" class="flex items-center gap-3">
-              <Icon :icon="row.icon" size="xl" :class="row.tone" />
-              <span class="font-body w-40 text-base">{{ row.name }}</span>
-              <span class="font-body text-fg-subtle text-sm">{{ row.note }}</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Loading</h2>
-          <div class="flex items-center gap-3">
-            <Icon :icon="spinner" size="xl" class="animate-spin" />
-            <span class="font-body w-40 text-base">Loading</span>
-            <span class="font-body text-fg-subtle text-sm">never static, always spinning</span>
-          </div>
-        </section>
-
-        <section class="flex flex-col gap-3">
-          <h2 class="font-heading font-bold text-lg">Disclosure</h2>
-          <p class="font-body max-w-prose text-fg-subtle text-sm">
-            One glyph, fill weight, rotated by CSS to point where the panel goes:
-            down for a select (a menu sits below), up for a closing accordion, left
-            and right for drawers. The icon never changes -- only its rotation.
-          </p>
-          <div class="flex items-center gap-6">
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" />
-              <span class="font-body text-fg-subtle text-xs">expand (select)</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="rotate-180" />
-              <span class="font-body text-fg-subtle text-xs">contract</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="-rotate-90" />
-              <span class="font-body text-fg-subtle text-xs">drawer (left)</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="rotate-90" />
-              <span class="font-body text-fg-subtle text-xs">drawer (right)</span>
-            </div>
-          </div>
-        </section>
-      </div>
-    `,
+    components: { SemanticView },
+    template: `<div class="bg-bg-default p-6"><SemanticView /></div>`,
   }),
 }
 
@@ -241,90 +259,22 @@ export const Semantic: Story = {
 // screen in a labelled grid. This is the story the snapshot test snaps.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Icon },
-    setup: () => ({
-      sizes,
-      weights,
-      semantic,
-      groups: Object.keys(semantic) as (keyof typeof semantic)[],
-      star: PhStar,
-      heart: PhHeart,
-      warning: PhWarningCircle,
-      caret: PhCaretDown,
-      spinner: PhCircleNotch,
-    }),
+    components: { SizesView, WeightsView, ColorsView, SemanticView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Sizes</h2>
-          <div class="flex items-end gap-4">
-            <div v-for="size in sizes" :key="size" class="flex flex-col items-center gap-1">
-              <Icon :icon="star" :size="size" />
-              <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
-            </div>
-          </div>
+          <SizesView />
         </section>
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Weights</h2>
-          <div class="flex items-center gap-6">
-            <div v-for="weight in weights" :key="weight" class="flex flex-col items-center gap-1">
-              <Icon :icon="heart" :weight="weight" size="2xl" />
-              <span class="font-body text-fg-subtle text-xs">{{ weight }}</span>
-            </div>
-          </div>
+          <WeightsView />
         </section>
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Colours</h2>
-          <div class="flex items-center gap-4">
-            <Icon :icon="warning" size="xl" color="var(--color-danger-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-warning-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-success-solid)" />
-            <Icon :icon="warning" size="xl" color="var(--color-info-solid)" />
-            <span class="flex items-center gap-2 text-secondary-default">
-              <Icon :icon="warning" size="xl" />
-              <span class="font-body text-base">inherits parent colour</span>
-            </span>
-          </div>
+          <ColorsView />
         </section>
-        <section v-for="group in groups" :key="group" class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">{{ group }}</h2>
-          <div class="flex flex-col gap-2">
-            <div v-for="row in semantic[group]" :key="row.name" class="flex items-center gap-3">
-              <Icon :icon="row.icon" size="xl" :class="row.tone" />
-              <span class="font-body w-40 text-base">{{ row.name }}</span>
-              <span class="font-body text-fg-subtle text-sm">{{ row.note }}</span>
-            </div>
-          </div>
-        </section>
-        <section class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">Loading</h2>
-          <div class="flex items-center gap-3">
-            <Icon :icon="spinner" size="xl" class="animate-spin" />
-            <span class="font-body w-40 text-base">Loading</span>
-            <span class="font-body text-fg-subtle text-sm">never static, always spinning</span>
-          </div>
-        </section>
-        <section class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">Disclosure</h2>
-          <div class="flex items-center gap-6">
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" />
-              <span class="font-body text-fg-subtle text-xs">expand (select)</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="rotate-180" />
-              <span class="font-body text-fg-subtle text-xs">contract</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="-rotate-90" />
-              <span class="font-body text-fg-subtle text-xs">drawer (left)</span>
-            </div>
-            <div class="flex flex-col items-center gap-1">
-              <Icon :icon="caret" weight="fill" size="xl" class="rotate-90" />
-              <span class="font-body text-fg-subtle text-xs">drawer (right)</span>
-            </div>
-          </div>
-        </section>
+        <SemanticView />
       </div>
     `,
   }),
