@@ -2,8 +2,9 @@ import { composeStories } from '@storybook/vue3-vite'
 import { render, screen } from '@testing-library/vue'
 import { expect, test } from 'vitest'
 import * as stories from './Colour.stories'
+import { snapBoard } from '../../test/snap'
 
-const { Primitives, Status, Brand, IconsAndText } = composeStories(stories)
+const { Primitives, Status, Brand, IconsAndText, Snapshot } = composeStories(stories)
 
 // Every colourway renders as a labelled row.
 test('renders a row for every palette colourway', () => {
@@ -107,4 +108,12 @@ test('renders a row for every icons-and-text example', () => {
   ]) {
     expect(screen.getByText(name)).toBeInTheDocument()
   }
+})
+
+// The single visual snap for Colour: the Snapshot story's board (primitives,
+// status, brand, icons-and-text). Baseline: __snaps__/colour-snap-chromium-linux.png.
+// Rebaseline: pnpm test:update.
+test('Snapshot matches the visual board baseline', async () => {
+  render(Snapshot)
+  await snapBoard('snap-board', 'colour')
 })
