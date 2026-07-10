@@ -74,6 +74,14 @@ test('renders error text in the danger colour when present', () => {
   expect(msg.className).toContain('text-danger-fg')
 })
 
+// The field's own recess rim re-colours to the danger border token when an
+// error is present -- the same border treatment, not a switch to a flat variant.
+test('the field recesses with a danger border when an error is present', () => {
+  render(Input, { props: { label: 'Email', error: 'Invalid address' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).toContain('border-danger-border-default')
+})
+
 // A messaged field (label/help/error in use) reserves a fixed line of space for
 // the message so toggling it never shifts the layout.
 test('reserves a message line when the field carries a label', () => {

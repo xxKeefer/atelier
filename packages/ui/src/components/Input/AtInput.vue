@@ -70,6 +70,12 @@ const base =
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
+// The error state re-colours the recess's rim, matching the flat/recessed rung
+// of the danger colourway (border-danger-border-default, same token Elevation
+// uses for its recessed danger rungs) rather than the button's solid-fill edge
+// token -- the bucket stays a border treatment, not an extruded one.
+const errorClasses = 'border-danger-border-default'
+
 // Field padding mirrors the button size scale (button gap doesn't apply here).
 const sizes: Record<Size, string> = {
   sm: 'text-sm px-3 py-1.5',
@@ -103,7 +109,7 @@ const labelSizes: Record<Size, string> = {
       :value="modelValue"
       :placeholder="placeholder"
       type="text"
-      :class="[base, sizes[size]]"
+      :class="[base, sizes[size], error && errorClasses]"
       v-bind="$attrs"
       @input="onInput"
     />
