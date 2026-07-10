@@ -158,17 +158,19 @@ export const Sizes: Story = {
   render: () => ({ components: { SizesView }, template: `<SizesView />` }),
 }
 
-// The visual board: every shape on one screen. This is the story the snapshot
-// test snaps. Baseline: __snaps__/input-chromium-linux.png.
+// The visual board: every shape in a wrapping grid that fills the available
+// width and flows onto further rows, rather than one long horizontal strip
+// requiring side-scroll to see every state at once. This is the story the
+// snapshot test snaps. Baseline: __snaps__/input-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
     components: { Input, Icon, SizesView },
     setup: () => ({ PhMagnifyingGlass }),
     template: `
-      <div class="flex w-max flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
+      <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">States</h2>
-          <div class="flex items-start gap-6">
+          <div class="flex flex-wrap items-start gap-6">
             <Input label="Full name" placeholder="Ada Lovelace" class="w-72" />
             <Input label="Password" placeholder="••••••••" help="At least 8 characters." class="w-72" />
             <Input label="Email" placeholder="you@example.com" error="Enter a valid email address." class="w-72" />
