@@ -198,17 +198,17 @@ export const Snapshot: Story = {
       <div class="flex w-max flex-col gap-10 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-3">
           <h2 class="font-heading font-bold text-fg-default text-lg">Colours</h2>
-          <div class="grid grid-cols-[6rem_repeat(2,auto)] items-center gap-3">
+          <div class="grid grid-cols-[6rem_repeat(7,auto)] items-center gap-3">
             <span></span>
-            <span v-for="v in variants" :key="v" class="font-body text-fg-subtle text-sm capitalize">{{ v }}</span>
+            <span v-for="intent in intents" :key="intent" class="font-body text-fg-subtle text-sm capitalize">{{ intent }}</span>
           </div>
           <div
-            v-for="intent in intents"
-            :key="intent"
-            class="grid grid-cols-[6rem_repeat(2,auto)] items-center gap-3"
+            v-for="variant in variants"
+            :key="variant"
+            class="grid grid-cols-[6rem_repeat(7,auto)] items-center gap-3"
           >
-            <span class="font-body text-fg-muted text-sm capitalize">{{ intent }}</span>
-            <div v-for="variant in variants" :key="variant">
+            <span class="font-body text-fg-muted text-sm capitalize">{{ variant }}</span>
+            <div v-for="intent in intents" :key="intent">
               <Button :intent="intent" :variant="variant">{{ intent }}</Button>
             </div>
           </div>
@@ -240,28 +240,30 @@ export const Snapshot: Story = {
 
         <section class="flex flex-col gap-4">
           <h2 class="font-heading font-bold text-fg-default text-lg">Icon only</h2>
-          <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
-            <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
-            <div class="grid w-fit grid-cols-[3rem_repeat(2,auto)] items-center justify-items-start gap-x-4 gap-y-3">
-              <span></span>
-              <span
-                v-for="variant in variants"
-                :key="variant"
-                class="font-body text-fg-subtle text-xs capitalize"
-              >{{ variant }}</span>
-              <template v-for="size in sizes" :key="size">
-                <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
-                <Button
+          <div class="flex flex-row gap-8">
+            <div v-for="state in states" :key="state.name" class="flex flex-col gap-3">
+              <h3 class="font-body font-bold text-fg-muted text-sm">{{ state.name }}</h3>
+              <div class="grid w-fit grid-cols-[3rem_repeat(2,auto)] items-center justify-items-start gap-x-4 gap-y-3">
+                <span></span>
+                <span
                   v-for="variant in variants"
                   :key="variant"
-                  :variant="variant"
-                  :size="size"
-                  v-bind="state.props"
-                  aria-label="Favourite"
-                >
-                  <template #left><span v-html="icon" /></template>
-                </Button>
-              </template>
+                  class="font-body text-fg-subtle text-xs capitalize"
+                >{{ variant }}</span>
+                <template v-for="size in sizes" :key="size">
+                  <span class="font-body text-fg-subtle text-xs">{{ size }}</span>
+                  <Button
+                    v-for="variant in variants"
+                    :key="variant"
+                    :variant="variant"
+                    :size="size"
+                    v-bind="state.props"
+                    aria-label="Favourite"
+                  >
+                    <template #left><span v-html="icon" /></template>
+                  </Button>
+                </template>
+              </div>
             </div>
           </div>
         </section>
