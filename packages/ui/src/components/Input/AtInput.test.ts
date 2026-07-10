@@ -96,6 +96,24 @@ test('a bare field reserves no label or message space', () => {
   expect(screen.queryByTestId('input-message')).toBeNull()
 })
 
+// The #icon slot renders a consumer-supplied icon inside the recess, at the
+// field's start.
+test('renders slotted icon content inside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Search' },
+    slots: { icon: '<span data-testid="my-icon">*</span>' },
+  })
+  expect(screen.getByTestId('my-icon')).toBeInTheDocument()
+})
+
+// With no #icon slot passed, no icon-area padding is added -- the field's
+// default padding stands, so an ordinary field's layout is untouched.
+test('adds no icon padding when the icon slot is unused', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).not.toMatch(/pl-(8|9|10|11|12)\b/)
+})
+
 // The single visual snap for Input: the Snapshot story's board. Baseline:
 // __snaps__/input-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

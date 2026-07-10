@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { PhMagnifyingGlass } from '@phosphor-icons/vue'
 import { defineComponent } from 'vue'
 import Input from './AtInput.vue'
+import Icon from '../Icon/AtIcon.vue'
 
 const sizes = ['sm', 'md', 'lg'] as const
 
@@ -90,6 +92,21 @@ export const Bare: Story = {
   }),
 }
 
+// A leading icon inside the recess marks the field's purpose. The consumer
+// supplies the icon via the #icon slot (an AtIcon instance) -- the field only
+// positions it and clears space for it.
+export const WithIcon: Story = {
+  render: () => ({
+    components: { Input, Icon },
+    setup: () => ({ PhMagnifyingGlass }),
+    template: `
+      <Input aria-label="Search" placeholder="Search…" class="w-64">
+        <template #icon><Icon :icon="PhMagnifyingGlass" /></template>
+      </Input>
+    `,
+  }),
+}
+
 // Shared view fragment. Authored once here and reused by both the standalone
 // story and the Snapshot board, so the snapped image can never drift from the
 // live story.
@@ -119,7 +136,8 @@ export const Sizes: Story = {
 // test snaps. Baseline: __snaps__/input-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Input, SizesView },
+    components: { Input, Icon, SizesView },
+    setup: () => ({ PhMagnifyingGlass }),
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
@@ -130,6 +148,9 @@ export const Snapshot: Story = {
             <Input label="Email" placeholder="you@example.com" error="Enter a valid email address." class="w-72" />
             <Input aria-label="Filter" placeholder="Filter…" class="w-48" />
             <Input label="Full name" placeholder="Ada Lovelace" disabled class="w-72" />
+            <Input aria-label="Search" placeholder="Search…" class="w-48">
+              <template #icon><Icon :icon="PhMagnifyingGlass" /></template>
+            </Input>
           </div>
         </section>
 
