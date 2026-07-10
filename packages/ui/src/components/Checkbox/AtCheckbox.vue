@@ -91,6 +91,7 @@ const boxClasses = computed(() => [base, props.error ? danger : neutral])
     <div class="flex items-center gap-2">
       <CheckboxRoot
         :id="fieldId"
+        v-slot="{ state }"
         v-model="modelValue"
         :disabled="disabled"
         :name="name"
@@ -99,8 +100,8 @@ const boxClasses = computed(() => [base, props.error ? danger : neutral])
         v-bind="$attrs"
       >
         <CheckboxIndicator force-mount class="flex items-center justify-center">
-          <Icon v-if="modelValue === true" :icon="PhCheck" size="sm" />
-          <Icon v-else-if="modelValue === 'indeterminate'" :icon="PhMinus" size="sm" />
+          <Icon v-if="state === true" :icon="PhCheck" size="sm" />
+          <Icon v-else-if="state === 'indeterminate'" :icon="PhMinus" size="sm" />
         </CheckboxIndicator>
       </CheckboxRoot>
 
