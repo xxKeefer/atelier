@@ -41,13 +41,23 @@ test('renders a placeholder without standing in for the label', () => {
   expect(field).toHaveAttribute('placeholder', 'e.g. Brisbane')
 })
 
-// The recessed "bucket": the field carries the inset depth var the disabled
-// slice will later halve, rather than the button's extruded bottom edge.
+// The recessed "bucket": the field carries the inset depth var, rather than
+// the button's extruded bottom edge.
 test('the field recesses with an inset depth, not an extruded edge', () => {
   render(Input, { props: { label: 'Name' } })
   const field = screen.getByRole('textbox')
   expect(field.className).toContain('[--at-input-depth:5px]')
   expect(field.className).toContain('shadow-[inset')
+})
+
+// Disabled goes through the native attribute (via $attrs fallthrough) so the
+// browser handles inertness and excludes the value from submission -- no prop
+// needed. Depth halves via the disabled: variant on --at-input-depth.
+test('a disabled field is inert with a half-depth recess', () => {
+  render(Input, { props: { label: 'Name' }, attrs: { disabled: true } })
+  const field = screen.getByRole('textbox')
+  expect(field).toBeDisabled()
+  expect(field.className).toContain('disabled:[--at-input-depth:2.5px]')
 })
 
 // Help text renders below the field on the normal surface, not inside the
@@ -64,6 +74,14 @@ test('renders error text in the danger colour when present', () => {
   expect(msg.className).toContain('text-danger-fg')
 })
 
+// The field's own recess rim re-colours to the danger border token when an
+// error is present -- the same border treatment, not a switch to a flat variant.
+test('the field recesses with a danger border when an error is present', () => {
+  render(Input, { props: { label: 'Email', error: 'Invalid address' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).toContain('border-danger-border-default')
+})
+
 // A messaged field (label/help/error in use) reserves a fixed line of space for
 // the message so toggling it never shifts the layout.
 test('reserves a message line when the field carries a label', () => {
@@ -76,6 +94,51 @@ test('reserves a message line when the field carries a label', () => {
 test('a bare field reserves no label or message space', () => {
   render(Input, { attrs: { 'aria-label': 'Filter' } })
   expect(screen.queryByTestId('input-message')).toBeNull()
+})
+
+// The #icon slot renders a consumer-supplied icon inside the recess, at the
+// field's start.
+test('renders slotted icon content inside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Search' },
+    slots: { icon: '<span data-testid="my-icon">*</span>' },
+  })
+  expect(screen.getByTestId('my-icon')).toBeInTheDocument()
+})
+
+// With no #icon slot passed, no icon-area padding is added -- the field's
+// default padding stands, so an ordinary field's layout is untouched.
+test('adds no icon padding when the icon slot is unused', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).not.toMatch(/pl-(8|9|10|11|12)\b/)
+})
+
+// The #prefix/#suffix slots render flanking boxes beside the input, each its
+// own half-depth recess (not the input's own full-depth bucket).
+test('renders slotted prefix content beside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Amount' },
+    slots: { prefix: '<span data-testid="my-prefix">$</span>' },
+  })
+  expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
+  expect(screen.getByTestId('input-prefix').className).toContain('shadow-[inset_0_2.5px')
+})
+
+test('renders slotted suffix content beside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Weight' },
+    slots: { suffix: '<span data-testid="my-suffix">kg</span>' },
+  })
+  expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
+  expect(screen.getByTestId('input-suffix').className).toContain('shadow-[inset_0_2.5px')
+})
+
+// With no #prefix/#suffix slots passed, no flanking box renders at all.
+test('renders no prefix or suffix box when the slots are unused', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  expect(screen.queryByTestId('input-prefix')).toBeNull()
+  expect(screen.queryByTestId('input-suffix')).toBeNull()
 })
 
 // The single visual snap for Input: the Snapshot story's board. Baseline:

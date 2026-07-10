@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId } from 'vue'
+import { computed, useId, useSlots } from 'vue'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -48,6 +48,15 @@ const fieldId = computed(() => props.id ?? autoId)
 // label, help, or error -- stays vertically compact, reserving nothing.
 const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
 
+// The #icon slot is optional -- a consumer drops in an AtIcon to mark the
+// field's purpose. Detected via useSlots (mirrors AtButton's iconOnly check)
+// so an unused slot costs the field nothing: no extra padding, no positioning
+// context beyond what's already there.
+const slots = useSlots()
+const hasIcon = computed(() => !!slots.icon)
+const hasPrefix = computed(() => !!slots.prefix)
+const hasSuffix = computed(() => !!slots.suffix)
+
 const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
@@ -55,17 +64,26 @@ const onInput = (e: Event) => {
 // The recess -- the inverse of the button's extruded bottom edge. The field is a
 // bucket sunk into the page: the deepest surface colour (bg-canvas) reads as a
 // hole punched into whatever it sits on, and a layered inset shadow casts the
-// walls of the depression. Depth lives in --at-input-depth so the later disabled
-// slice can halve it. The placeholder, being centred text, sits in the deepest
-// part of the bucket. Focus swaps to the system pink ring, matching the button.
+// walls of the depression. Depth lives in --at-input-depth; disabled halves it
+// (a shallower bucket), mirroring the button's own half-depressed disabled
+// geometry -- same depth idiom, not the flat variant's plain border. The
+// placeholder, being centred text, sits in the deepest part of the bucket. Focus
+// swaps to the system pink ring, matching the button.
 const base =
   'w-full font-body rounded-md text-fg-default ' +
   'bg-[var(--color-bg-canvas)] placeholder:text-fg-subtle ' +
   'border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  '[--at-input-depth:5px] ' +
+  '[--at-input-depth:5px] disabled:[--at-input-depth:2.5px] ' +
   'shadow-[inset_0_var(--at-input-depth)_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)] ' +
   'transition-[box-shadow,border-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
+
+// The error state re-colours the recess's rim, matching the flat/recessed rung
+// of the danger colourway (border-danger-border-default, same token Elevation
+// uses for its recessed danger rungs) rather than the button's solid-fill edge
+// token -- the bucket stays a border treatment, not an extruded one.
+const errorClasses = 'border-danger-border-default'
 
 // Field padding mirrors the button size scale (button gap doesn't apply here).
 const sizes: Record<Size, string> = {
@@ -80,6 +98,35 @@ const labelSizes: Record<Size, string> = {
   md: 'text-sm',
   lg: 'text-base',
 }
+
+// The icon sits inside the recess at the field's start, inset by the same
+// amount as the field's own horizontal padding so it lines up with where text
+// would otherwise begin.
+const iconInsets: Record<Size, string> = {
+  sm: 'pl-3',
+  md: 'pl-4',
+  lg: 'pl-6',
+}
+
+// When an icon is present the field's own left padding grows to clear the
+// icon plus a gap, rather than sitting under it.
+const iconPadding: Record<Size, string> = {
+  sm: 'pl-8',
+  md: 'pl-10',
+  lg: 'pl-12',
+}
+
+// A prefix/suffix box: the same recess idiom as the field itself (bg-canvas,
+// bordered frame, layered inset shadow) but at a fixed half depth (2.5px vs
+// the field's base 5px) -- a shallower bucket flanking the deeper one that
+// actually receives input. That fixed value isn't wired to --at-input-depth:
+// it happens to equal the depth the field itself already drops to when
+// disabled (disabled:[--at-input-depth:2.5px] above), so a disabled field's
+// writing area lifts to exactly this same level with no extra coupling.
+const prefixSuffixClasses =
+  'flex items-center justify-center font-body text-fg-subtle rounded-md ' +
+  'bg-[var(--color-bg-canvas)] border-[3px] border-solid border-[color:var(--color-border-default)] ' +
+  'shadow-[inset_0_2.5px_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)]'
 </script>
 
 <template>
@@ -95,15 +142,42 @@ const labelSizes: Record<Size, string> = {
       {{ label }}
     </label>
 
-    <input
-      :id="fieldId"
-      :value="modelValue"
-      :placeholder="placeholder"
-      type="text"
-      :class="[base, sizes[size]]"
-      v-bind="$attrs"
-      @input="onInput"
-    />
+    <div class="flex items-stretch gap-2">
+      <!-- Prefix: a shallower recess flanking the field, e.g. a currency
+           symbol or unit. -->
+      <span v-if="hasPrefix" data-testid="input-prefix" :class="[prefixSuffixClasses, sizes[size]]">
+        <slot name="prefix" />
+      </span>
+
+      <div class="relative flex-1">
+        <!-- Decorative-by-default (AtIcon owns its own aria-hidden/label); this
+             span only positions it and keeps clicks passing through to the
+             input. -->
+        <span
+          v-if="hasIcon"
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center text-fg-subtle"
+          :class="iconInsets[size]"
+        >
+          <slot name="icon" />
+        </span>
+
+        <input
+          :id="fieldId"
+          :value="modelValue"
+          :placeholder="placeholder"
+          type="text"
+          :class="[base, sizes[size], hasIcon && iconPadding[size], error && errorClasses]"
+          v-bind="$attrs"
+          @input="onInput"
+        />
+      </div>
+
+      <!-- Suffix: a shallower recess flanking the field, e.g. a unit or
+           payment provider mark. -->
+      <span v-if="hasSuffix" data-testid="input-suffix" :class="[prefixSuffixClasses, sizes[size]]">
+        <slot name="suffix" />
+      </span>
+    </div>
 
     <!-- The reserved message line: present only in messaged mode, with a minimum
          of one line of height so swapping error <-> help <-> nothing never shifts
