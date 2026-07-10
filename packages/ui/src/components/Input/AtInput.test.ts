@@ -41,13 +41,23 @@ test('renders a placeholder without standing in for the label', () => {
   expect(field).toHaveAttribute('placeholder', 'e.g. Brisbane')
 })
 
-// The recessed "bucket": the field carries the inset depth var the disabled
-// slice will later halve, rather than the button's extruded bottom edge.
+// The recessed "bucket": the field carries the inset depth var, rather than
+// the button's extruded bottom edge.
 test('the field recesses with an inset depth, not an extruded edge', () => {
   render(Input, { props: { label: 'Name' } })
   const field = screen.getByRole('textbox')
   expect(field.className).toContain('[--at-input-depth:5px]')
   expect(field.className).toContain('shadow-[inset')
+})
+
+// Disabled goes through the native attribute (via $attrs fallthrough) so the
+// browser handles inertness and excludes the value from submission -- no prop
+// needed. Depth halves via the disabled: variant on --at-input-depth.
+test('a disabled field is inert with a half-depth recess', () => {
+  render(Input, { props: { label: 'Name' }, attrs: { disabled: true } })
+  const field = screen.getByRole('textbox')
+  expect(field).toBeDisabled()
+  expect(field.className).toContain('disabled:[--at-input-depth:2.5px]')
 })
 
 // Help text renders below the field on the normal surface, not inside the

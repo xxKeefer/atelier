@@ -55,16 +55,19 @@ const onInput = (e: Event) => {
 // The recess -- the inverse of the button's extruded bottom edge. The field is a
 // bucket sunk into the page: the deepest surface colour (bg-canvas) reads as a
 // hole punched into whatever it sits on, and a layered inset shadow casts the
-// walls of the depression. Depth lives in --at-input-depth so the later disabled
-// slice can halve it. The placeholder, being centred text, sits in the deepest
-// part of the bucket. Focus swaps to the system pink ring, matching the button.
+// walls of the depression. Depth lives in --at-input-depth; disabled halves it
+// (a shallower bucket), mirroring the button's own half-depressed disabled
+// geometry -- same depth idiom, not the flat variant's plain border. The
+// placeholder, being centred text, sits in the deepest part of the bucket. Focus
+// swaps to the system pink ring, matching the button.
 const base =
   'w-full font-body rounded-md text-fg-default ' +
   'bg-[var(--color-bg-canvas)] placeholder:text-fg-subtle ' +
   'border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  '[--at-input-depth:5px] ' +
+  '[--at-input-depth:5px] disabled:[--at-input-depth:2.5px] ' +
   'shadow-[inset_0_var(--at-input-depth)_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)] ' +
   'transition-[box-shadow,border-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
 // Field padding mirrors the button size scale (button gap doesn't apply here).

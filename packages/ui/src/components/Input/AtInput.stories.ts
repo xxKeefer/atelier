@@ -71,6 +71,15 @@ export const WithError: Story = {
   }),
 }
 
+// Disabled: half-depth recess (a shallower bucket), dimmed, not-allowed cursor.
+// The field goes inert via the native disabled attribute -- no value submits.
+export const Disabled: Story = {
+  render: () => ({
+    components: { Input },
+    template: '<Input label="Full name" placeholder="Ada Lovelace" disabled class="w-80" />',
+  }),
+}
+
 // A bare field: no label, help, or error. It stays vertically compact (no
 // reserved message line) for inline use like a filter-bar search. The accessible
 // name comes from a forwarded aria-label.
@@ -120,6 +129,7 @@ export const Snapshot: Story = {
             <Input label="Password" placeholder="••••••••" help="At least 8 characters." class="w-72" />
             <Input label="Email" placeholder="you@example.com" error="Enter a valid email address." class="w-72" />
             <Input aria-label="Filter" placeholder="Filter…" class="w-48" />
+            <Input label="Full name" placeholder="Ada Lovelace" disabled class="w-72" />
           </div>
         </section>
 
