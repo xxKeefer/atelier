@@ -114,6 +114,33 @@ test('adds no icon padding when the icon slot is unused', () => {
   expect(field.className).not.toMatch(/pl-(8|9|10|11|12)\b/)
 })
 
+// The #prefix/#suffix slots render flanking boxes beside the input, each its
+// own half-depth recess (not the input's own full-depth bucket).
+test('renders slotted prefix content beside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Amount' },
+    slots: { prefix: '<span data-testid="my-prefix">$</span>' },
+  })
+  expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
+  expect(screen.getByTestId('input-prefix').className).toContain('shadow-[inset_0_2.5px')
+})
+
+test('renders slotted suffix content beside the field', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Weight' },
+    slots: { suffix: '<span data-testid="my-suffix">kg</span>' },
+  })
+  expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
+  expect(screen.getByTestId('input-suffix').className).toContain('shadow-[inset_0_2.5px')
+})
+
+// With no #prefix/#suffix slots passed, no flanking box renders at all.
+test('renders no prefix or suffix box when the slots are unused', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  expect(screen.queryByTestId('input-prefix')).toBeNull()
+  expect(screen.queryByTestId('input-suffix')).toBeNull()
+})
+
 // The single visual snap for Input: the Snapshot story's board. Baseline:
 // __snaps__/input-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

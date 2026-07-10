@@ -107,6 +107,32 @@ export const WithIcon: Story = {
   }),
 }
 
+// A leading prefix box (e.g. a currency symbol) sits in its own shallower
+// recess to the field's left.
+export const WithPrefix: Story = {
+  render: () => ({
+    components: { Input },
+    template: `
+      <Input aria-label="Amount" placeholder="0.00" class="w-64">
+        <template #prefix>$</template>
+      </Input>
+    `,
+  }),
+}
+
+// A trailing suffix box (e.g. a unit) sits in its own shallower recess to the
+// field's right.
+export const WithSuffix: Story = {
+  render: () => ({
+    components: { Input },
+    template: `
+      <Input aria-label="Weight" placeholder="0" class="w-64">
+        <template #suffix>kg</template>
+      </Input>
+    `,
+  }),
+}
+
 // Shared view fragment. Authored once here and reused by both the standalone
 // story and the Snapshot board, so the snapped image can never drift from the
 // live story.
@@ -150,6 +176,12 @@ export const Snapshot: Story = {
             <Input label="Full name" placeholder="Ada Lovelace" disabled class="w-72" />
             <Input aria-label="Search" placeholder="Search…" class="w-48">
               <template #icon><Icon :icon="PhMagnifyingGlass" /></template>
+            </Input>
+            <Input aria-label="Amount" placeholder="0.00" class="w-48">
+              <template #prefix>$</template>
+            </Input>
+            <Input aria-label="Weight" placeholder="0" class="w-48">
+              <template #suffix>kg</template>
             </Input>
           </div>
         </section>

@@ -54,6 +54,8 @@ const messaged = computed(() => [props.label, props.help, props.error].some(Bool
 // context beyond what's already there.
 const slots = useSlots()
 const hasIcon = computed(() => !!slots.icon)
+const hasPrefix = computed(() => !!slots.prefix)
+const hasSuffix = computed(() => !!slots.suffix)
 
 const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
@@ -113,6 +115,18 @@ const iconPadding: Record<Size, string> = {
   md: 'pl-10',
   lg: 'pl-12',
 }
+
+// A prefix/suffix box: the same recess idiom as the field itself (bg-canvas,
+// bordered frame, layered inset shadow) but at a fixed half depth (2.5px vs
+// the field's base 5px) -- a shallower bucket flanking the deeper one that
+// actually receives input. That fixed value isn't wired to --at-input-depth:
+// it happens to equal the depth the field itself already drops to when
+// disabled (disabled:[--at-input-depth:2.5px] above), so a disabled field's
+// writing area lifts to exactly this same level with no extra coupling.
+const prefixSuffixClasses =
+  'flex items-center justify-center font-body text-fg-subtle rounded-md ' +
+  'bg-[var(--color-bg-canvas)] border-[3px] border-solid border-[color:var(--color-border-default)] ' +
+  'shadow-[inset_0_2.5px_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)]'
 </script>
 
 <template>
@@ -128,27 +142,41 @@ const iconPadding: Record<Size, string> = {
       {{ label }}
     </label>
 
-    <div class="relative">
-      <!-- Decorative-by-default (AtIcon owns its own aria-hidden/label); this
-           span only positions it and keeps clicks passing through to the
-           input. -->
-      <span
-        v-if="hasIcon"
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center text-fg-subtle"
-        :class="iconInsets[size]"
-      >
-        <slot name="icon" />
+    <div class="flex items-stretch gap-2">
+      <!-- Prefix: a shallower recess flanking the field, e.g. a currency
+           symbol or unit. -->
+      <span v-if="hasPrefix" data-testid="input-prefix" :class="[prefixSuffixClasses, sizes[size]]">
+        <slot name="prefix" />
       </span>
 
-      <input
-        :id="fieldId"
-        :value="modelValue"
-        :placeholder="placeholder"
-        type="text"
-        :class="[base, sizes[size], hasIcon && iconPadding[size], error && errorClasses]"
-        v-bind="$attrs"
-        @input="onInput"
-      />
+      <div class="relative flex-1">
+        <!-- Decorative-by-default (AtIcon owns its own aria-hidden/label); this
+             span only positions it and keeps clicks passing through to the
+             input. -->
+        <span
+          v-if="hasIcon"
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center text-fg-subtle"
+          :class="iconInsets[size]"
+        >
+          <slot name="icon" />
+        </span>
+
+        <input
+          :id="fieldId"
+          :value="modelValue"
+          :placeholder="placeholder"
+          type="text"
+          :class="[base, sizes[size], hasIcon && iconPadding[size], error && errorClasses]"
+          v-bind="$attrs"
+          @input="onInput"
+        />
+      </div>
+
+      <!-- Suffix: a shallower recess flanking the field, e.g. a unit or
+           payment provider mark. -->
+      <span v-if="hasSuffix" data-testid="input-suffix" :class="[prefixSuffixClasses, sizes[size]]">
+        <slot name="suffix" />
+      </span>
     </div>
 
     <!-- The reserved message line: present only in messaged mode, with a minimum
