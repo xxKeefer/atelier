@@ -1,0 +1,73 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "font": {
+    "$type": "fontFamily",
+    "$description": "Type families: sans/mono primitives, body/heading roles.",
+    "sans": {
+      "$value": [
+        "Atkinson Hyperlegible",
+        "system-ui",
+        "-apple-system",
+        "Segoe UI",
+        "Roboto",
+        "sans-serif"
+      ],
+      "$description": "Atkinson Hyperlegible, display/heading face"
+    },
+    "mono": {
+      "$value": [
+        "JetBrains Mono",
+        "ui-monospace",
+        "SFMono-Regular",
+        "Menlo",
+        "Consolas",
+        "monospace"
+      ],
+      "$description": "JetBrains Mono. Body + code face."
+    },
+    "body": { "$value": "{font.mono}", "$description": "running text is mono (JetBrains)" },
+    "heading": {
+      "$value": "{font.sans}",
+      "$description": "headings/display are sans (Atkinson, bold)"
+    }
+  },
+  "font-weight": {
+    "$type": "fontWeight",
+    "$description": "Font weights: 400/700 only.",
+    "regular": { "$value": 400 },
+    "bold": { "$value": 700 }
+  },
+  "text": {
+    "$type": "dimension",
+    "$description": "Type scale in rem, base 1rem = 16px, minor-third (1.2) on a 2px grid.",
+    "xs": { "$value": "0.75rem", "$description": "12px - fine print, captions" },
+    "sm": { "$value": "0.875rem", "$description": "14px - secondary text" },
+    "base": { "$value": "1rem", "$description": "16px - body default" },
+    "lg": { "$value": "1.25rem", "$description": "20px" },
+    "xl": { "$value": "1.5rem", "$description": "24px" },
+    "2xl": { "$value": "1.75rem", "$description": "28px" },
+    "3xl": { "$value": "2rem", "$description": "32px" },
+    "4xl": { "$value": "2.5rem", "$description": "40px" },
+    "5xl": { "$value": "3rem", "$description": "48px" },
+    "6xl": { "$value": "3.5rem", "$description": "56px" },
+    "7xl": { "$value": "4.25rem", "$description": "68px" },
+    "8xl": { "$value": "5rem", "$description": "80px" },
+    "9xl": { "$value": "6rem", "$description": "96px - hero display" }
+  },
+  "leading": {
+    "$type": "number",
+    "$description": "Unitless line-height scale.",
+    "none": { "$value": 1 },
+    "tight": { "$value": 1.1, "$description": "large display headings" },
+    "snug": { "$value": 1.25, "$description": "sub-headings" },
+    "normal": { "$value": 1.5, "$description": "body default" },
+    "relaxed": { "$value": 1.625, "$description": "long-form reading" }
+  },
+  "tracking": {
+    "$type": "dimension",
+    "$description": "Letter-spacing in em (scales with font size).",
+    "tight": { "$value": "-0.02em", "$description": "large headings" },
+    "normal": { "$value": "0em" },
+    "wide": { "$value": "0.05em", "$description": "all-caps / small labels" }
+  }
+}

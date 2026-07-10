@@ -1,0 +1,362 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "color": {
+    "$type": "color",
+    "$description": "Tier-2 semantic roles, dark-first; all values reference the tier-1 palette.",
+    "bg": {
+      "canvas": {
+        "$value": "{palette.neutral.950}",
+        "$description": "page background - the floor everything sits on, below the surface ramp"
+      }
+    },
+    "surface": {
+      "$description": "Element surface ramp: the three planes the elevation ladder draws from.",
+      "subtle": {
+        "$value": "{palette.neutral.900}",
+        "$description": "recessed surfaces (lower / low): inputs, wells, selected checkbox/radio, switch track."
+      },
+      "default": {
+        "$value": "{palette.neutral.800}",
+        "$description": "resting plane (default): cards, panels, fields."
+      },
+      "strong": {
+        "$value": "{palette.neutral.700}",
+        "$description": "raised surfaces (high / higher) + overlays: popped buttons, menus, modals."
+      }
+    },
+    "fg": {
+      "default": {
+        "$value": "{palette.neutral.50}",
+        "$description": "primary text"
+      },
+      "muted": {
+        "$value": "{palette.neutral.200}",
+        "$description": "secondary text"
+      },
+      "subtle": {
+        "$value": "{palette.neutral.300}",
+        "$description": "tertiary / placeholder text"
+      },
+      "disabled": {
+        "$value": "{palette.neutral.600}",
+        "$description": "disabled text"
+      },
+      "inverse": {
+        "$value": "{palette.neutral.950}",
+        "$description": "text on light / solid fills"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{palette.neutral.700}"
+      },
+      "subtle": {
+        "$value": "{palette.neutral.800}"
+      },
+      "strong": {
+        "$value": "{palette.neutral.600}"
+      },
+      "focus": {
+        "$value": "{palette.magenta.500}",
+        "$description": "focus ring"
+      }
+    },
+    "primary": {
+      "default": {
+        "$value": "{palette.magenta.500}",
+        "$description": "primary brand fill"
+      },
+      "hover": {
+        "$value": "{palette.magenta.400}"
+      },
+      "active": {
+        "$value": "{palette.magenta.600}"
+      },
+      "subtle": {
+        "$value": "{palette.magenta.900}",
+        "$description": "tinted background"
+      },
+      "surface-subtle": {
+        "$value": "{palette.magenta.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.magenta.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.magenta.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.magenta.600}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.magenta.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.magenta.400}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "edge": {
+        "$value": "{palette.magenta.800}",
+        "$description": "skeuomorphic shadowed side of the lit fill"
+      },
+      "fg": {
+        "$value": "{palette.neutral.950}",
+        "$description": "text on primary fill"
+      }
+    },
+    "secondary": {
+      "default": {
+        "$value": "{palette.violet.400}",
+        "$description": "secondary brand fill"
+      },
+      "hover": {
+        "$value": "{palette.violet.300}"
+      },
+      "active": {
+        "$value": "{palette.violet.600}"
+      },
+      "subtle": {
+        "$value": "{palette.violet.900}",
+        "$description": "tinted background"
+      },
+      "surface-subtle": {
+        "$value": "{palette.violet.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.violet.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.violet.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.violet.500}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.violet.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.violet.300}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "edge": {
+        "$value": "{palette.violet.800}",
+        "$description": "skeuomorphic shadowed side of the lit fill"
+      },
+      "fg": {
+        "$value": "{palette.neutral.950}",
+        "$description": "text on secondary fill"
+      }
+    },
+    "danger": {
+      "fg": {
+        "$value": "{palette.red.300}",
+        "$description": "status text on canvas"
+      },
+      "bg": {
+        "$value": "{palette.red.950}",
+        "$description": "tinted background"
+      },
+      "border": {
+        "$value": "{palette.red.800}"
+      },
+      "surface-subtle": {
+        "$value": "{palette.red.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.red.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.red.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.red.600}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.red.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.red.400}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "solid": {
+        "$value": "{palette.red.500}",
+        "$description": "status fill"
+      },
+      "edge": {
+        "$value": "{palette.red.800}",
+        "$description": "skeuomorphic side/edge for solid danger buttons"
+      },
+      "on-solid": {
+        "$value": "{palette.neutral.950}",
+        "$description": "dark text on solid fill"
+      }
+    },
+    "success": {
+      "fg": {
+        "$value": "{palette.green.300}"
+      },
+      "bg": {
+        "$value": "{palette.green.950}"
+      },
+      "border": {
+        "$value": "{palette.green.800}"
+      },
+      "surface-subtle": {
+        "$value": "{palette.green.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.green.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.green.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.green.600}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.green.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.green.400}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "solid": {
+        "$value": "{palette.green.500}",
+        "$description": "status fill"
+      },
+      "edge": {
+        "$value": "{palette.green.800}",
+        "$description": "skeuomorphic side/edge for solid success buttons"
+      },
+      "on-solid": {
+        "$value": "{palette.neutral.950}",
+        "$description": "dark text on solid fill"
+      }
+    },
+    "warning": {
+      "fg": {
+        "$value": "{palette.yellow.300}"
+      },
+      "bg": {
+        "$value": "{palette.yellow.950}"
+      },
+      "border": {
+        "$value": "{palette.yellow.800}"
+      },
+      "surface-subtle": {
+        "$value": "{palette.yellow.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.yellow.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.yellow.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.yellow.600}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.yellow.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.yellow.400}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "solid": {
+        "$value": "{palette.yellow.500}",
+        "$description": "status fill"
+      },
+      "edge": {
+        "$value": "{palette.yellow.800}",
+        "$description": "skeuomorphic side/edge for solid warning buttons"
+      },
+      "on-solid": {
+        "$value": "{palette.neutral.950}",
+        "$description": "dark text on solid fill"
+      }
+    },
+    "info": {
+      "fg": {
+        "$value": "{palette.cyan.300}"
+      },
+      "bg": {
+        "$value": "{palette.cyan.950}"
+      },
+      "border": {
+        "$value": "{palette.cyan.800}"
+      },
+      "surface-subtle": {
+        "$value": "{palette.cyan.900}",
+        "$description": "recessed plane (lower/low rungs)"
+      },
+      "surface-strong": {
+        "$value": "{palette.cyan.700}",
+        "$description": "lifted plane (high/higher rungs)"
+      },
+      "surface-recess": {
+        "$value": "{palette.cyan.600}",
+        "$description": "shared plane for the lower/low/flat rungs"
+      },
+      "border-subtle": {
+        "$value": "{palette.cyan.600}",
+        "$description": "softest rim"
+      },
+      "border-default": {
+        "$value": "{palette.cyan.500}",
+        "$description": "rim for the flat group (lower/low/flat)"
+      },
+      "border-strong": {
+        "$value": "{palette.cyan.400}",
+        "$description": "rim for the lifts (high/higher)"
+      },
+      "solid": {
+        "$value": "{palette.cyan.500}",
+        "$description": "status fill"
+      },
+      "edge": {
+        "$value": "{palette.cyan.800}",
+        "$description": "skeuomorphic side/edge for solid info buttons"
+      },
+      "on-solid": {
+        "$value": "{palette.neutral.950}",
+        "$description": "dark text on solid fill"
+      }
+    },
+    "link": {
+      "default": {
+        "$value": "{palette.cyan.400}"
+      },
+      "hover": {
+        "$value": "{palette.cyan.300}"
+      },
+      "visited": {
+        "$value": "{palette.violet.400}"
+      }
+    }
+  }
+}

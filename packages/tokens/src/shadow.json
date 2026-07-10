@@ -1,0 +1,305 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "shadow": {
+    "$type": "shadow",
+    "$description": "Elevation ladder, dark-first: a symmetric 5-step depth scale around a flat rung. Recesses inset, lifts use a hard no-blur bottom edge.",
+    "lower": {
+      "$value": {
+        "color": "{color.surface.subtle}",
+        "offsetX": "0",
+        "offsetY": "6px",
+        "blur": "0",
+        "spread": "0",
+        "inset": true
+      },
+      "$description": "lower: deeply recessed inset. inputs, wells. Pair with surface.subtle."
+    },
+    "low": {
+      "$value": {
+        "color": "{color.surface.subtle}",
+        "offsetX": "0",
+        "offsetY": "4px",
+        "blur": "0",
+        "spread": "0",
+        "inset": true
+      },
+      "$description": "low: shallow recess. selected checkbox/radio, switch track, disabled input. Pair with surface.subtle."
+    },
+    "flat": {
+      "$value": {
+        "color": "rgba(0,0,0,0)",
+        "offsetX": "0",
+        "offsetY": "0",
+        "blur": "0",
+        "spread": "0"
+      },
+      "$description": "resting / flush no-op: prose, help/error text, flat-variant buttons. Pair with surface.default."
+    },
+    "high": {
+      "$value": {
+        "color": "{color.border.default}",
+        "offsetX": "0",
+        "offsetY": "2px",
+        "blur": "0",
+        "spread": "0"
+      },
+      "$description": "high: gentle lift. hovered buttons, switch thumb, static cards, unchecked checkbox/radio. Pair with surface.strong; press with lift.half."
+    },
+    "higher": {
+      "$value": {
+        "color": "{color.border.default}",
+        "offsetX": "0",
+        "offsetY": "4px",
+        "blur": "0",
+        "spread": "0"
+      },
+      "$description": "higher: prominent lift. resting default buttons. Pair with surface.strong; press with lift.full."
+    },
+    "primary": {
+      "$description": "Primary-brand coloured elevation ladder: magenta.800 recess inset, bright magenta.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.magenta.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.magenta.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.magenta.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.magenta.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    },
+    "secondary": {
+      "$description": "Secondary-brand coloured elevation ladder: violet.800 recess inset, bright violet.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.violet.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.violet.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.violet.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.violet.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    },
+    "danger": {
+      "$description": "Danger-status coloured elevation ladder: red.800 recess inset, bright red.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.red.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.red.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.red.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.red.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    },
+    "success": {
+      "$description": "Success-status coloured elevation ladder: green.800 recess inset, bright green.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.green.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.green.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.green.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.green.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    },
+    "warning": {
+      "$description": "Warning-status coloured elevation ladder: yellow.800 recess inset, bright yellow.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.yellow.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.yellow.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.yellow.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.yellow.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    },
+    "info": {
+      "$description": "Info-status coloured elevation ladder: cyan.800 recess inset, bright cyan.600 lift.",
+      "lower": {
+        "$value": {
+          "color": "{palette.cyan.800}",
+          "offsetX": "0",
+          "offsetY": "6px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "low": {
+        "$value": {
+          "color": "{palette.cyan.800}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0",
+          "inset": true
+        }
+      },
+      "high": {
+        "$value": {
+          "color": "{palette.cyan.600}",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "0",
+          "spread": "0"
+        }
+      },
+      "higher": {
+        "$value": {
+          "color": "{palette.cyan.600}",
+          "offsetX": "0",
+          "offsetY": "4px",
+          "blur": "0",
+          "spread": "0"
+        }
+      }
+    }
+  }
+}
