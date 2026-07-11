@@ -61,13 +61,16 @@ const track =
 // Thumb: sits at the raised `higher` rung -- shadow.json's most prominent
 // lift, the same rung Button's resting default variant uses -- pressed up out
 // of the track's recess by lift-full so the hard-edge shadow reads as a real
-// gap, not a flush square. bg-fg-default (near-white) keeps it legible against
-// both the neutral and primary track colourways; border-border-strong gives
-// it a defined edge, matching Checkbox's raised (unchecked) border pairing.
+// gap, not a flush square. Coloured as the same material as the recess it's
+// rising from (bg matches the track's own colourway per state) rather than a
+// stray neutral white, with the ladder's raised/-strong tone for its border
+// and a colour-matched shadow -- same intent-shadow pairing Button uses.
 const thumb =
-  'inline-block h-4 w-4 rounded-sm border-2 border-solid border-border-strong bg-fg-default shadow-higher -translate-y-lift-full ' +
+  'inline-block h-4 w-4 rounded-sm border-2 border-solid -translate-y-lift-full ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
-  'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5'
+  'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5 ' +
+  'data-[state=unchecked]:bg-surface-default data-[state=unchecked]:border-border-strong data-[state=unchecked]:shadow-higher ' +
+  'data-[state=checked]:bg-primary-surface-recess data-[state=checked]:border-primary-border-strong data-[state=checked]:shadow-primary-higher'
 </script>
 
 <template>
