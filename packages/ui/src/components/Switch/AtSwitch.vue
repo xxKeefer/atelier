@@ -58,33 +58,26 @@ const track =
   'disabled:data-[state=unchecked]:bg-surface-default disabled:data-[state=unchecked]:border-border-default ' +
   'disabled:data-[state=checked]:bg-primary-surface-recess disabled:data-[state=checked]:border-primary-border-default disabled:data-[state=checked]:shadow-primary-low'
 
-// Thumb: sits at the raised `higher` rung -- shadow.json's most prominent
-// lift, the same rung Button's resting default variant uses -- pressed up out
-// of the track's recess by lift-full so the hard-edge shadow reads as a real
-// gap, not a flush square. Off-state fill is fg-default: the neutral ladder's
-// -strong/-default surfaces sit within one step of each other in this dark
-// theme (bg-surface-strong nearly disappears against bg-surface-default), so
-// the thumb needs the high-contrast foreground token to read as a distinct
-// raised piece; primary.default carries the same job for the on state, since
-// it's already the brightest tone in that ladder. The border splits front
-// from back: top/sides keep the raised -strong highlight, but the front
-// (bottom) edge -- the face that reads as the underside dropping into the
-// recess -- takes a properly dark tone (primary-edge on, surface-subtle off,
-// since neutral has no dedicated "edge" token dark enough against a bright
-// fg-default face) so it reads as shadowed rather than another highlight.
-// Only the slide transitions -- colour/shadow following the same clock read
-// as jittery rather than unified, so they snap instead. The off state's cast
-// shadow can't use shadow-higher as-is either -- that rung's colour is
-// border.default, tuned for stacking raised *panels* on a subtle surface,
-// and reads as light grey next to a bright fg-default thumb; same 0/4px/0/0
-// geometry, but recoloured to surface-subtle (the system's darkest non-black
-// surface token) so it actually reads as a shadow.
+// Thumb: sits at the raised `high` rung -- pressed up out of the track's
+// recess by lift-half (offset matches the shadow's own 2px drop, same
+// translate-up/shadow-down baseline Button uses) so the hard-edge shadow
+// reads as a real gap, not a flush square. Off-state fill is fg-default: the
+// neutral ladder's -strong/-default surfaces sit within one step of each
+// other in this dark theme (bg-surface-strong nearly disappears against
+// bg-surface-default), so the thumb needs the high-contrast foreground token
+// to read as a distinct raised piece; primary.default carries the same job
+// for the on state, since it's already the brightest tone in that ladder. A
+// single -strong border on every edge is enough highlight -- a separate
+// darker bottom edge plus a long (offset-4) cast shadow doubled up into one
+// big black slab. Shortened to the `high` rung's offset-2 geometry, still
+// recoloured off-state to surface-subtle since shadow-high's own colour
+// (border.default) reads as light grey next to a bright fg-default face.
 const thumb =
-  'inline-block h-5 w-5 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
+  'inline-block h-5 w-5 rounded-sm border-2 border-solid -translate-y-lift-half ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-4 ' +
-  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-surface-subtle data-[state=unchecked]:shadow-[0_4px_0_0_var(--color-surface-subtle)] ' +
-  'data-[state=checked]:bg-primary-default data-[state=checked]:border-t-primary-border-strong data-[state=checked]:border-x-primary-border-strong data-[state=checked]:border-b-primary-edge data-[state=checked]:shadow-primary-higher'
+  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-border-strong data-[state=unchecked]:shadow-[0_2px_0_0_var(--color-surface-subtle)] ' +
+  'data-[state=checked]:bg-primary-default data-[state=checked]:border-primary-border-strong data-[state=checked]:shadow-primary-high'
 </script>
 
 <template>
