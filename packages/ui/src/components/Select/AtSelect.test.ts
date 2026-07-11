@@ -54,6 +54,21 @@ test('the trigger recesses at the low surface', () => {
   expect(trigger.className).toContain('shadow-low')
 })
 
+// Help text renders in the reserved message line below the field.
+test('renders help text in the message line when present', () => {
+  render(Select, { props: { label: 'Fruit', options, help: 'Pick your favourite' } })
+  expect(screen.getByText('Pick your favourite')).toBeInTheDocument()
+})
+
+// Error takes the message line's place over help when both are set.
+test('error text displaces help text in the message line', () => {
+  render(Select, {
+    props: { label: 'Fruit', options, help: 'Pick your favourite', error: 'Pick a fruit' },
+  })
+  expect(screen.queryByText('Pick your favourite')).not.toBeInTheDocument()
+  expect(screen.getByText('Pick a fruit')).toBeInTheDocument()
+})
+
 // Error text renders in place of the reserved message line, coloured by the
 // danger status token.
 test('renders error text in the danger colour when present', () => {

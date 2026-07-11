@@ -16,6 +16,7 @@ const meta = {
   parameters: { a11y: { test: 'error' } },
   argTypes: {
     label: { control: 'text' },
+    help: { control: 'text' },
     error: { control: 'text' },
     placeholder: { control: 'text' },
     size: { control: 'select', options: sizes },
@@ -43,6 +44,17 @@ export const WithLabel: Story = {
     setup: () => ({ fruits }),
     template:
       '<Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80" />',
+  }),
+}
+
+// Help text sits in the reserved message line below the field, on the
+// normal surface -- not inside the recess.
+export const WithHelp: Story = {
+  render: () => ({
+    components: { Select },
+    setup: () => ({ fruits }),
+    template:
+      '<Select label="Fruit" :options="fruits" placeholder="Choose a fruit" help="Pick your favourite." class="w-80" />',
   }),
 }
 
@@ -91,6 +103,7 @@ export const Snapshot: Story = {
           <div class="flex flex-wrap items-start gap-6">
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
             <Select aria-label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-48" />
+            <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" help="Pick your favourite." class="w-72" />
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit." class="w-72" />
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" disabled class="w-72" />
           </div>

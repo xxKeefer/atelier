@@ -25,6 +25,9 @@ const props = withDefaults(
     // Optional visible label, tied to the trigger by id so clicking it opens
     // the dropdown. Omit it for a bare select and forward an aria-label instead.
     label?: string
+    // Help text under the field, on the normal surface. Error displaces it
+    // when both are set.
+    help?: string
     // Error text. Takes the message line's place when present, coloured danger,
     // and adds a warning icon in the trigger alongside the chevron.
     error?: string
@@ -36,6 +39,7 @@ const props = withDefaults(
   {
     modelValue: undefined,
     label: undefined,
+    help: undefined,
     error: undefined,
     placeholder: undefined,
     size: 'md',
@@ -86,10 +90,10 @@ const trigger =
 // border token, same border treatment as the trigger's default rim.
 const errorClasses = 'border-danger-border-default'
 
-// "Messaged" mode: the field carries a label and/or an error line, reserving a
-// fixed line of space below so the message swaps in place without shifting
-// the layout. Mirrors AtInput's `messaged` (no `help` prop here yet).
-const messaged = computed(() => [props.label, props.error].some(Boolean))
+// "Messaged" mode: the field carries a label, help, and/or an error line,
+// reserving a fixed line of space below so the message swaps in place
+// without shifting the layout. Mirrors AtInput's `messaged`.
+const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
 
 const labelSizes: Record<Size, string> = {
   sm: 'text-xs',
@@ -149,16 +153,17 @@ const item =
       </SelectPortal>
     </SelectRoot>
 
-    <!-- The reserved message line: present only in messaged mode (label or
-         error set), with a minimum of one line of height so toggling the
-         error never shifts the layout. -->
+    <!-- The reserved message line: present only in messaged mode (label,
+         help, or error set), with a minimum of one line of height so
+         swapping error <-> help <-> nothing never shifts the layout. Error
+         displaces help when both are set. -->
     <p
       v-if="messaged"
       data-testid="select-message"
       class="min-h-[1lh] text-xs"
       :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
     >
-      {{ error }}
+      {{ error || help }}
     </p>
   </div>
 </template>
