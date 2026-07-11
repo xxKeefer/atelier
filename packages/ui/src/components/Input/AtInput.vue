@@ -61,29 +61,43 @@ const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
 
-// The recess -- the inverse of the button's extruded bottom edge. The field is a
-// bucket sunk into the page: the deepest surface colour (bg-canvas) reads as a
-// hole punched into whatever it sits on, and a layered inset shadow casts the
-// walls of the depression. Depth lives in --at-input-depth; disabled halves it
-// (a shallower bucket), mirroring the button's own half-depressed disabled
-// geometry -- same depth idiom, not the flat variant's plain border. The
-// placeholder, being centred text, sits in the deepest part of the bucket. Focus
-// swaps to the system pink ring, matching the button.
+// The recess -- the inverse of the button's extruded bottom edge. The field
+// sits on the elevation ladder's deep-recess rung (shadow-lower: the same
+// hard-edge, zero-blur inset shadow every other recessed surface in the
+// system uses -- Elevation's recess tiles, Checkbox/Radio's checked state),
+// not a hand-rolled blurred shadow. That hard edge is what reads as a real
+// depression instead of a soft bordered box. Disabled drops to shadow-low,
+// the ladder's shallow-recess rung -- a shallower bucket, mirroring the
+// button's own half-depressed disabled geometry, same depth idiom as before
+// but off the real rungs instead of a custom depth var. The placeholder,
+// being centred text, sits in the deepest part of the bucket. Focus swaps to
+// the system pink ring, matching the button.
 const base =
-  'w-full font-body rounded-md text-fg-default ' +
-  'bg-[var(--color-bg-canvas)] placeholder:text-fg-subtle ' +
-  'border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  '[--at-input-depth:5px] disabled:[--at-input-depth:2.5px] ' +
-  'shadow-[inset_0_var(--at-input-depth)_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)] ' +
-  'transition-[box-shadow,border-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'w-full font-body text-fg-default ' +
+  'bg-surface-default placeholder:text-fg-subtle ' +
+  'border-[3px] border-solid border-border-default ' +
+  'shadow-lower disabled:shadow-low ' +
+  'transition-[box-shadow,border-color,background-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
-// The error state re-colours the recess's rim, matching the flat/recessed rung
-// of the danger colourway (border-danger-border-default, same token Elevation
-// uses for its recessed danger rungs) rather than the button's solid-fill edge
-// token -- the bucket stays a border treatment, not an extruded one.
-const errorClasses = 'border-danger-border-default'
+// The field and its prefix/suffix gang into one flush assembly -- like a
+// cassette deck's transport-button row, each segment butted zero-gap against
+// its neighbour, the seam itself (border + shadow) doing the separating
+// instead of a visible gap. Only the outer ends of the whole run are
+// rounded; a join between two segments is always square on both sides that
+// touch. The field rounds whichever of its own ends has no flanking segment.
+const fieldRounding = computed(() => [
+  !hasPrefix.value && 'rounded-l-md',
+  !hasSuffix.value && 'rounded-r-md',
+])
+
+// An error shifts the whole recess onto the danger colourway's own recessed
+// rungs -- surface, rim, and shadow together (bg-danger-surface-recess,
+// border-danger-border-default, shadow-danger-lower), the same trio Elevation
+// pairs for its danger tiles -- rather than only recolouring the border. The
+// bucket stays a recess, just danger-tinted top to bottom.
+const errorClasses = 'bg-danger-surface-recess border-danger-border-default shadow-danger-lower'
 
 // Field padding mirrors the button size scale (button gap doesn't apply here).
 const sizes: Record<Size, string> = {
@@ -116,17 +130,17 @@ const iconPadding: Record<Size, string> = {
   lg: 'pl-12',
 }
 
-// A prefix/suffix box: the same recess idiom as the field itself (bg-canvas,
-// bordered frame, layered inset shadow) but at a fixed half depth (2.5px vs
-// the field's base 5px) -- a shallower bucket flanking the deeper one that
-// actually receives input. That fixed value isn't wired to --at-input-depth:
-// it happens to equal the depth the field itself already drops to when
-// disabled (disabled:[--at-input-depth:2.5px] above), so a disabled field's
-// writing area lifts to exactly this same level with no extra coupling.
+// A prefix/suffix box: bordered frame on the ladder's flat rung (shadow-flat,
+// pairs with surface.default per the token's own doc) rather than the
+// field's own deep recess -- a flush, unrecessed tab flanking the bucket
+// that actually receives input, mirroring how AtButton's flat variant reads
+// next to its default extruded one. Only its outer edge rounds (prefix:
+// left, suffix: right); the edge butted against the field carries no border
+// at all -- the field's own border is the seam, so the two segments don't
+// stack into a double-width line where they touch.
 const prefixSuffixClasses =
-  'flex items-center justify-center font-body text-fg-subtle rounded-md ' +
-  'bg-[var(--color-bg-canvas)] border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  'shadow-[inset_0_2.5px_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)]'
+  'flex items-center justify-center font-body text-fg-subtle ' +
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
 </script>
 
 <template>
@@ -142,10 +156,15 @@ const prefixSuffixClasses =
       {{ label }}
     </label>
 
-    <div class="flex items-stretch gap-2">
+    <div class="flex items-stretch">
       <!-- Prefix: a shallower recess flanking the field, e.g. a currency
-           symbol or unit. -->
-      <span v-if="hasPrefix" data-testid="input-prefix" :class="[prefixSuffixClasses, sizes[size]]">
+           symbol or unit. Ganged flush against the field -- only its outer
+           (left) edge rounds. -->
+      <span
+        v-if="hasPrefix"
+        data-testid="input-prefix"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-l-md border-r-0']"
+      >
         <slot name="prefix" />
       </span>
 
@@ -166,15 +185,26 @@ const prefixSuffixClasses =
           :value="modelValue"
           :placeholder="placeholder"
           type="text"
-          :class="[base, sizes[size], hasIcon && iconPadding[size], error && errorClasses]"
+          :class="[
+            base,
+            fieldRounding,
+            sizes[size],
+            hasIcon && iconPadding[size],
+            error && errorClasses,
+          ]"
           v-bind="$attrs"
           @input="onInput"
         />
       </div>
 
       <!-- Suffix: a shallower recess flanking the field, e.g. a unit or
-           payment provider mark. -->
-      <span v-if="hasSuffix" data-testid="input-suffix" :class="[prefixSuffixClasses, sizes[size]]">
+           payment provider mark. Ganged flush against the field -- only its
+           outer (right) edge rounds. -->
+      <span
+        v-if="hasSuffix"
+        data-testid="input-suffix"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-r-md border-l-0']"
+      >
         <slot name="suffix" />
       </span>
     </div>

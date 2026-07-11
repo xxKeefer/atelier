@@ -41,23 +41,24 @@ test('renders a placeholder without standing in for the label', () => {
   expect(field).toHaveAttribute('placeholder', 'e.g. Brisbane')
 })
 
-// The recessed "bucket": the field carries the inset depth var, rather than
-// the button's extruded bottom edge.
-test('the field recesses with an inset depth, not an extruded edge', () => {
+// The recessed "bucket": the field carries the elevation ladder's deep-recess
+// token, the same hard-edge inset rung every other recessed surface uses --
+// not the button's extruded bottom edge.
+test('the field recesses with the deep-recess shadow token, not an extruded edge', () => {
   render(Input, { props: { label: 'Name' } })
   const field = screen.getByRole('textbox')
-  expect(field.className).toContain('[--at-input-depth:5px]')
-  expect(field.className).toContain('shadow-[inset')
+  expect(field.className).toContain('shadow-lower')
+  expect(field.className).not.toMatch(/shadow-\[/)
 })
 
 // Disabled goes through the native attribute (via $attrs fallthrough) so the
 // browser handles inertness and excludes the value from submission -- no prop
-// needed. Depth halves via the disabled: variant on --at-input-depth.
+// needed. Depth halves to the shallow-recess rung.
 test('a disabled field is inert with a half-depth recess', () => {
   render(Input, { props: { label: 'Name' }, attrs: { disabled: true } })
   const field = screen.getByRole('textbox')
   expect(field).toBeDisabled()
-  expect(field.className).toContain('disabled:[--at-input-depth:2.5px]')
+  expect(field.className).toContain('disabled:shadow-low')
 })
 
 // Help text renders below the field on the normal surface, not inside the
@@ -74,12 +75,15 @@ test('renders error text in the danger colour when present', () => {
   expect(msg.className).toContain('text-danger-fg')
 })
 
-// The field's own recess rim re-colours to the danger border token when an
-// error is present -- the same border treatment, not a switch to a flat variant.
-test('the field recesses with a danger border when an error is present', () => {
+// An error shifts the whole recess onto the danger colourway's recessed
+// rungs -- surface, rim, and shadow together, the same recess idiom Elevation
+// uses for its danger tiles, not just a recoloured border.
+test('the field recesses onto the danger colourway when an error is present', () => {
   render(Input, { props: { label: 'Email', error: 'Invalid address' } })
   const field = screen.getByRole('textbox')
+  expect(field.className).toContain('bg-danger-surface-recess')
   expect(field.className).toContain('border-danger-border-default')
+  expect(field.className).toContain('shadow-danger-lower')
 })
 
 // A messaged field (label/help/error in use) reserves a fixed line of space for
@@ -114,15 +118,15 @@ test('adds no icon padding when the icon slot is unused', () => {
   expect(field.className).not.toMatch(/pl-(8|9|10|11|12)\b/)
 })
 
-// The #prefix/#suffix slots render flanking boxes beside the input, each its
-// own half-depth recess (not the input's own full-depth bucket).
+// The #prefix/#suffix slots render flanking boxes beside the input, each on
+// the ladder's flat rung (not the input's own recessed bucket).
 test('renders slotted prefix content beside the field', () => {
   render(Input, {
     attrs: { 'aria-label': 'Amount' },
     slots: { prefix: '<span data-testid="my-prefix">$</span>' },
   })
   expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
-  expect(screen.getByTestId('input-prefix').className).toContain('shadow-[inset_0_2.5px')
+  expect(screen.getByTestId('input-prefix').className).toContain('shadow-flat')
 })
 
 test('renders slotted suffix content beside the field', () => {
@@ -131,7 +135,7 @@ test('renders slotted suffix content beside the field', () => {
     slots: { suffix: '<span data-testid="my-suffix">kg</span>' },
   })
   expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
-  expect(screen.getByTestId('input-suffix').className).toContain('shadow-[inset_0_2.5px')
+  expect(screen.getByTestId('input-suffix').className).toContain('shadow-flat')
 })
 
 // With no #prefix/#suffix slots passed, no flanking box renders at all.
@@ -139,6 +143,42 @@ test('renders no prefix or suffix box when the slots are unused', () => {
   render(Input, { attrs: { 'aria-label': 'Filter' } })
   expect(screen.queryByTestId('input-prefix')).toBeNull()
   expect(screen.queryByTestId('input-suffix')).toBeNull()
+})
+
+// The field and its prefix/suffix gang into one flush assembly: no gap
+// between segments, and only the outer ends of the run round -- the joins
+// where segments meet stay square on both sides.
+test('gangs the field flush against its prefix and suffix with square inner joins', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Amount' },
+    slots: { prefix: '<span>$</span>', suffix: '<span>USD</span>' },
+  })
+  const field = screen.getByRole('textbox')
+  const prefix = screen.getByTestId('input-prefix')
+  const suffix = screen.getByTestId('input-suffix')
+
+  expect(prefix.parentElement?.className).not.toMatch(/\bgap-\d/)
+  expect(prefix.className).toContain('rounded-l-md')
+  expect(prefix.className).not.toMatch(/rounded-r|rounded-md\b/)
+  expect(field.className).not.toMatch(/rounded-l-md|rounded-r-md|rounded-md\b/)
+  expect(suffix.className).toContain('rounded-r-md')
+  expect(suffix.className).not.toMatch(/rounded-l|rounded-md\b/)
+
+  // The seam border is owned by the field alone -- prefix/suffix drop the
+  // border on the side that touches it, so the two segments' borders don't
+  // stack into a double-width line where they butt up.
+  expect(prefix.className).toContain('border-r-0')
+  expect(suffix.className).toContain('border-l-0')
+})
+
+// A bare field with no prefix/suffix keeps both its own outer corners
+// rounded -- the flush-assembly geometry only squares off joins that
+// actually exist.
+test('a field with no prefix or suffix rounds both its own corners', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).toContain('rounded-l-md')
+  expect(field.className).toContain('rounded-r-md')
 })
 
 // The single visual snap for Input: the Snapshot story's board. Baseline:
