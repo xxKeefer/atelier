@@ -85,7 +85,7 @@ const triggerClasses: Record<Size, string> = {
 }
 
 const trigger =
-  'flex flex-1 items-center justify-between gap-2 font-body text-fg-default ' +
+  'flex w-full items-center justify-between gap-2 font-body text-fg-default ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'data-[placeholder]:text-fg-subtle ' +
@@ -154,36 +154,46 @@ const item =
         <slot name="icon" />
       </span>
 
-      <SelectRoot v-model="modelValue" v-model:open="open" :disabled="disabled">
-        <SelectTrigger
-          :id="fieldId"
-          :class="[trigger, triggerRounding, triggerClasses[size], error && errorClasses]"
-          v-bind="$attrs"
-        >
-          <SelectValue :placeholder="placeholder" />
-          <span class="flex items-center gap-2">
-            <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
-              <Icon :icon="PhWarningCircle" size="sm" />
+      <div class="flex-1">
+        <SelectRoot v-model="modelValue" v-model:open="open" :disabled="disabled">
+          <SelectTrigger
+            :id="fieldId"
+            :class="[trigger, triggerRounding, triggerClasses[size], error && errorClasses]"
+            v-bind="$attrs"
+          >
+            <SelectValue :placeholder="placeholder" />
+            <span class="flex items-center gap-2">
+              <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
+                <Icon :icon="PhWarningCircle" size="sm" />
+              </span>
+              <!-- The disclosure glyph: PhCaretDown at fill weight is the system's
+                   fixed "expand" convention (see Icon's Disclosure semantic story) --
+                   the same glyph an accordion/drawer rotates, but a select's menu
+                   only ever opens downward, so it never rotates here. -->
+              <!-- reka-ui's SelectIcon renders a plain (non-flex) span, so its
+                   content baseline-aligns against the trigger's ambient
+                   line-height instead of centering -- flex it explicitly so the
+                   glyph centers regardless of the trigger's text size. -->
+              <SelectIcon class="flex items-center">
+                <Icon :icon="PhCaretDown" weight="fill" size="sm" />
+              </SelectIcon>
             </span>
-            <SelectIcon>
-              <Icon :icon="PhCaretDown" size="sm" />
-            </SelectIcon>
-          </span>
-        </SelectTrigger>
+          </SelectTrigger>
 
-        <SelectPortal>
-          <SelectContent :class="content" position="popper" :side-offset="4">
-            <SelectViewport class="p-1">
-              <template v-for="(option, index) in options" :key="option.value">
-                <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
-                <SelectItem :value="option.value" :class="item">
-                  <SelectItemText>{{ option.label }}</SelectItemText>
-                </SelectItem>
-              </template>
-            </SelectViewport>
-          </SelectContent>
-        </SelectPortal>
-      </SelectRoot>
+          <SelectPortal>
+            <SelectContent :class="content" position="popper" :side-offset="4">
+              <SelectViewport class="p-1">
+                <template v-for="(option, index) in options" :key="option.value">
+                  <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
+                  <SelectItem :value="option.value" :class="item">
+                    <SelectItemText>{{ option.label }}</SelectItemText>
+                  </SelectItem>
+                </template>
+              </SelectViewport>
+            </SelectContent>
+          </SelectPortal>
+        </SelectRoot>
+      </div>
     </div>
 
     <!-- The reserved message line: present only in messaged mode (label,
