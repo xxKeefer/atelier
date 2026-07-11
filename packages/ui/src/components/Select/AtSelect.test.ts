@@ -54,6 +54,29 @@ test('the trigger recesses at the low surface', () => {
   expect(trigger.className).toContain('shadow-low')
 })
 
+// Error text renders in place of the reserved message line, coloured by the
+// danger status token.
+test('renders error text in the danger colour when present', () => {
+  render(Select, { props: { label: 'Fruit', options, error: 'Pick a fruit' } })
+  const msg = screen.getByText('Pick a fruit')
+  expect(msg.className).toContain('text-danger-fg')
+})
+
+// The trigger's own recess rim re-colours to the danger border token when an
+// error is present -- the same border treatment, not a switch to a flat variant.
+test('the trigger recesses with a danger border when an error is present', () => {
+  render(Select, { props: { label: 'Fruit', options, error: 'Pick a fruit' } })
+  const trigger = screen.getByRole('combobox', { name: 'Fruit' })
+  expect(trigger.className).toContain('border-danger-border-default')
+})
+
+// An additional warning icon renders in the trigger when an error is present,
+// for better accessibility alongside the error message.
+test('renders an error icon in the trigger when an error is present', () => {
+  render(Select, { props: { label: 'Fruit', options, error: 'Pick a fruit' } })
+  expect(screen.getByTestId('select-error-icon')).toBeInTheDocument()
+})
+
 // The single visual snap for Select: the Snapshot story's board. Baseline:
 // __snaps__/select-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

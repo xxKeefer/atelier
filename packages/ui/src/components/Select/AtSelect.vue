@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhCaretDown } from '@phosphor-icons/vue'
+import { PhCaretDown, PhWarningCircle } from '@phosphor-icons/vue'
 import {
   SelectContent,
   SelectIcon,
@@ -25,6 +25,9 @@ const props = withDefaults(
     // Optional visible label, tied to the trigger by id so clicking it opens
     // the dropdown. Omit it for a bare select and forward an aria-label instead.
     label?: string
+    // Error text. Takes the message line's place when present, coloured danger,
+    // and adds a warning icon in the trigger alongside the chevron.
+    error?: string
     placeholder?: string
     size?: Size
     disabled?: boolean
@@ -33,6 +36,7 @@ const props = withDefaults(
   {
     modelValue: undefined,
     label: undefined,
+    error: undefined,
     placeholder: undefined,
     size: 'md',
     disabled: false,
@@ -78,6 +82,15 @@ const trigger =
   'data-[placeholder]:text-fg-subtle ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
+// Mirrors AtInput's errorClasses: the recess rim re-colours to the danger
+// border token, same border treatment as the trigger's default rim.
+const errorClasses = 'border-danger-border-default'
+
+// "Messaged" mode: the field carries a label and/or an error line, reserving a
+// fixed line of space below so the message swaps in place without shifting
+// the layout. Mirrors AtInput's `messaged` (no `help` prop here yet).
+const messaged = computed(() => [props.label, props.error].some(Boolean))
+
 const labelSizes: Record<Size, string> = {
   sm: 'text-xs',
   md: 'text-sm',
@@ -108,8 +121,15 @@ const item =
     </label>
 
     <SelectRoot v-model="modelValue" v-model:open="open" :disabled="disabled">
-      <SelectTrigger :id="fieldId" :class="[trigger, triggerClasses[size]]" v-bind="$attrs">
+      <SelectTrigger
+        :id="fieldId"
+        :class="[trigger, triggerClasses[size], error && errorClasses]"
+        v-bind="$attrs"
+      >
         <SelectValue :placeholder="placeholder" />
+        <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
+          <Icon :icon="PhWarningCircle" size="sm" />
+        </span>
         <SelectIcon>
           <Icon :icon="PhCaretDown" size="sm" />
         </SelectIcon>
@@ -128,5 +148,17 @@ const item =
         </SelectContent>
       </SelectPortal>
     </SelectRoot>
+
+    <!-- The reserved message line: present only in messaged mode (label or
+         error set), with a minimum of one line of height so toggling the
+         error never shifts the layout. -->
+    <p
+      v-if="messaged"
+      data-testid="select-message"
+      class="min-h-[1lh] text-xs"
+      :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
+    >
+      {{ error }}
+    </p>
   </div>
 </template>
