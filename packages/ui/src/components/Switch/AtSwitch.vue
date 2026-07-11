@@ -42,23 +42,30 @@ const modelValue = computed({
 
 // Track: fixed pill, always resting at the recessed `low` well the thumb slides
 // in (shadow.json: "low ... switch track" -- a single rung, not a ladder like
-// Checkbox, since the track itself never lifts). Colourway keyed by reka-ui's
-// data-state: neutral off, primary on.
+// Checkbox, since the track itself never lifts). A recess pairs with the
+// *recessed* colourway, not the raised one -- mirrors Checkbox's own checked
+// (shadow-low) state, which pairs bg-surface-default/border-border-default
+// neutral, and its danger checked state, which pairs bg-danger-surface-recess
+// -- so primary uses bg-primary-surface-recess here, not surface-strong.
 const track =
   'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-[3px] border-solid px-1 shadow-low ' +
   'transition-colors duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus ' +
-  'data-[state=unchecked]:enabled:bg-surface-strong data-[state=unchecked]:enabled:border-border-strong ' +
-  'data-[state=checked]:enabled:bg-primary-surface-strong data-[state=checked]:enabled:border-primary-border-default ' +
+  'data-[state=unchecked]:enabled:bg-surface-default data-[state=unchecked]:enabled:border-border-default ' +
+  'data-[state=checked]:enabled:bg-primary-surface-recess data-[state=checked]:enabled:border-primary-border-default data-[state=checked]:enabled:shadow-primary-low ' +
   'disabled:opacity-50 ' +
-  'disabled:data-[state=unchecked]:bg-surface-strong disabled:data-[state=unchecked]:border-border-strong ' +
-  'disabled:data-[state=checked]:bg-primary-surface-strong disabled:data-[state=checked]:border-primary-border-default'
+  'disabled:data-[state=unchecked]:bg-surface-default disabled:data-[state=unchecked]:border-border-default ' +
+  'disabled:data-[state=checked]:bg-primary-surface-recess disabled:data-[state=checked]:border-primary-border-default disabled:data-[state=checked]:shadow-primary-low'
 
-// Thumb: raised at `high` (shadow.json: "high ... switch thumb"), slides from
-// the track's left to right edge as data-state flips.
+// Thumb: sits at the raised `higher` rung -- shadow.json's most prominent
+// lift, the same rung Button's resting default variant uses -- pressed up out
+// of the track's recess by lift-full so the hard-edge shadow reads as a real
+// gap, not a flush square. bg-fg-default (near-white) keeps it legible against
+// both the neutral and primary track colourways; border-border-strong gives
+// it a defined edge, matching Checkbox's raised (unchecked) border pairing.
 const thumb =
-  'inline-block h-4 w-4 rounded-sm bg-fg-default shadow-high ' +
+  'inline-block h-4 w-4 rounded-sm border-2 border-solid border-border-strong bg-fg-default shadow-higher -translate-y-lift-full ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5'
 </script>
