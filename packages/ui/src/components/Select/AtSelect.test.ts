@@ -92,6 +92,16 @@ test('renders an error icon in the trigger when an error is present', () => {
   expect(screen.getByTestId('select-error-icon')).toBeInTheDocument()
 })
 
+// The #icon slot renders a consumer-supplied icon at the trigger's start, to
+// communicate the field's purpose.
+test('renders slotted icon content at the start of the trigger', () => {
+  render(Select, {
+    props: { label: 'Fruit', options },
+    slots: { icon: '<span data-testid="my-icon">*</span>' },
+  })
+  expect(screen.getByTestId('my-icon')).toBeInTheDocument()
+})
+
 // The single visual snap for Select: the Snapshot story's board. Baseline:
 // __snaps__/select-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

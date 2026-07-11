@@ -12,7 +12,7 @@ import {
   SelectValue,
   SelectViewport,
 } from 'reka-ui'
-import { computed, ref, useId } from 'vue'
+import { computed, ref, useId, useSlots } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
 
 type Size = 'sm' | 'md' | 'lg'
@@ -54,6 +54,11 @@ defineOptions({ inheritAttrs: false })
 
 const autoId = useId()
 const fieldId = computed(() => props.id ?? autoId)
+
+// The #icon slot is optional -- a consumer drops in an AtIcon to mark the
+// field's purpose, at the trigger's start. Mirrors AtInput's hasIcon check.
+const slots = useSlots()
+const hasIcon = computed(() => !!slots.icon)
 
 const modelValue = computed({
   get: () => props.modelValue,
@@ -130,13 +135,20 @@ const item =
         :class="[trigger, triggerClasses[size], error && errorClasses]"
         v-bind="$attrs"
       >
-        <SelectValue :placeholder="placeholder" />
-        <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
-          <Icon :icon="PhWarningCircle" size="sm" />
+        <span class="flex items-center gap-2 overflow-hidden">
+          <span v-if="hasIcon" data-testid="select-icon" class="text-fg-subtle">
+            <slot name="icon" />
+          </span>
+          <SelectValue :placeholder="placeholder" />
         </span>
-        <SelectIcon>
-          <Icon :icon="PhCaretDown" size="sm" />
-        </SelectIcon>
+        <span class="flex items-center gap-2">
+          <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
+            <Icon :icon="PhWarningCircle" size="sm" />
+          </span>
+          <SelectIcon>
+            <Icon :icon="PhCaretDown" size="sm" />
+          </SelectIcon>
+        </span>
       </SelectTrigger>
 
       <SelectPortal>

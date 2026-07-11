@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { PhShoppingCart } from '@phosphor-icons/vue'
 import Select from './AtSelect.vue'
+import Icon from '../Icon/AtIcon.vue'
 
 const sizes = ['sm', 'md', 'lg'] as const
 
@@ -69,6 +71,21 @@ export const WithError: Story = {
   }),
 }
 
+// A leading icon at the trigger's start marks the field's purpose. The
+// consumer supplies it via the #icon slot (an AtIcon instance) -- the trigger
+// only positions it beside the value.
+export const WithIcon: Story = {
+  render: () => ({
+    components: { Select, Icon },
+    setup: () => ({ fruits, PhShoppingCart }),
+    template: `
+      <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80">
+        <template #icon><Icon :icon="PhShoppingCart" /></template>
+      </Select>
+    `,
+  }),
+}
+
 // Disabled: the trigger goes inert, dimmed, not-allowed cursor. The dropdown
 // never opens and the value drops out of the submitted form values.
 export const Disabled: Story = {
@@ -94,8 +111,8 @@ export const Bare: Story = {
 // __snaps__/select-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Select },
-    setup: () => ({ fruits, sizes }),
+    components: { Select, Icon },
+    setup: () => ({ fruits, sizes, PhShoppingCart }),
     template: `
       <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
@@ -106,6 +123,9 @@ export const Snapshot: Story = {
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" help="Pick your favourite." class="w-72" />
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit." class="w-72" />
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" disabled class="w-72" />
+            <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72">
+              <template #icon><Icon :icon="PhShoppingCart" /></template>
+            </Select>
           </div>
         </section>
 
