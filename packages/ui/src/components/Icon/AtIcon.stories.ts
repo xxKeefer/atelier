@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { PhHeart } from '@phosphor-icons/vue'
+import { PhHeart, PhInfo, PhQuestion, PhWarning } from '@phosphor-icons/vue'
 import Icon from './AtIcon.vue'
 import { SizesView, sizes } from './views/SizesView'
 import { WeightsView, weights } from './views/WeightsView'
@@ -76,6 +76,58 @@ export const Semantic: Story = {
   render: () => ({
     components: { SemanticView },
     template: `<div class="bg-bg-default p-6"><SemanticView /></div>`,
+  }),
+}
+
+// Detailed guidance for picking a tooltip-trigger icon in AtTooltipIcon. The
+// "warning" variant ships PhWarning, standing in for the classic "!" trigger.
+const tooltipTriggers = [
+  {
+    icon: PhQuestion,
+    name: 'Question',
+    guidance:
+      'Use when the user is about to take an action that might trigger a "...but why?" or ' +
+      '"...what does this mean?" People do not like not knowing -- it makes them feel a bit ' +
+      'daft. A question-mark trigger says "you are not alone, lots of folks ask about this," ' +
+      'which disarms the user and makes them more likely to hover for the answer.',
+  },
+  {
+    icon: PhInfo,
+    name: 'Info',
+    guidance:
+      'Best for an extra bit of insight that is not critical but still good to know. ' +
+      'Experienced users sail past it; new users get the context they need to remove ' +
+      'friction. The info icon has a strong identity as "the place to go when you want to ' +
+      'know something," and its positive association with knowledge means it can be used ' +
+      'fairly liberally.',
+  },
+  {
+    icon: PhWarning,
+    name: 'Warning',
+    guidance:
+      'Use when there is something about a field or action the user should know before ' +
+      'moving forward, but that most are probably already aware of -- so spelling it out in ' +
+      'the UI would add unwanted cognitive load, yet it should not be missed either. A ' +
+      'warning trigger sets the right tone of importance, and works best when used sparingly ' +
+      'relative to the other two triggers.',
+  },
+] as const
+
+export const TooltipTriggers: Story = {
+  render: () => ({
+    components: { Icon },
+    setup: () => ({ tooltipTriggers }),
+    template: `
+      <div class="flex max-w-prose flex-col gap-6 bg-bg-default p-6 text-fg-default">
+        <div v-for="trigger in tooltipTriggers" :key="trigger.name" class="flex gap-3">
+          <Icon :icon="trigger.icon" size="xl" :label="trigger.name" />
+          <div class="flex flex-col gap-1">
+            <h3 class="font-heading font-bold text-base">{{ trigger.name }}</h3>
+            <p class="font-body text-fg-subtle text-sm">{{ trigger.guidance }}</p>
+          </div>
+        </div>
+      </div>
+    `,
   }),
 }
 

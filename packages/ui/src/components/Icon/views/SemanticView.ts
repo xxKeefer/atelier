@@ -12,6 +12,7 @@ import {
   PhMagnifyingGlass,
   PhMinus,
   PhPlus,
+  PhQuestion,
   PhWarning,
   PhWarningDiamond,
   PhX,
@@ -55,6 +56,28 @@ const semantic = {
     { icon: PhX, name: 'Cancel / Close', note: 'remove a draft item, close a modal', tone: '' },
     { icon: PhBackspace, name: 'Delete', note: 'destructive, no undo', tone: '' },
     { icon: PhCopy, name: 'Copy', note: '', tone: '' },
+  ],
+  // Neutrally coloured (no tone) -- these sit inside AtTooltipIcon triggers, not
+  // status displays, so they stay unpainted regardless of the Status group above.
+  'Tooltip Triggers': [
+    {
+      icon: PhQuestion,
+      name: 'Question',
+      note: 'disarms a likely "why?" or "what does this mean?" before an action',
+      tone: '',
+    },
+    {
+      icon: PhInfo,
+      name: 'Info',
+      note: 'extra, non-critical insight -- safe to use liberally',
+      tone: '',
+    },
+    {
+      icon: PhWarning,
+      name: 'Warning',
+      note: 'something to know before proceeding -- use sparingly',
+      tone: '',
+    },
   ],
 } as const
 
