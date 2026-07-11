@@ -45,7 +45,7 @@ const modelValue = computed({
 // Checkbox, since the track itself never lifts). Colourway keyed by reka-ui's
 // data-state: neutral off, primary on.
 const track =
-  'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border-[3px] border-solid px-1 shadow-low ' +
+  'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-[3px] border-solid px-1 shadow-low ' +
   'transition-colors duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus ' +
@@ -58,7 +58,7 @@ const track =
 // Thumb: raised at `high` (shadow.json: "high ... switch thumb"), slides from
 // the track's left to right edge as data-state flips.
 const thumb =
-  'inline-block h-4 w-4 rounded-full bg-fg-default shadow-high ' +
+  'inline-block h-4 w-4 rounded-sm bg-fg-default shadow-high ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5'
 </script>
