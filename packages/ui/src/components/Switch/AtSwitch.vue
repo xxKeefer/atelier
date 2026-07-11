@@ -66,15 +66,17 @@ const track =
 // surface.strong, and Button's own primary fill is --color-primary-default --
 // never the track's own recess fill, or the cast shadow (same rung's colour)
 // has nothing to contrast against and disappears into the surface beneath.
-// Border uses the track's own -default border token, not a lighter -strong
-// highlight, so the thumb's lower edge reads as one continuous surface with
-// the recess opening it's rising out of rather than a mismatched pastel rim.
+// The border splits front from back: top/sides keep the raised -strong
+// highlight, but the front (bottom) edge -- the face that reads as the
+// underside dropping into the recess -- takes the darker -edge/-default
+// token, the same "edge" Button's own colourway ladder uses for its coloured
+// bottom lip.
 const thumb =
-  'inline-block h-4 w-4 rounded-sm border-2 border-solid -translate-y-lift-full ' +
+  'inline-block h-4 w-4 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5 ' +
-  'data-[state=unchecked]:bg-surface-strong data-[state=unchecked]:border-border-default data-[state=unchecked]:shadow-higher ' +
-  'data-[state=checked]:bg-primary-default data-[state=checked]:border-primary-border-default data-[state=checked]:shadow-primary-higher'
+  'data-[state=unchecked]:bg-surface-strong data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-border-default data-[state=unchecked]:shadow-higher ' +
+  'data-[state=checked]:bg-primary-default data-[state=checked]:border-t-primary-border-strong data-[state=checked]:border-x-primary-border-strong data-[state=checked]:border-b-primary-edge data-[state=checked]:shadow-primary-higher'
 </script>
 
 <template>
