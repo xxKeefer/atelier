@@ -1,5 +1,6 @@
 import './styles.css'
 
+export { default as AtAlert } from './components/Alert/AtAlert.vue'
 export { default as AtButton } from './components/Button/AtButton.vue'
 export { default as AtCard } from './components/Card/AtCard.vue'
 export { default as AtCheckbox } from './components/Checkbox/AtCheckbox.vue'
