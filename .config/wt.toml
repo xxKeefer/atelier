@@ -1,0 +1,4 @@
+# Copy gitignored files (incl. .claude/settings.local.json) into new worktrees.
+# post-create (not post-start) so the permissions exist before Claude starts working.
+[post-create]
+copy = "wt step copy-ignored"
