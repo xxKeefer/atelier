@@ -7,6 +7,10 @@
       "canvas": {
         "$value": "{palette.neutral.950}",
         "$description": "page background - the floor everything sits on, below the surface ramp"
+      },
+      "scrim": {
+        "$value": "rgba(10, 10, 15, 0.8)",
+        "$description": "backdrop behind overlays that sit above the whole page: modals, sliding sheets."
       }
     },
     "surface": {
