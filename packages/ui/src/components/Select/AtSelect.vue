@@ -85,7 +85,7 @@ const triggerClasses: Record<Size, string> = {
 }
 
 const trigger =
-  'flex w-full items-center justify-between gap-2 font-body rounded-md text-fg-default ' +
+  'flex flex-1 items-center justify-between gap-2 font-body text-fg-default ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'data-[placeholder]:text-fg-subtle ' +
@@ -94,6 +94,20 @@ const trigger =
 // Mirrors AtInput's errorClasses: the recess rim re-colours to the danger
 // border token, same border treatment as the trigger's default rim.
 const errorClasses = 'border-danger-border-default'
+
+// The icon box and trigger gang into one flush assembly, mirroring AtInput's
+// prefix/suffix seam treatment: only the outer end rounds, and the joined
+// edge carries no border on the icon box's side -- the trigger's own left
+// border is the seam, so the two segments don't stack into a doubled line.
+const triggerRounding = computed(() => [!hasIcon.value && 'rounded-l-md', 'rounded-r-md'])
+
+// A leading icon box: the same flat, unrecessed rung AtInput's prefix/suffix
+// sit on (shadow-flat) rather than the trigger's own low-recess rung -- a
+// flush, unrecessed tab flanking the trigger, not a second bucket.
+const iconBoxClasses =
+  'flex items-center justify-center font-body text-fg-subtle ' +
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat ' +
+  'rounded-l-md border-r-0'
 
 // "Messaged" mode: the field carries a label, help, and/or an error line,
 // reserving a fixed line of space below so the message swaps in place
@@ -129,41 +143,48 @@ const item =
       {{ label }}
     </label>
 
-    <SelectRoot v-model="modelValue" v-model:open="open" :disabled="disabled">
-      <SelectTrigger
-        :id="fieldId"
-        :class="[trigger, triggerClasses[size], error && errorClasses]"
-        v-bind="$attrs"
+    <div class="flex items-stretch">
+      <!-- Icon: a flush-ganged, flat box flanking the trigger, e.g. to mark
+           the field's purpose. Mirrors AtInput's prefix/suffix seam. -->
+      <span
+        v-if="hasIcon"
+        data-testid="select-icon"
+        :class="[iconBoxClasses, triggerClasses[size]]"
       >
-        <span class="flex items-center gap-2 overflow-hidden">
-          <span v-if="hasIcon" data-testid="select-icon" class="text-fg-subtle">
-            <slot name="icon" />
-          </span>
-          <SelectValue :placeholder="placeholder" />
-        </span>
-        <span class="flex items-center gap-2">
-          <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
-            <Icon :icon="PhWarningCircle" size="sm" />
-          </span>
-          <SelectIcon>
-            <Icon :icon="PhCaretDown" size="sm" />
-          </SelectIcon>
-        </span>
-      </SelectTrigger>
+        <slot name="icon" />
+      </span>
 
-      <SelectPortal>
-        <SelectContent :class="content" position="popper" :side-offset="4">
-          <SelectViewport class="p-1">
-            <template v-for="(option, index) in options" :key="option.value">
-              <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
-              <SelectItem :value="option.value" :class="item">
-                <SelectItemText>{{ option.label }}</SelectItemText>
-              </SelectItem>
-            </template>
-          </SelectViewport>
-        </SelectContent>
-      </SelectPortal>
-    </SelectRoot>
+      <SelectRoot v-model="modelValue" v-model:open="open" :disabled="disabled">
+        <SelectTrigger
+          :id="fieldId"
+          :class="[trigger, triggerRounding, triggerClasses[size], error && errorClasses]"
+          v-bind="$attrs"
+        >
+          <SelectValue :placeholder="placeholder" />
+          <span class="flex items-center gap-2">
+            <span v-if="error" data-testid="select-error-icon" class="text-danger-fg">
+              <Icon :icon="PhWarningCircle" size="sm" />
+            </span>
+            <SelectIcon>
+              <Icon :icon="PhCaretDown" size="sm" />
+            </SelectIcon>
+          </span>
+        </SelectTrigger>
+
+        <SelectPortal>
+          <SelectContent :class="content" position="popper" :side-offset="4">
+            <SelectViewport class="p-1">
+              <template v-for="(option, index) in options" :key="option.value">
+                <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
+                <SelectItem :value="option.value" :class="item">
+                  <SelectItemText>{{ option.label }}</SelectItemText>
+                </SelectItem>
+              </template>
+            </SelectViewport>
+          </SelectContent>
+        </SelectPortal>
+      </SelectRoot>
+    </div>
 
     <!-- The reserved message line: present only in messaged mode (label,
          help, or error set), with a minimum of one line of height so
