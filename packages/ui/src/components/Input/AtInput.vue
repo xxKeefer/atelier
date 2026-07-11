@@ -130,18 +130,17 @@ const iconPadding: Record<Size, string> = {
   lg: 'pl-12',
 }
 
-// A prefix/suffix box: the same recess idiom as the field itself (bg-surface,
-// bordered frame, hard-edge inset shadow) but pinned to the ladder's shallow
-// rung (shadow-low) rather than the field's own deep one (shadow-lower) -- a
-// shallower bucket flanking the deeper one that actually receives input. That
-// happens to be the same rung the field itself drops to when disabled
-// (disabled:shadow-low above), so a disabled field's writing area lifts to
-// exactly this same level with no extra coupling. Only its outer edge rounds
-// (prefix: left, suffix: right) -- the edge butted against the field stays
-// square, per the gang-flush assembly.
+// A prefix/suffix box: bordered frame on the ladder's flat rung (shadow-flat,
+// pairs with surface.default per the token's own doc) rather than the
+// field's own deep recess -- a flush, unrecessed tab flanking the bucket
+// that actually receives input, mirroring how AtButton's flat variant reads
+// next to its default extruded one. Only its outer edge rounds (prefix:
+// left, suffix: right); the edge butted against the field carries no border
+// at all -- the field's own border is the seam, so the two segments don't
+// stack into a double-width line where they touch.
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-low'
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
 </script>
 
 <template>
@@ -164,7 +163,7 @@ const prefixSuffixClasses =
       <span
         v-if="hasPrefix"
         data-testid="input-prefix"
-        :class="[prefixSuffixClasses, sizes[size], 'rounded-l-md']"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-l-md border-r-0']"
       >
         <slot name="prefix" />
       </span>
@@ -204,7 +203,7 @@ const prefixSuffixClasses =
       <span
         v-if="hasSuffix"
         data-testid="input-suffix"
-        :class="[prefixSuffixClasses, sizes[size], 'rounded-r-md']"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-r-md border-l-0']"
       >
         <slot name="suffix" />
       </span>

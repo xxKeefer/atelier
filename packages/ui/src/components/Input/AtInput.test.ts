@@ -118,15 +118,15 @@ test('adds no icon padding when the icon slot is unused', () => {
   expect(field.className).not.toMatch(/pl-(8|9|10|11|12)\b/)
 })
 
-// The #prefix/#suffix slots render flanking boxes beside the input, each its
-// own half-depth recess (not the input's own full-depth bucket).
+// The #prefix/#suffix slots render flanking boxes beside the input, each on
+// the ladder's flat rung (not the input's own recessed bucket).
 test('renders slotted prefix content beside the field', () => {
   render(Input, {
     attrs: { 'aria-label': 'Amount' },
     slots: { prefix: '<span data-testid="my-prefix">$</span>' },
   })
   expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
-  expect(screen.getByTestId('input-prefix').className).toContain('shadow-low')
+  expect(screen.getByTestId('input-prefix').className).toContain('shadow-flat')
 })
 
 test('renders slotted suffix content beside the field', () => {
@@ -135,7 +135,7 @@ test('renders slotted suffix content beside the field', () => {
     slots: { suffix: '<span data-testid="my-suffix">kg</span>' },
   })
   expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
-  expect(screen.getByTestId('input-suffix').className).toContain('shadow-low')
+  expect(screen.getByTestId('input-suffix').className).toContain('shadow-flat')
 })
 
 // With no #prefix/#suffix slots passed, no flanking box renders at all.
@@ -163,6 +163,12 @@ test('gangs the field flush against its prefix and suffix with square inner join
   expect(field.className).not.toMatch(/rounded-l-md|rounded-r-md|rounded-md\b/)
   expect(suffix.className).toContain('rounded-r-md')
   expect(suffix.className).not.toMatch(/rounded-l|rounded-md\b/)
+
+  // The seam border is owned by the field alone -- prefix/suffix drop the
+  // border on the side that touches it, so the two segments' borders don't
+  // stack into a double-width line where they butt up.
+  expect(prefix.className).toContain('border-r-0')
+  expect(suffix.className).toContain('border-l-0')
 })
 
 // A bare field with no prefix/suffix keeps both its own outer corners
