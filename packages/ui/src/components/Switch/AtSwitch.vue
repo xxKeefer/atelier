@@ -61,21 +61,21 @@ const track =
 // Thumb: sits at the raised `higher` rung -- shadow.json's most prominent
 // lift, the same rung Button's resting default variant uses -- pressed up out
 // of the track's recess by lift-full so the hard-edge shadow reads as a real
-// gap, not a flush square. Fill uses the *raised* token per state (surface
-// -strong neutral, primary.default on) -- shadow.json pairs `higher` with
-// surface.strong, and Button's own primary fill is --color-primary-default --
-// never the track's own recess fill, or the cast shadow (same rung's colour)
-// has nothing to contrast against and disappears into the surface beneath.
-// The border splits front from back: top/sides keep the raised -strong
-// highlight, but the front (bottom) edge -- the face that reads as the
-// underside dropping into the recess -- takes the darker -edge/-default
-// token, the same "edge" Button's own colourway ladder uses for its coloured
-// bottom lip.
+// gap, not a flush square. Off-state fill is fg-default: the neutral ladder's
+// -strong/-default surfaces sit within one step of each other in this dark
+// theme (bg-surface-strong nearly disappears against bg-surface-default), so
+// the thumb needs the high-contrast foreground token to read as a distinct
+// raised piece; primary.default carries the same job for the on state, since
+// it's already the brightest tone in that ladder. The border splits front
+// from back: top/sides keep the raised -strong highlight, but the front
+// (bottom) edge -- the face that reads as the underside dropping into the
+// recess -- takes the darker -edge/-default token, the same "edge" Button's
+// own colourway ladder uses for its coloured bottom lip.
 const thumb =
-  'inline-block h-4 w-4 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
+  'inline-block h-5 w-5 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
-  'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5 ' +
-  'data-[state=unchecked]:bg-surface-strong data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-border-default data-[state=unchecked]:shadow-higher ' +
+  'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-4 ' +
+  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-border-default data-[state=unchecked]:shadow-higher ' +
   'data-[state=checked]:bg-primary-default data-[state=checked]:border-t-primary-border-strong data-[state=checked]:border-x-primary-border-strong data-[state=checked]:border-b-primary-edge data-[state=checked]:shadow-primary-higher'
 </script>
 
