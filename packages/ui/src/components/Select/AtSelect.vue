@@ -59,6 +59,12 @@ const fieldId = computed(() => props.id ?? autoId)
 // field's purpose, at the trigger's start. Mirrors AtInput's hasIcon check.
 const slots = useSlots()
 const hasIcon = computed(() => !!slots.icon)
+// #prefix/#suffix are optional flanking boxes for content that makes the
+// selection more contextual (e.g. a country flag ahead of a country code
+// select), distinct from #icon's field-level purpose marker. Mirrors
+// AtInput's hasPrefix/hasSuffix checks.
+const hasPrefix = computed(() => !!slots.prefix)
+const hasSuffix = computed(() => !!slots.suffix)
 
 const modelValue = computed({
   get: () => props.modelValue,
@@ -95,19 +101,34 @@ const trigger =
 // border token, same border treatment as the trigger's default rim.
 const errorClasses = 'border-danger-border-default'
 
-// The icon box and trigger gang into one flush assembly, mirroring AtInput's
-// prefix/suffix seam treatment: only the outer end rounds, and the joined
-// edge carries no border on the icon box's side -- the trigger's own left
-// border is the seam, so the two segments don't stack into a doubled line.
-const triggerRounding = computed(() => [!hasIcon.value && 'rounded-l-md', 'rounded-r-md'])
+// The icon/prefix/trigger/suffix run gangs into one flush assembly,
+// mirroring AtInput's prefix/suffix seam treatment: only the outer ends of
+// the whole run round, and every joined edge carries no border on one side
+// -- the neighbouring segment's border is the seam, so segments don't stack
+// into a doubled line. The trigger rounds left only when nothing flanks it
+// there (no icon, no prefix); right only when no suffix flanks it.
+const triggerRounding = computed(() => [
+  !hasIcon.value && !hasPrefix.value && 'rounded-l-md',
+  !hasSuffix.value && 'rounded-r-md',
+])
 
 // A leading icon box: the same flat, unrecessed rung AtInput's prefix/suffix
 // sit on (shadow-flat) rather than the trigger's own low-recess rung -- a
-// flush, unrecessed tab flanking the trigger, not a second bucket.
-const iconBoxClasses =
+// flush, unrecessed tab flanking the trigger, not a second bucket. Its right
+// edge always butts against the trigger (no border there); its left edge
+// only rounds when there's no prefix further out to its left.
+const iconBoxClasses = computed(() => [
   'flex items-center justify-center font-body text-fg-subtle ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat ' +
-  'rounded-l-md border-r-0'
+    'bg-surface-default border-[3px] border-solid border-border-default shadow-flat border-r-0',
+  !hasPrefix.value && 'rounded-l-md',
+])
+
+// Prefix/suffix boxes: the same flat rung as the icon box, but always the
+// outermost segments of the run -- their outer edge always rounds, their
+// inner edge (against icon/trigger) never carries a border.
+const prefixSuffixClasses =
+  'flex items-center justify-center font-body text-fg-subtle ' +
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
 
 // "Messaged" mode: the field carries a label, help, and/or an error line,
 // reserving a fixed line of space below so the message swaps in place
@@ -144,6 +165,18 @@ const item =
     </label>
 
     <div class="flex items-stretch">
+      <!-- Prefix: a flush-ganged, flat box flanking the trigger's start, for
+           content that makes the selection more contextual, e.g. a country
+           flag ahead of a country code select. Always the run's outermost
+           left segment. -->
+      <span
+        v-if="hasPrefix"
+        data-testid="select-prefix"
+        :class="[prefixSuffixClasses, triggerClasses[size], 'rounded-l-md border-r-0']"
+      >
+        <slot name="prefix" />
+      </span>
+
       <!-- Icon: a flush-ganged, flat box flanking the trigger, e.g. to mark
            the field's purpose. Mirrors AtInput's prefix/suffix seam. -->
       <span
@@ -194,6 +227,16 @@ const item =
           </SelectPortal>
         </SelectRoot>
       </div>
+
+      <!-- Suffix: a flush-ganged, flat box flanking the trigger's end, e.g. a
+           unit label. Always the run's outermost right segment. -->
+      <span
+        v-if="hasSuffix"
+        data-testid="select-suffix"
+        :class="[prefixSuffixClasses, triggerClasses[size], 'rounded-r-md border-l-0']"
+      >
+        <slot name="suffix" />
+      </span>
     </div>
 
     <!-- The reserved message line: present only in messaged mode (label,

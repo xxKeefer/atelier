@@ -102,6 +102,26 @@ test('renders slotted icon content at the start of the trigger', () => {
   expect(screen.getByTestId('my-icon')).toBeInTheDocument()
 })
 
+// The #prefix slot renders consumer-supplied content flanking the trigger's
+// start, e.g. a country flag ahead of a country code select.
+test('renders slotted prefix content before the trigger', () => {
+  render(Select, {
+    props: { label: 'Fruit', options },
+    slots: { prefix: '<span data-testid="my-prefix">$</span>' },
+  })
+  expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
+})
+
+// The #suffix slot renders consumer-supplied content flanking the trigger's
+// end, e.g. a unit label.
+test('renders slotted suffix content after the trigger', () => {
+  render(Select, {
+    props: { label: 'Fruit', options },
+    slots: { suffix: '<span data-testid="my-suffix">USD</span>' },
+  })
+  expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
+})
+
 // The single visual snap for Select: the Snapshot story's board. Baseline:
 // __snaps__/select-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

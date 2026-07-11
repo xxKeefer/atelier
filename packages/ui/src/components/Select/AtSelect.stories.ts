@@ -86,6 +86,22 @@ export const WithIcon: Story = {
   }),
 }
 
+// Prefix/suffix: flush-ganged boxes flanking the trigger for content that
+// makes the selection more contextual, e.g. a currency symbol ahead of an
+// amount select and a unit label after it.
+export const WithPrefixSuffix: Story = {
+  render: () => ({
+    components: { Select },
+    setup: () => ({ fruits }),
+    template: `
+      <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80">
+        <template #prefix>$</template>
+        <template #suffix>USD</template>
+      </Select>
+    `,
+  }),
+}
+
 // Disabled: the trigger goes inert, dimmed, not-allowed cursor. The dropdown
 // never opens and the value drops out of the submitted form values.
 export const Disabled: Story = {
@@ -125,6 +141,10 @@ export const Snapshot: Story = {
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" disabled class="w-72" />
             <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72">
               <template #icon><Icon :icon="PhShoppingCart" /></template>
+            </Select>
+            <Select label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72">
+              <template #prefix>$</template>
+              <template #suffix>USD</template>
             </Select>
           </div>
         </section>
