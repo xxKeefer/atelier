@@ -145,6 +145,36 @@ test('renders no prefix or suffix box when the slots are unused', () => {
   expect(screen.queryByTestId('input-suffix')).toBeNull()
 })
 
+// The field and its prefix/suffix gang into one flush assembly: no gap
+// between segments, and only the outer ends of the run round -- the joins
+// where segments meet stay square on both sides.
+test('gangs the field flush against its prefix and suffix with square inner joins', () => {
+  render(Input, {
+    attrs: { 'aria-label': 'Amount' },
+    slots: { prefix: '<span>$</span>', suffix: '<span>USD</span>' },
+  })
+  const field = screen.getByRole('textbox')
+  const prefix = screen.getByTestId('input-prefix')
+  const suffix = screen.getByTestId('input-suffix')
+
+  expect(prefix.parentElement?.className).not.toMatch(/\bgap-\d/)
+  expect(prefix.className).toContain('rounded-l-md')
+  expect(prefix.className).not.toMatch(/rounded-r|rounded-md\b/)
+  expect(field.className).not.toMatch(/rounded-l-md|rounded-r-md|rounded-md\b/)
+  expect(suffix.className).toContain('rounded-r-md')
+  expect(suffix.className).not.toMatch(/rounded-l|rounded-md\b/)
+})
+
+// A bare field with no prefix/suffix keeps both its own outer corners
+// rounded -- the flush-assembly geometry only squares off joins that
+// actually exist.
+test('a field with no prefix or suffix rounds both its own corners', () => {
+  render(Input, { attrs: { 'aria-label': 'Filter' } })
+  const field = screen.getByRole('textbox')
+  expect(field.className).toContain('rounded-l-md')
+  expect(field.className).toContain('rounded-r-md')
+})
+
 // The single visual snap for Input: the Snapshot story's board. Baseline:
 // __snaps__/input-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

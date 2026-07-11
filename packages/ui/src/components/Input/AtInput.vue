@@ -73,13 +73,24 @@ const onInput = (e: Event) => {
 // being centred text, sits in the deepest part of the bucket. Focus swaps to
 // the system pink ring, matching the button.
 const base =
-  'w-full font-body rounded-md text-fg-default ' +
+  'w-full font-body text-fg-default ' +
   'bg-surface-default placeholder:text-fg-subtle ' +
   'border-[3px] border-solid border-border-default ' +
   'shadow-lower disabled:shadow-low ' +
   'transition-[box-shadow,border-color,background-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
+
+// The field and its prefix/suffix gang into one flush assembly -- like a
+// cassette deck's transport-button row, each segment butted zero-gap against
+// its neighbour, the seam itself (border + shadow) doing the separating
+// instead of a visible gap. Only the outer ends of the whole run are
+// rounded; a join between two segments is always square on both sides that
+// touch. The field rounds whichever of its own ends has no flanking segment.
+const fieldRounding = computed(() => [
+  !hasPrefix.value && 'rounded-l-md',
+  !hasSuffix.value && 'rounded-r-md',
+])
 
 // An error shifts the whole recess onto the danger colourway's own recessed
 // rungs -- surface, rim, and shadow together (bg-danger-surface-recess,
@@ -125,9 +136,11 @@ const iconPadding: Record<Size, string> = {
 // shallower bucket flanking the deeper one that actually receives input. That
 // happens to be the same rung the field itself drops to when disabled
 // (disabled:shadow-low above), so a disabled field's writing area lifts to
-// exactly this same level with no extra coupling.
+// exactly this same level with no extra coupling. Only its outer edge rounds
+// (prefix: left, suffix: right) -- the edge butted against the field stays
+// square, per the gang-flush assembly.
 const prefixSuffixClasses =
-  'flex items-center justify-center font-body text-fg-subtle rounded-md ' +
+  'flex items-center justify-center font-body text-fg-subtle ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low'
 </script>
 
@@ -144,10 +157,15 @@ const prefixSuffixClasses =
       {{ label }}
     </label>
 
-    <div class="flex items-stretch gap-2">
+    <div class="flex items-stretch">
       <!-- Prefix: a shallower recess flanking the field, e.g. a currency
-           symbol or unit. -->
-      <span v-if="hasPrefix" data-testid="input-prefix" :class="[prefixSuffixClasses, sizes[size]]">
+           symbol or unit. Ganged flush against the field -- only its outer
+           (left) edge rounds. -->
+      <span
+        v-if="hasPrefix"
+        data-testid="input-prefix"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-l-md']"
+      >
         <slot name="prefix" />
       </span>
 
@@ -168,15 +186,26 @@ const prefixSuffixClasses =
           :value="modelValue"
           :placeholder="placeholder"
           type="text"
-          :class="[base, sizes[size], hasIcon && iconPadding[size], error && errorClasses]"
+          :class="[
+            base,
+            fieldRounding,
+            sizes[size],
+            hasIcon && iconPadding[size],
+            error && errorClasses,
+          ]"
           v-bind="$attrs"
           @input="onInput"
         />
       </div>
 
       <!-- Suffix: a shallower recess flanking the field, e.g. a unit or
-           payment provider mark. -->
-      <span v-if="hasSuffix" data-testid="input-suffix" :class="[prefixSuffixClasses, sizes[size]]">
+           payment provider mark. Ganged flush against the field -- only its
+           outer (right) edge rounds. -->
+      <span
+        v-if="hasSuffix"
+        data-testid="input-suffix"
+        :class="[prefixSuffixClasses, sizes[size], 'rounded-r-md']"
+      >
         <slot name="suffix" />
       </span>
     </div>
