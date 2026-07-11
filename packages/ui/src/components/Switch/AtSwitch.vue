@@ -69,13 +69,16 @@ const track =
 // it's already the brightest tone in that ladder. The border splits front
 // from back: top/sides keep the raised -strong highlight, but the front
 // (bottom) edge -- the face that reads as the underside dropping into the
-// recess -- takes the darker -edge/-default token, the same "edge" Button's
-// own colourway ladder uses for its coloured bottom lip.
+// recess -- takes a properly dark tone (primary-edge on, surface-subtle off,
+// since neutral has no dedicated "edge" token dark enough against a bright
+// fg-default face) so it reads as shadowed rather than another highlight.
+// Colour and shadow transition on the same clock as the slide so the flip
+// reads as one motion, not a colour-snap plus a separate glide.
 const thumb =
   'inline-block h-5 w-5 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
-  'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[transform,background-color,border-color,box-shadow] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-4 ' +
-  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-border-default data-[state=unchecked]:shadow-higher ' +
+  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-surface-subtle data-[state=unchecked]:shadow-higher ' +
   'data-[state=checked]:bg-primary-default data-[state=checked]:border-t-primary-border-strong data-[state=checked]:border-x-primary-border-strong data-[state=checked]:border-b-primary-edge data-[state=checked]:shadow-primary-higher'
 </script>
 
