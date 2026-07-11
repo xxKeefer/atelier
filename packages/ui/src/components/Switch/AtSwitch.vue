@@ -55,13 +55,10 @@ const track =
   'disabled:data-[state=unchecked]:bg-surface-strong disabled:data-[state=unchecked]:border-border-strong ' +
   'disabled:data-[state=checked]:bg-primary-surface-strong disabled:data-[state=checked]:border-primary-border-default'
 
-// Thumb: raised at `high` (shadow.json: "high ... switch thumb"), popped off
-// the track's recessed floor by lift-half -- same rest-at-lift/shadow-below
-// mechanic as Button's default variant, so the hard-edge shadow reads as a
-// real gap under the thumb instead of a flush-mounted flat square. Slides
-// from the track's left to right edge as data-state flips.
+// Thumb: raised at `high` (shadow.json: "high ... switch thumb"), slides from
+// the track's left to right edge as data-state flips.
 const thumb =
-  'inline-block h-4 w-4 rounded-sm border-2 border-solid border-border-default bg-fg-default shadow-high -translate-y-lift-half ' +
+  'inline-block h-4 w-4 rounded-sm bg-fg-default shadow-high ' +
   'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-5'
 </script>
