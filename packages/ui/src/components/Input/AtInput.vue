@@ -61,29 +61,32 @@ const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
 
-// The recess -- the inverse of the button's extruded bottom edge. The field is a
-// bucket sunk into the page: the deepest surface colour (bg-canvas) reads as a
-// hole punched into whatever it sits on, and a layered inset shadow casts the
-// walls of the depression. Depth lives in --at-input-depth; disabled halves it
-// (a shallower bucket), mirroring the button's own half-depressed disabled
-// geometry -- same depth idiom, not the flat variant's plain border. The
-// placeholder, being centred text, sits in the deepest part of the bucket. Focus
-// swaps to the system pink ring, matching the button.
+// The recess -- the inverse of the button's extruded bottom edge. The field
+// sits on the elevation ladder's deep-recess rung (shadow-lower: the same
+// hard-edge, zero-blur inset shadow every other recessed surface in the
+// system uses -- Elevation's recess tiles, Checkbox/Radio's checked state),
+// not a hand-rolled blurred shadow. That hard edge is what reads as a real
+// depression instead of a soft bordered box. Disabled drops to shadow-low,
+// the ladder's shallow-recess rung -- a shallower bucket, mirroring the
+// button's own half-depressed disabled geometry, same depth idiom as before
+// but off the real rungs instead of a custom depth var. The placeholder,
+// being centred text, sits in the deepest part of the bucket. Focus swaps to
+// the system pink ring, matching the button.
 const base =
   'w-full font-body rounded-md text-fg-default ' +
-  'bg-[var(--color-bg-canvas)] placeholder:text-fg-subtle ' +
-  'border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  '[--at-input-depth:5px] disabled:[--at-input-depth:2.5px] ' +
-  'shadow-[inset_0_var(--at-input-depth)_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)] ' +
-  'transition-[box-shadow,border-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'bg-surface-default placeholder:text-fg-subtle ' +
+  'border-[3px] border-solid border-border-default ' +
+  'shadow-lower disabled:shadow-low ' +
+  'transition-[box-shadow,border-color,background-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
-// The error state re-colours the recess's rim, matching the flat/recessed rung
-// of the danger colourway (border-danger-border-default, same token Elevation
-// uses for its recessed danger rungs) rather than the button's solid-fill edge
-// token -- the bucket stays a border treatment, not an extruded one.
-const errorClasses = 'border-danger-border-default'
+// An error shifts the whole recess onto the danger colourway's own recessed
+// rungs -- surface, rim, and shadow together (bg-danger-surface-recess,
+// border-danger-border-default, shadow-danger-lower), the same trio Elevation
+// pairs for its danger tiles -- rather than only recolouring the border. The
+// bucket stays a recess, just danger-tinted top to bottom.
+const errorClasses = 'bg-danger-surface-recess border-danger-border-default shadow-danger-lower'
 
 // Field padding mirrors the button size scale (button gap doesn't apply here).
 const sizes: Record<Size, string> = {
@@ -116,17 +119,16 @@ const iconPadding: Record<Size, string> = {
   lg: 'pl-12',
 }
 
-// A prefix/suffix box: the same recess idiom as the field itself (bg-canvas,
-// bordered frame, layered inset shadow) but at a fixed half depth (2.5px vs
-// the field's base 5px) -- a shallower bucket flanking the deeper one that
-// actually receives input. That fixed value isn't wired to --at-input-depth:
-// it happens to equal the depth the field itself already drops to when
-// disabled (disabled:[--at-input-depth:2.5px] above), so a disabled field's
-// writing area lifts to exactly this same level with no extra coupling.
+// A prefix/suffix box: the same recess idiom as the field itself (bg-surface,
+// bordered frame, hard-edge inset shadow) but pinned to the ladder's shallow
+// rung (shadow-low) rather than the field's own deep one (shadow-lower) -- a
+// shallower bucket flanking the deeper one that actually receives input. That
+// happens to be the same rung the field itself drops to when disabled
+// (disabled:shadow-low above), so a disabled field's writing area lifts to
+// exactly this same level with no extra coupling.
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle rounded-md ' +
-  'bg-[var(--color-bg-canvas)] border-[3px] border-solid border-[color:var(--color-border-default)] ' +
-  'shadow-[inset_0_2.5px_6px_-1px_rgba(0,0,0,0.55),inset_0_2px_3px_0_rgba(0,0,0,0.4)]'
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-low'
 </script>
 
 <template>
