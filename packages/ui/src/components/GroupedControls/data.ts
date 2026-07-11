@@ -44,11 +44,17 @@ export const horizontalSegments = [
 
 // Vertical gang: a stack of select-option-shaped segments. Rest is flush
 // (shadow-flat, matching AtSelect's current item look); one segment is pinned
-// to the hover-depressed look -- an *inset* shadow-low, the same rung
-// AtInput's recessed field uses. Inset box-shadows paint inside their own
-// element's border box, so the depression doesn't bleed onto a neighbouring
-// segment -- no seam-interruption token needed, unlike an extruded vertical
-// gang would require.
+// to the hover-depressed look -- inset shadow-low paired with a bg-surface-subtle
+// tone shift. The tone shift is load-bearing here, not decorative: every shadow
+// rung is offsetX 0 (straight top-down light, see shadow.json), so the light
+// axis runs parallel to a vertical gang's seams instead of perpendicular to them
+// like it does in the horizontal gang -- a depressed segment's inset shadow
+// (a dark band at its own top inner edge) lands right on the border it already
+// shares with its neighbour above, so shadow alone reads as "there's a line
+// here", not "this one sank". The surface-tone swap gives a light-direction-
+// independent cue to carry the depression instead. Inset box-shadows still
+// paint inside their own element's border box regardless, so no seam-
+// interruption token is needed either way.
 // Rounding: only the stack's outer-top (first) and outer-bottom (last)
 // segments round. Border-as-seam: every segment but the last drops its bottom
 // border, so the next segment's top border draws the seam.
@@ -62,7 +68,7 @@ export const verticalSegments = [
   {
     label: 'Open',
     state: 'hover',
-    class: 'shadow-low bg-surface-default border-border-default',
+    class: 'shadow-low bg-surface-subtle border-border-default',
     position: 'border-b-0',
   },
   {
