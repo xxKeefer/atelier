@@ -41,10 +41,10 @@ withDefaults(
           :side="side"
           :side-offset="6"
           data-testid="tooltip-content"
-          class="z-50 rounded-md bg-surface-strong px-3 py-1.5 font-body text-sm text-fg-default shadow-higher"
+          class="z-50 rounded-md border border-fg-default bg-bg-canvas px-3 py-1.5 font-body text-sm text-fg-default"
         >
           {{ text }}
-          <TooltipArrow class="fill-surface-strong" />
+          <TooltipArrow class="fill-bg-canvas" />
         </TooltipContent>
       </TooltipPortal>
     </TooltipRoot>
