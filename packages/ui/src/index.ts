@@ -7,3 +7,5 @@ export { default as AtCheckboxGroup } from './components/Checkbox/AtCheckboxGrou
 export { default as AtDivider } from './components/Divider/AtDivider.vue'
 export { default as AtIcon } from './components/Icon/AtIcon.vue'
 export { default as AtInput } from './components/Input/AtInput.vue'
+export { default as AtRadio } from './components/Radio/AtRadio.vue'
+export { default as AtRadioGroup } from './components/Radio/AtRadioGroup.vue'
