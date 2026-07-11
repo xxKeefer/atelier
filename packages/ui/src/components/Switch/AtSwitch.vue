@@ -72,13 +72,18 @@ const track =
 // recess -- takes a properly dark tone (primary-edge on, surface-subtle off,
 // since neutral has no dedicated "edge" token dark enough against a bright
 // fg-default face) so it reads as shadowed rather than another highlight.
-// Colour and shadow transition on the same clock as the slide so the flip
-// reads as one motion, not a colour-snap plus a separate glide.
+// Only the slide transitions -- colour/shadow following the same clock read
+// as jittery rather than unified, so they snap instead. The off state's cast
+// shadow can't use shadow-higher as-is either -- that rung's colour is
+// border.default, tuned for stacking raised *panels* on a subtle surface,
+// and reads as light grey next to a bright fg-default thumb; same 0/4px/0/0
+// geometry, but recoloured to surface-subtle (the system's darkest non-black
+// surface token) so it actually reads as a shadow.
 const thumb =
   'inline-block h-5 w-5 rounded-sm border-t-2 border-x-2 border-b-4 border-solid -translate-y-lift-full ' +
-  'transition-[transform,background-color,border-color,box-shadow] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-4 ' +
-  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-surface-subtle data-[state=unchecked]:shadow-higher ' +
+  'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-t-border-strong data-[state=unchecked]:border-x-border-strong data-[state=unchecked]:border-b-surface-subtle data-[state=unchecked]:shadow-[0_4px_0_0_var(--color-surface-subtle)] ' +
   'data-[state=checked]:bg-primary-default data-[state=checked]:border-t-primary-border-strong data-[state=checked]:border-x-primary-border-strong data-[state=checked]:border-b-primary-edge data-[state=checked]:shadow-primary-higher'
 </script>
 
