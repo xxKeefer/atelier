@@ -41,9 +41,14 @@ withDefaults(
           :side="side"
           :side-offset="6"
           data-testid="tooltip-content"
-          class="z-50 rounded-md border border-fg-default bg-bg-canvas px-3 py-1.5 font-body text-sm text-fg-default"
+          class="z-50 rounded-md bg-bg-canvas px-3 py-1.5 font-body text-sm text-fg-default [filter:drop-shadow(0_1px_0_var(--color-fg-default))_drop-shadow(0_-1px_0_var(--color-fg-default))_drop-shadow(1px_0_0_var(--color-fg-default))_drop-shadow(-1px_0_0_var(--color-fg-default))]"
         >
           {{ text }}
+          <!-- A regular `border` only outlines the content box's own rect, so
+               it cuts across the arrow's base where the two shapes meet. The
+               four 1px drop-shadows above trace the box+arrow as one silhouette
+               instead (drop-shadow follows rendered alpha, not element bounds),
+               so the border wraps continuously around the point. -->
           <TooltipArrow class="fill-bg-canvas" />
         </TooltipContent>
       </TooltipPortal>

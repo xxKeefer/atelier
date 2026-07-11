@@ -38,6 +38,6 @@ const variantConfig = computed(() => variants[props.variant])
     :disabled="disabled"
     :default-open="defaultOpen"
   >
-    <AtIcon :icon="variantConfig.icon" :label="variantConfig.label" />
+    <AtIcon :icon="variantConfig.icon" :label="variantConfig.label" weight="fill" />
   </AtTooltip>
 </template>

@@ -64,7 +64,7 @@ export const Snapshot: Story = {
     setup: () => ({ variants }),
     template: `
       <div
-        class="flex w-max flex-col gap-2 bg-bg-canvas p-16 text-fg-default"
+        class="flex w-max flex-col gap-2 bg-surface-default p-16 text-fg-default"
         data-testid="snap-board"
       >
         <h2 class="font-heading font-bold text-lg">Variants</h2>

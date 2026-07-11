@@ -86,22 +86,26 @@ export const KeyboardFocus: Story = {
   }),
 }
 
-// The visual board: one open tooltip per side, laid out with room for the
-// content to render without clipping. This is the story the snapshot test
-// snaps.
+// The visual board: one open tooltip per side, laid out in a 2x2 grid so
+// each tooltip's content opens into its own row/column gap rather than over
+// a neighbouring trigger. Clockwise from top-left: right, bottom, left, top
+// (top lands under right -- CSS grid auto-placement fills row-major, so this
+// order is what produces that layout).
+const gridSides = ['right', 'bottom', 'top', 'left'] as const
+
 export const Snapshot: Story = {
   render: () => ({
     components: { Tooltip, Button },
-    setup: () => ({ sides }),
+    setup: () => ({ gridSides }),
     template: `
       <div
-        class="flex w-max flex-col gap-2 bg-bg-canvas p-16 text-fg-default"
+        class="flex w-max flex-col gap-2 bg-surface-default p-16 text-fg-default"
         data-testid="snap-board"
       >
         <h2 class="font-heading font-bold text-lg">Sides</h2>
-        <div class="flex gap-16 mt-8">
+        <div class="grid grid-cols-2 gap-x-32 gap-y-24 mt-8">
           <Tooltip
-            v-for="side in sides"
+            v-for="side in gridSides"
             :key="side"
             :text="side"
             :side="side"
