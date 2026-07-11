@@ -46,6 +46,13 @@ test('a disabled select is inert', () => {
   expect(trigger).toBeDisabled()
 })
 
+// With no visible label, the accessible name falls through from a forwarded
+// aria-label so the field still announces its purpose.
+test('a bare field takes its accessible name from a forwarded aria-label', () => {
+  render(Select, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  expect(screen.getByRole('combobox', { name: 'Fruit' })).toBeInTheDocument()
+})
+
 // The trigger sits at the low surface -- the same shallow-recess idiom as a
 // checked checkbox/radio.
 test('the trigger recesses at the low surface', () => {
