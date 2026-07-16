@@ -7,7 +7,6 @@ import {
   SelectItemText,
   SelectPortal,
   SelectRoot,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
   SelectViewport,
@@ -141,15 +140,27 @@ const labelSizes: Record<Size, string> = {
   lg: 'text-base',
 }
 
-// The options menu is recessed at the same low surface as the trigger, with
-// a divider splitting each option -- a menu carved into the page, not a
-// floating card.
-const content =
-  'overflow-hidden rounded-md bg-surface-default border-[3px] border-solid border-border-default shadow-low'
+// The options menu is the GroupedControls vertical gang (Foundations/GroupedControls
+// Vertical story): each option carries its own border and rounds only at the
+// stack's outer-top/outer-bottom ends, flush zero-gap otherwise -- border-as-seam,
+// the next option's top border draws the line instead of a separator. The
+// container itself is unstyled chrome, just clipping the stack's corners.
+const content = 'overflow-hidden rounded-md bg-surface-default'
 
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'data-[highlighted]:bg-surface-strong data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat ' +
+  'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
+  'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+
+// Border-as-seam positioning, mirroring verticalSegments in
+// GroupedControls/data.ts: only the first/last options round outward, and
+// every option but the last drops its bottom border so the next option's top
+// border draws the seam instead of doubling the line.
+const itemPosition = (index: number, length: number) => [
+  index === 0 && 'rounded-t-md',
+  index === length - 1 ? 'rounded-b-md' : 'border-b-0',
+]
 </script>
 
 <template>
@@ -215,13 +226,15 @@ const item =
 
           <SelectPortal>
             <SelectContent :class="content" position="popper" :side-offset="4">
-              <SelectViewport class="p-1">
-                <template v-for="(option, index) in options" :key="option.value">
-                  <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
-                  <SelectItem :value="option.value" :class="item">
-                    <SelectItemText>{{ option.label }}</SelectItemText>
-                  </SelectItem>
-                </template>
+              <SelectViewport>
+                <SelectItem
+                  v-for="(option, index) in options"
+                  :key="option.value"
+                  :value="option.value"
+                  :class="[item, itemPosition(index, options.length)]"
+                >
+                  <SelectItemText>{{ option.label }}</SelectItemText>
+                </SelectItem>
               </SelectViewport>
             </SelectContent>
           </SelectPortal>
