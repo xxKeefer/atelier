@@ -163,6 +163,28 @@ export const Snapshot: Story = {
             />
           </div>
         </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading text-lg font-bold text-fg-default">Open</h2>
+          <!-- disable-teleport + transform: the popper's fixed-position menu
+               resolves against this ancestor instead of escaping to the
+               viewport, so it lands inside the captured board. Wider than the
+               Select itself so the right-aligned menu has room to fit without
+               reka-ui's alignFlip kicking in. -->
+          <div class="relative h-64 w-96 transform">
+            <Select
+              label="Fruit"
+              :options="fruits"
+              placeholder="Choose a fruit"
+              default-open
+              disable-teleport
+              class="w-72"
+            >
+              <template #prefix>$</template>
+              <template #suffix>USD</template>
+            </Select>
+          </div>
+        </section>
       </div>
     `,
   }),

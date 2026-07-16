@@ -7,7 +7,6 @@ import {
   SelectItemText,
   SelectPortal,
   SelectRoot,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
   SelectViewport,
@@ -35,6 +34,13 @@ const props = withDefaults(
     size?: Size
     disabled?: boolean
     id?: string
+    // Mounts already open, bypassing a trigger click -- for the Snapshot
+    // board and stories that show the menu without simulating one. Not an AC.
+    defaultOpen?: boolean
+    // Renders the menu in place instead of teleporting to the document body
+    // -- for the Snapshot board, so a `defaultOpen` instance's popper-
+    // positioned menu stays scoped to the board. Not an AC.
+    disableTeleport?: boolean
   }>(),
   {
     modelValue: undefined,
@@ -45,6 +51,8 @@ const props = withDefaults(
     size: 'md',
     disabled: false,
     id: undefined,
+    defaultOpen: false,
+    disableTeleport: false,
   },
 )
 
@@ -76,10 +84,15 @@ const modelValue = computed({
 // reka-ui's trigger opens on pointerdown, not click -- the native label-for
 // click-forwarding a <label> gives a <button> fires "click" only, so it never
 // reaches the trigger's open handler. Open explicitly instead.
-const open = ref(false)
+const open = ref(props.defaultOpen)
 const onLabelClick = () => {
   if (!props.disabled) open.value = true
 }
+
+// The whole icon/prefix/trigger/suffix run is the popper's reference, not just
+// the trigger -- otherwise the menu anchors to the trigger's own box, landing
+// misaligned with the assembled control whenever a prefix/suffix is present.
+const groupEl = ref<HTMLElement>()
 
 // The trigger sits at the low surface, the same shallow-recess rung a checked
 // checkbox/radio depresses into -- the field reads as already-settled, not an
@@ -95,7 +108,7 @@ const trigger =
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'data-[placeholder]:text-fg-subtle ' +
-  'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
+  'focus:outline-none focus-visible:outline-none'
 
 // Mirrors AtInput's errorClasses: the recess rim re-colours to the danger
 // border token, same border treatment as the trigger's default rim.
@@ -141,15 +154,27 @@ const labelSizes: Record<Size, string> = {
   lg: 'text-base',
 }
 
-// The options menu is recessed at the same low surface as the trigger, with
-// a divider splitting each option -- a menu carved into the page, not a
-// floating card.
-const content =
-  'overflow-hidden rounded-md bg-surface-default border-[3px] border-solid border-border-default shadow-low'
+// The options menu is the GroupedControls vertical gang (Foundations/GroupedControls
+// Vertical story): each option carries its own border and rounds only at the
+// stack's outer-top/outer-bottom ends, flush zero-gap otherwise -- border-as-seam,
+// the next option's top border draws the line instead of a separator. The
+// container itself is unstyled chrome, just clipping the stack's corners.
+const content = 'overflow-hidden rounded-md bg-surface-default'
 
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'data-[highlighted]:bg-surface-strong data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat ' +
+  'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
+  'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+
+// Border-as-seam positioning, mirroring verticalSegments in
+// GroupedControls/data.ts: only the first/last options round outward, and
+// every option but the last drops its bottom border so the next option's top
+// border draws the seam instead of doubling the line.
+const itemPosition = (index: number, length: number) => [
+  index === 0 && 'rounded-t-md',
+  index === length - 1 ? 'rounded-b-md' : 'border-b-0',
+]
 </script>
 
 <template>
@@ -164,7 +189,10 @@ const item =
       {{ label }}
     </label>
 
-    <div class="flex items-stretch">
+    <div
+      ref="groupEl"
+      class="flex items-stretch rounded-md focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-border-focus"
+    >
       <!-- Prefix: a flush-ganged, flat box flanking the trigger's start, for
            content that makes the selection more contextual, e.g. a country
            flag ahead of a country code select. Always the run's outermost
@@ -213,15 +241,23 @@ const item =
             </span>
           </SelectTrigger>
 
-          <SelectPortal>
-            <SelectContent :class="content" position="popper" :side-offset="4">
-              <SelectViewport class="p-1">
-                <template v-for="(option, index) in options" :key="option.value">
-                  <SelectSeparator v-if="index > 0" class="my-1 h-[3px] bg-border-default" />
-                  <SelectItem :value="option.value" :class="item">
-                    <SelectItemText>{{ option.label }}</SelectItemText>
-                  </SelectItem>
-                </template>
+          <SelectPortal :disabled="disableTeleport">
+            <SelectContent
+              :class="content"
+              :reference="groupEl"
+              position="popper"
+              align="end"
+              :side-offset="4"
+            >
+              <SelectViewport>
+                <SelectItem
+                  v-for="(option, index) in options"
+                  :key="option.value"
+                  :value="option.value"
+                  :class="[item, itemPosition(index, options.length)]"
+                >
+                  <SelectItemText>{{ option.label }}</SelectItemText>
+                </SelectItem>
               </SelectViewport>
             </SelectContent>
           </SelectPortal>
