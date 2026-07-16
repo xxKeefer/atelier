@@ -39,15 +39,19 @@ const percent = computed(() => {
   return Math.min(100, Math.max(0, (value / props.max) * 100))
 })
 
+// Border is a fixed 3px regardless of size (Input/Card convention), so each
+// rung needs enough total height to leave a visible fill strip inside it.
 const track: Record<Size, string> = {
-  sm: 'h-1.5',
-  md: 'h-2.5',
-  lg: 'h-4',
+  sm: 'h-3',
+  md: 'h-4',
+  lg: 'h-6',
 }
 
+// Square corners (rounded-md, matching Card/Input), recessed into a shadow-low
+// well like Switch's track -- the empty portion reads as a carved-out channel.
 const trackClasses = computed(
   () =>
-    `relative w-full overflow-hidden rounded-full bg-surface-default border-[3px] border-solid border-border-default ${track[props.size]}`,
+    `relative w-full overflow-hidden rounded-md border-[3px] border-solid border-border-default bg-surface-default shadow-low ${track[props.size]}`,
 )
 
 // Indeterminate: no known value, so the fill can't track progress -- a full-width
@@ -55,8 +59,8 @@ const trackClasses = computed(
 // uses) signals "busy" without implying a false position.
 const fillClasses = computed(() =>
   indeterminate.value
-    ? 'h-full w-full rounded-full bg-primary-default animate-pulse motion-reduce:animate-none'
-    : 'h-full rounded-full bg-primary-default transition-[width] duration-[120ms] ease-[ease]',
+    ? 'h-full w-full bg-primary-default animate-pulse motion-reduce:animate-none'
+    : 'h-full bg-primary-default transition-[width] duration-[120ms] ease-[ease]',
 )
 </script>
 

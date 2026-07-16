@@ -52,9 +52,9 @@ test('forwards ariaLabel when no visible label is rendered', () => {
 
 // Size is a track-height variant; each size renders a distinct height class.
 test.each([
-  ['sm', 'h-1.5'],
-  ['md', 'h-2.5'],
-  ['lg', 'h-4'],
+  ['sm', 'h-3'],
+  ['md', 'h-4'],
+  ['lg', 'h-6'],
 ] as const)('size=%s applies the %s track height', (size, expectedClass) => {
   render(ProgressBar, { props: { value: 50, size } })
   expect(screen.getByRole('progressbar').className).toContain(expectedClass)
