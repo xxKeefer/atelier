@@ -2,3 +2,4 @@
 # post-create (not post-start) so the permissions exist before Claude starts working.
 [post-create]
 copy = "wt step copy-ignored"
+direnv = "direnv allow"
