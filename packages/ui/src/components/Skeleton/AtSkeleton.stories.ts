@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Skeleton from './AtSkeleton.vue'
+import { CompositionView } from './views/CompositionView'
 
 const shapes = ['rect', 'circle', 'text'] as const
 
@@ -27,29 +28,23 @@ export const Playground: Story = {
   }),
 }
 
+// Skeletons don't have to 1:1 map every element of the eventual UI -- a few
+// simple shapes stacked together approximate a real layout closely enough.
+export const Composition: Story = {
+  render: () => ({
+    components: { CompositionView },
+    template: `<CompositionView />`,
+  }),
+}
+
 // The board every shape is matched against real component/text footprints so
 // the layout doesn't shift once real content lands.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Skeleton },
+    components: { CompositionView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
-        <section class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">Text lines</h2>
-          <div class="flex w-64 flex-col gap-2">
-            <Skeleton shape="text" width="100%" height="0.875rem" />
-            <Skeleton shape="text" width="100%" height="0.875rem" />
-            <Skeleton shape="text" width="60%" height="0.875rem" />
-          </div>
-        </section>
-        <section class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">Avatar (circle)</h2>
-          <Skeleton shape="circle" width="3rem" height="3rem" />
-        </section>
-        <section class="flex flex-col gap-2">
-          <h2 class="font-heading font-bold text-lg">Card (rect)</h2>
-          <Skeleton shape="rect" width="16rem" height="8rem" />
-        </section>
+        <CompositionView />
       </div>
     `,
   }),
