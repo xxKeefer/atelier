@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhCheckCircle, PhInfo, PhWarning, PhXCircle } from '@phosphor-icons/vue'
+import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond } from '@phosphor-icons/vue'
 import { computed, useSlots, type Component } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
 
@@ -26,9 +26,9 @@ const hasActions = computed(() => slots.actions !== undefined)
 
 const intentIcons: Record<Intent, Component> = {
   info: PhInfo,
-  success: PhCheckCircle,
+  success: PhCheckSquare,
   warning: PhWarning,
-  danger: PhXCircle,
+  danger: PhWarningDiamond,
 }
 
 // Tinted banner: bg + border + fg from the status colour group's canvas-tint
