@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from 'reka-ui'
 import Icon from '../Icon/AtIcon.vue'
+import Button from '../Button/AtButton.vue'
 
 type Position = 'center' | 'left' | 'right' | 'top' | 'bottom'
 type Size = 'sm' | 'md' | 'lg' | 'full'
@@ -125,13 +126,9 @@ const panelClasses = computed(() => [
             </DialogDescription>
           </div>
           <DialogClose v-if="showCloseButton" as-child>
-            <button
-              type="button"
-              aria-label="Close"
-              class="cursor-pointer text-fg-muted hover:text-fg-default"
-            >
+            <Button variant="flat" intent="neutral" size="sm" aria-label="Close">
               <Icon :icon="PhX" size="lg" />
-            </button>
+            </Button>
           </DialogClose>
         </div>
 
