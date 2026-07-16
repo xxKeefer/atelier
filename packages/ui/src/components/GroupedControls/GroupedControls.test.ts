@@ -4,7 +4,7 @@ import { expect, test } from 'vitest'
 import * as stories from './GroupedControls.stories'
 import { snapBoard } from '../../test/snap'
 
-const { Horizontal, Vertical, Snapshot } = composeStories(stories)
+const { Horizontal, Vertical, LiveHorizontal, Snapshot } = composeStories(stories)
 
 // The horizontal gang renders every segment across the rest/hover/active/
 // disabled ladder, each labelled by state.
@@ -26,6 +26,27 @@ test('renders every vertical segment including the hover-depressed one', () => {
     expect(screen.getByText(label)).toBeInTheDocument()
   }
   expect(screen.getByText('hover')).toBeInTheDocument()
+})
+
+// Elevation-aware seam ownership under real interaction: PLAY (a segment with
+// an interactive neighbour on both sides) drops its own border when it might
+// become the pressed/lower one, and FF restores the border it structurally
+// drops by default via the peer-hover/peer-active rule, so a hovered/active
+// PLAY doesn't leave FF's higher edge dropping a border it should keep.
+test('an interactive middle segment can drop its own seam borders and its neighbour can restore its own', () => {
+  render(LiveHorizontal)
+  const play = screen.getByText('PLAY')
+  const ff = screen.getByText('FF')
+  expect(play.className).toContain('hover:enabled:border-r-0')
+  expect(ff.className).toContain('peer-hover:border-l-[3px]')
+})
+
+// Focus ring must not be clipped by a following sibling in paint order.
+test('a live segment lifts above its neighbours on focus so its ring is not clipped', () => {
+  render(LiveHorizontal)
+  const rew = screen.getByText('REW')
+  expect(rew.className).toContain('relative')
+  expect(rew.className).toContain('focus-visible:z-10')
 })
 
 // The single visual snap for GroupedControls: both gangs on one board.

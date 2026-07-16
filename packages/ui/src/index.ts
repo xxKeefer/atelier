@@ -2,6 +2,8 @@ import './styles.css'
 
 export { default as AtAlert } from './components/Alert/AtAlert.vue'
 export { default as AtButton } from './components/Button/AtButton.vue'
+export { default as AtButtonGroup } from './components/ButtonGroup/AtButtonGroup.vue'
+export { default as AtButtonGroupItem } from './components/ButtonGroup/AtButtonGroupItem.vue'
 export { default as AtCard } from './components/Card/AtCard.vue'
 export { default as AtCheckbox } from './components/Checkbox/AtCheckbox.vue'
 export { default as AtCheckboxGroup } from './components/Checkbox/AtCheckboxGroup.vue'
