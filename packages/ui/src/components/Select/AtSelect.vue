@@ -34,6 +34,13 @@ const props = withDefaults(
     size?: Size
     disabled?: boolean
     id?: string
+    // Mounts already open, bypassing a trigger click -- for the Snapshot
+    // board and stories that show the menu without simulating one. Not an AC.
+    defaultOpen?: boolean
+    // Renders the menu in place instead of teleporting to the document body
+    // -- for the Snapshot board, so a `defaultOpen` instance's popper-
+    // positioned menu stays scoped to the board. Not an AC.
+    disableTeleport?: boolean
   }>(),
   {
     modelValue: undefined,
@@ -44,6 +51,8 @@ const props = withDefaults(
     size: 'md',
     disabled: false,
     id: undefined,
+    defaultOpen: false,
+    disableTeleport: false,
   },
 )
 
@@ -75,7 +84,7 @@ const modelValue = computed({
 // reka-ui's trigger opens on pointerdown, not click -- the native label-for
 // click-forwarding a <label> gives a <button> fires "click" only, so it never
 // reaches the trigger's open handler. Open explicitly instead.
-const open = ref(false)
+const open = ref(props.defaultOpen)
 const onLabelClick = () => {
   if (!props.disabled) open.value = true
 }
@@ -98,7 +107,8 @@ const trigger =
   'flex w-full items-center justify-between gap-2 font-body text-fg-default ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
-  'data-[placeholder]:text-fg-subtle'
+  'data-[placeholder]:text-fg-subtle ' +
+  'focus:outline-none focus-visible:outline-none'
 
 // Mirrors AtInput's errorClasses: the recess rim re-colours to the danger
 // border token, same border treatment as the trigger's default rim.
@@ -181,7 +191,7 @@ const itemPosition = (index: number, length: number) => [
 
     <div
       ref="groupEl"
-      class="flex items-stretch focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-border-focus"
+      class="flex items-stretch rounded-md focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-border-focus"
     >
       <!-- Prefix: a flush-ganged, flat box flanking the trigger's start, for
            content that makes the selection more contextual, e.g. a country
@@ -231,8 +241,14 @@ const itemPosition = (index: number, length: number) => [
             </span>
           </SelectTrigger>
 
-          <SelectPortal>
-            <SelectContent :class="content" :reference="groupEl" position="popper" :side-offset="4">
+          <SelectPortal :disabled="disableTeleport">
+            <SelectContent
+              :class="content"
+              :reference="groupEl"
+              position="popper"
+              align="end"
+              :side-offset="4"
+            >
               <SelectViewport>
                 <SelectItem
                   v-for="(option, index) in options"
