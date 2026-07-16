@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { HorizontalView } from './views/HorizontalView'
+import { LiveHorizontalView } from './views/LiveHorizontalView'
+import { LiveVerticalView } from './views/LiveVerticalView'
 import { VerticalView } from './views/VerticalView'
 
 // GroupedControls has no backing component -- it's a token-layer foundation,
@@ -32,6 +34,22 @@ export const Vertical: Story = {
   render: () => ({
     components: { VerticalView },
     template: `<VerticalView />`,
+  }),
+}
+
+// The horizontal gang under real interaction: hover/click the segments.
+export const LiveHorizontal: Story = {
+  render: () => ({
+    components: { LiveHorizontalView },
+    template: `<LiveHorizontalView />`,
+  }),
+}
+
+// The vertical gang under real interaction: hover the rows.
+export const LiveVertical: Story = {
+  render: () => ({
+    components: { LiveVerticalView },
+    template: `<LiveVerticalView />`,
   }),
 }
 

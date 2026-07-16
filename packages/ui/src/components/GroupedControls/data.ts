@@ -88,3 +88,27 @@ export const verticalSegments = [
     position: 'rounded-b-md',
   },
 ] as const
+
+// Live variants: the same border-as-seam structural layout as the pinned
+// ladders above (rounding + border-drop per position never depends on
+// transient state, only on where a segment sits in the run), but every
+// segment rides real :hover/:active pseudo-state instead of being pinned to
+// one rung -- proves the gang holds up under actual interaction, not just a
+// frozen snapshot. REW/PLAY/FF share one live rest->hover->active mechanic
+// (mirrors AtButton's neutral ladder: shadow-higher/high/low + lift
+// translate); STOP stays a real disabled button. Vertical segments share one
+// live rest->hover mechanic (shadow-flat -> inset shadow-low + surface-subtle
+// tone shift, per the "shadow alone doesn't read" finding above).
+export const liveHorizontalSegments = [
+  { label: 'REW', position: 'rounded-l-md' },
+  { label: 'PLAY', position: 'border-l-0' },
+  { label: 'FF', position: 'border-l-0' },
+  { label: 'STOP', position: 'border-l-0 rounded-r-md', disabled: true },
+] as const
+
+export const liveVerticalSegments = [
+  { label: 'New', position: 'rounded-t-md border-b-0' },
+  { label: 'Open', position: 'border-b-0' },
+  { label: 'Save', position: 'border-b-0' },
+  { label: 'Export', position: 'rounded-b-md' },
+] as const
