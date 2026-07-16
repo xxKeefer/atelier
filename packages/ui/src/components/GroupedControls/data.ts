@@ -89,21 +89,53 @@ export const verticalSegments = [
   },
 ] as const
 
-// Live variants: the same border-as-seam structural layout as the pinned
-// ladders above (rounding + border-drop per position never depends on
-// transient state, only on where a segment sits in the run), but every
-// segment rides real :hover/:active pseudo-state instead of being pinned to
-// one rung -- proves the gang holds up under actual interaction, not just a
-// frozen snapshot. REW/PLAY/FF share one live rest->hover->active mechanic
-// (mirrors AtButton's neutral ladder: shadow-higher/high/low + lift
-// translate); STOP stays a real disabled button. Vertical segments share one
-// live rest->hover mechanic (shadow-flat -> inset shadow-low + surface-subtle
-// tone shift, per the "shadow alone doesn't read" finding above).
+// Live variants: rounding is still purely positional (outer ends only, never
+// depends on transient state) -- but border-drop is NOT, unlike the pinned
+// ladders above. The pinned ladders get away with "every segment but the
+// first drops its left border" only because their rest/hover/active/disabled
+// assignment is a fixed, monotonically-decreasing-left-to-right elevation
+// (REW > PLAY > FF > STOP), so the higher neighbour is always the one on the
+// left. Under real interaction any of REW/PLAY/FF can become the lower
+// (pressed) one via :hover/:active, and it can land in the middle of the run
+// -- e.g. hovering PLAY makes it lower than both REW (left) *and* FF (right).
+// The elevation-aware rule (same "highest edge wins" principle a checked
+// AtButtonGroupItem uses, see ButtonGroup/AtButtonGroupItem.vue) is: at each
+// seam, the higher segment always keeps its border; the lower one drops the
+// border on that side. Expressed here in pure CSS since there's no JS state to
+// key off -- each segment drops its OWN border on the side it might sink
+// (`hover:enabled:border-r-0`/`active:enabled:border-r-0` on REW and PLAY,
+// the two segments with a following interactive neighbour), and each
+// following segment restores the border it structurally drops by default
+// when its *preceding* sibling is the one pressed, via Tailwind's `peer`/
+// `peer-hover:`/`peer-active:` (a plain CSS general-sibling selector under
+// the hood, `.peer:hover ~ &`, which only looks forward -- exactly the
+// direction we need for "restore my left border when the segment before me
+// sinks"). STOP is excluded: it's permanently disabled/dimmed
+// (shadow-flat, opacity-50), not part of the live rest/hover/active ladder,
+// so its border-seam mismatch against a hovered FF is far less perceptible
+// and not worth the extra peer wiring.
+// Vertical segments share one live rest->hover mechanic (shadow-flat -> inset
+// shadow-low + surface-subtle tone shift, per the "shadow alone doesn't
+// read" finding above) and don't have this problem: only one row is ever
+// hover-depressed in the vertical live view, so the pinned rounding/
+// border-drop-per-position never needs to react to which one it is.
 export const liveHorizontalSegments = [
-  { label: 'REW', position: 'rounded-l-md' },
-  { label: 'PLAY', position: 'border-l-0' },
-  { label: 'FF', position: 'border-l-0' },
-  { label: 'STOP', position: 'border-l-0 rounded-r-md', disabled: true },
+  {
+    label: 'REW',
+    position: 'rounded-l-md',
+    seam: 'peer hover:enabled:border-r-0 active:enabled:border-r-0',
+  },
+  {
+    label: 'PLAY',
+    position: 'border-l-0',
+    seam: 'peer peer-hover:border-l-[3px] peer-active:border-l-[3px] hover:enabled:border-r-0 active:enabled:border-r-0',
+  },
+  {
+    label: 'FF',
+    position: 'border-l-0',
+    seam: 'peer-hover:border-l-[3px] peer-active:border-l-[3px]',
+  },
+  { label: 'STOP', position: 'border-l-0 rounded-r-md', seam: '', disabled: true },
 ] as const
 
 export const liveVerticalSegments = [
