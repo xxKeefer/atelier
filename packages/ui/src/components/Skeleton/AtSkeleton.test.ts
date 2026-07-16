@@ -43,6 +43,11 @@ test('renders on the recessed surface token', () => {
   expect(screen.getByTestId('skeleton')).toHaveClass('bg-[var(--color-surface-subtle)]')
 })
 
+test('pulses to signal loading, but respects reduced-motion preference', () => {
+  render(Skeleton)
+  expect(screen.getByTestId('skeleton')).toHaveClass('animate-pulse', 'motion-reduce:animate-none')
+})
+
 // The single visual snap for Skeleton: the Snapshot story's board (all three
 // shapes at representative sizes). Baseline: __snaps__/skeleton-chromium-linux.png.
 // Rebaseline: pnpm test:update.

@@ -34,7 +34,7 @@ const style = computed(() => ({ width: props.width, height: props.height }))
   <div
     aria-hidden="true"
     data-testid="skeleton"
-    class="bg-[var(--color-surface-subtle)]"
+    class="bg-[var(--color-surface-subtle)] animate-pulse motion-reduce:animate-none"
     :class="radiusClass"
     :style="style"
   />
