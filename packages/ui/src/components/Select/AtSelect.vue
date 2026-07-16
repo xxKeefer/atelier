@@ -80,6 +80,11 @@ const onLabelClick = () => {
   if (!props.disabled) open.value = true
 }
 
+// The whole icon/prefix/trigger/suffix run is the popper's reference, not just
+// the trigger -- otherwise the menu anchors to the trigger's own box, landing
+// misaligned with the assembled control whenever a prefix/suffix is present.
+const groupEl = ref<HTMLElement>()
+
 // The trigger sits at the low surface, the same shallow-recess rung a checked
 // checkbox/radio depresses into -- the field reads as already-settled, not an
 // empty bucket like AtInput's deeper recess.
@@ -93,8 +98,7 @@ const trigger =
   'flex w-full items-center justify-between gap-2 font-body text-fg-default ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
-  'data-[placeholder]:text-fg-subtle ' +
-  'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
+  'data-[placeholder]:text-fg-subtle'
 
 // Mirrors AtInput's errorClasses: the recess rim re-colours to the danger
 // border token, same border treatment as the trigger's default rim.
@@ -175,7 +179,10 @@ const itemPosition = (index: number, length: number) => [
       {{ label }}
     </label>
 
-    <div class="flex items-stretch">
+    <div
+      ref="groupEl"
+      class="flex items-stretch focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-border-focus"
+    >
       <!-- Prefix: a flush-ganged, flat box flanking the trigger's start, for
            content that makes the selection more contextual, e.g. a country
            flag ahead of a country code select. Always the run's outermost
@@ -225,7 +232,7 @@ const itemPosition = (index: number, length: number) => [
           </SelectTrigger>
 
           <SelectPortal>
-            <SelectContent :class="content" position="popper" :side-offset="4">
+            <SelectContent :class="content" :reference="groupEl" position="popper" :side-offset="4">
               <SelectViewport>
                 <SelectItem
                   v-for="(option, index) in options"
