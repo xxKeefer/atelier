@@ -13,32 +13,36 @@
 // rather than relying on live :hover/:active pseudo-state.
 // Rounding: only the run's outer-left (first) and outer-right (last) segments
 // round on their outward side; every other side is square. Border-as-seam:
-// every segment but the last drops its right border, so the next segment's
-// left border draws the one line at the seam instead of two borders stacking.
+// the higher-elevation segment's border wins each seam, not simply "the
+// segment to the right." This ladder is a monotonically decreasing elevation
+// run (REW > PLAY > FF > STOP), so the higher neighbour is always the one to
+// the left -- every segment but the first drops its left border, so the
+// previous (higher) segment's right border draws the one line at the seam
+// instead of two borders stacking.
 export const horizontalSegments = [
   {
     label: 'REW',
     state: 'rest',
     class: 'shadow-higher -translate-y-lift-full bg-surface-strong border-border-strong',
-    position: 'rounded-l-md border-r-0',
+    position: 'rounded-l-md',
   },
   {
     label: 'PLAY',
     state: 'hover',
     class: 'shadow-high -translate-y-lift-half bg-surface-strong border-border-strong',
-    position: 'border-r-0',
+    position: 'border-l-0',
   },
   {
     label: 'FF',
     state: 'active',
     class: 'shadow-low translate-y-0 bg-surface-default border-border-default',
-    position: 'border-r-0',
+    position: 'border-l-0',
   },
   {
     label: 'STOP',
     state: 'disabled',
     class: 'shadow-flat translate-y-0 bg-surface-default border-border-default opacity-50',
-    position: 'rounded-r-md',
+    position: 'border-l-0 rounded-r-md',
   },
 ] as const
 
