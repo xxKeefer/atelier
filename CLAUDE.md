@@ -33,3 +33,17 @@ Pattern is fixed -- mirror `packages/ui/src/components/AtIcon.vue` and `AtButton
 - Stories carry a `Snapshot` story with a `data-testid="snap-board"` board; the test snaps it via `snapBoard` (baseline in `__snaps__/`, regenerate with `test:update`).
 
 First test run in a session warms the browser and may flake (`Matcher did not succeed in time`, transient render fails). Re-run before treating it as a real failure.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as cards on the Obsidian Kanban board at `05-projects/atelier/atelier.kanban.md` in the user's vault (solo project, no PR-as-request-surface). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Not wired up -- this is a solo project board with no external reporters, so the 5-state triage model doesn't apply. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context -- one `CONTEXT.md` + `docs/adr/` at the repo root (neither exists yet; created lazily by domain-modeling skills). See `docs/agents/domain.md`.
