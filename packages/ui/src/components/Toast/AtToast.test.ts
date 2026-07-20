@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/vue3-vite'
-import { render, screen } from '@testing-library/vue'
+import { render, screen, within } from '@testing-library/vue'
 import { userEvent } from 'vitest/browser'
 import { expect, test, vi } from 'vitest'
 import { h } from 'vue'
@@ -81,6 +81,31 @@ test('pauses the timeout while focus is inside the toast', async () => {
   await vi.advanceTimersByTimeAsync(3000)
   expect(view.emitted().close).toHaveLength(1)
   vi.useRealTimers()
+})
+
+// Actions are an optional region; absent, no actions row renders.
+test('omits the actions region when the slot is unused', () => {
+  render(Toast, { slots: { default: () => 'Body' } })
+  expect(screen.queryByTestId('toast-actions')).toBeNull()
+})
+
+// Actions present render inside the actions region, after the body.
+test('renders the actions slot', () => {
+  render(Toast, {
+    slots: {
+      default: () => 'Body',
+      actions: () => h('button', 'Undo'),
+    },
+  })
+  const actions = screen.getByTestId('toast-actions')
+  expect(within(actions).getByRole('button', { name: 'Undo' })).toBeInTheDocument()
+})
+
+// Reduced motion: the entry animation is a transition-in stilled by
+// motion-reduce, same convention as Spinner/Skeleton's animate-* classes.
+test('stills its entry animation under prefers-reduced-motion', () => {
+  render(Toast, { slots: { default: () => 'Body' } })
+  expect(screen.getByRole('status')).toHaveClass('motion-reduce:transition-none')
 })
 
 // The single visual snap for Toast: the Snapshot story's board (every

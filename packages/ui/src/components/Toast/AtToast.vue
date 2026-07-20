@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond, PhX } from '@phosphor-icons/vue'
-import { onBeforeUnmount, onMounted, useTemplateRef, type Component } from 'vue'
+import { computed, onBeforeUnmount, onMounted, useSlots, useTemplateRef, type Component } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
 import Button from '../Button/AtButton.vue'
 
@@ -21,6 +21,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ close: [] }>()
+
+const slots = useSlots()
+const hasActions = computed(() => slots.actions !== undefined)
 
 const rootRef = useTemplateRef<HTMLElement>('root')
 let timer: ReturnType<typeof setTimeout> | undefined
@@ -82,7 +85,11 @@ const intentVars: Record<Intent, Record<'--toast-bg' | '--toast-border' | '--toa
 
 const classes =
   'flex w-full max-w-sm items-start gap-3 rounded-md border-[3px] border-solid p-4 font-body shadow-md ' +
-  'bg-[var(--toast-bg)] border-[color:var(--toast-border)] text-[var(--toast-fg)]'
+  'bg-[var(--toast-bg)] border-[color:var(--toast-border)] text-[var(--toast-fg)] ' +
+  // Entry animation via @starting-style -- runs once on first paint after
+  // mount, no JS/Transition wrapper needed. motion-reduce stills it per AC.
+  'transition-[opacity,transform] duration-slow ease-out motion-reduce:transition-none ' +
+  'starting:opacity-0 starting:-translate-y-1'
 </script>
 
 <template>
@@ -106,6 +113,9 @@ const classes =
     />
     <div data-testid="toast-body" class="min-w-0 flex-1 text-sm">
       <slot />
+    </div>
+    <div v-if="hasActions" data-testid="toast-actions" class="flex shrink-0 items-center gap-2">
+      <slot name="actions" />
     </div>
     <Button
       v-if="timeout === undefined"
