@@ -1,5 +1,7 @@
 import './styles.css'
 
+export { default as AtAccordion } from './components/Accordion/AtAccordion.vue'
+export { default as AtAccordionItem } from './components/Accordion/AtAccordionItem.vue'
 export { default as AtAlert } from './components/Alert/AtAlert.vue'
 export { default as AtButton } from './components/Button/AtButton.vue'
 export { default as AtButtonGroup } from './components/ButtonGroup/AtButtonGroup.vue'
