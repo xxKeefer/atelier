@@ -3,6 +3,7 @@ import Toast from './AtToast.vue'
 import { IntentsView, intents } from './views/IntentsView'
 import { PlainView } from './views/PlainView'
 import { ComposedView } from './views/ComposedView'
+import { TimeoutView } from './views/TimeoutView'
 
 const meta = {
   title: 'Components/Toast',
@@ -12,6 +13,7 @@ const meta = {
   argTypes: {
     intent: { control: 'select', options: intents },
     icon: { control: 'boolean' },
+    timeout: { control: 'number' },
   },
   args: { intent: 'info', icon: true },
 } satisfies Meta<typeof Toast>
@@ -43,16 +45,21 @@ export const Composed: Story = {
   render: () => ({ components: { ComposedView }, template: `<ComposedView />` }),
 }
 
-// The visual board: every intent, plus the plain and composed shapes.
-// Baseline: __snaps__/toast-chromium-linux.png.
+export const Timeout: Story = {
+  render: () => ({ components: { TimeoutView }, template: `<TimeoutView />` }),
+}
+
+// The visual board: every intent, plus the plain, composed, and timeout
+// shapes. Baseline: __snaps__/toast-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { IntentsView, PlainView, ComposedView },
+    components: { IntentsView, PlainView, ComposedView, TimeoutView },
     template: `
       <div class="flex w-max flex-col gap-6 bg-bg-default p-6" data-testid="snap-board">
         <IntentsView />
         <PlainView />
         <ComposedView />
+        <TimeoutView />
       </div>
     `,
   }),
