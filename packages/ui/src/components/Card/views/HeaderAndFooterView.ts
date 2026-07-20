@@ -15,15 +15,15 @@ export const HeaderAndFooterView = defineComponent({
     <Card class="w-80">
       <template #header>
         <h3 class="font-heading text-lg font-bold">Settings</h3>
-        <Button intent="neutral" variant="flat" size="sm" aria-label="Close">
+        <Button intent="neutral" variant="flat" size="md" aria-label="Close">
           <template #left><Icon :icon="PhX" /></template>
         </Button>
       </template>
       <p class="text-base text-fg-muted">The body sits between the two dividers.</p>
       <template #footer>
         <div class="flex w-full justify-end gap-2">
-          <Button intent="neutral" size="sm">Cancel</Button>
-          <Button intent="primary" size="sm">Save</Button>
+          <Button intent="neutral" size="md">Cancel</Button>
+          <Button intent="primary" size="md">Save</Button>
         </div>
       </template>
     </Card>

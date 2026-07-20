@@ -11,8 +11,8 @@ export const ActionsView = defineComponent({
     <Alert intent="warning" title="Unsaved changes" class="w-96">
       This page has unsaved changes that will be lost if you navigate away.
       <template #actions>
-        <Button size="sm" intent="warning">Save</Button>
-        <Button size="sm" variant="flat" intent="neutral">Discard</Button>
+        <Button size="md" intent="warning">Save</Button>
+        <Button size="md" variant="flat" intent="neutral">Discard</Button>
       </template>
     </Alert>
   `,
