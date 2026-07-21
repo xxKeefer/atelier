@@ -44,23 +44,23 @@ withDefaults(
         :align="align"
         :side-offset="sideOffset"
         data-testid="popover-content"
-        class="z-50 rounded-md bg-surface-default p-4 font-body text-fg-default [filter:drop-shadow(0_1px_0_var(--color-border-default))_drop-shadow(0_-1px_0_var(--color-border-default))_drop-shadow(1px_0_0_var(--color-border-default))_drop-shadow(-1px_0_0_var(--color-border-default))_drop-shadow(0.7px_0.7px_0_var(--color-border-default))_drop-shadow(0.7px_-0.7px_0_var(--color-border-default))_drop-shadow(-0.7px_0.7px_0_var(--color-border-default))_drop-shadow(-0.7px_-0.7px_0_var(--color-border-default))]"
+        class="z-50 rounded-md bg-surface-default p-4 font-body text-fg-default [filter:drop-shadow(0_1px_0_var(--color-border-default))_drop-shadow(0_-1px_0_var(--color-border-default))_drop-shadow(1px_0_0_var(--color-border-default))_drop-shadow(-1px_0_0_var(--color-border-default))]"
       >
         <slot />
-        <!-- Same drop-shadow silhouette trick as AtTooltip's TooltipArrow --
-             a plain `border` only outlines the content box's own rect, so it
-             cuts across the arrow's base where the two shapes meet. Tracing
-             box+arrow as one silhouette wraps the border continuously around
-             the point. 1px weight, same as AtTooltip -- the flat surface's
-             actual 3px border (AtSelect/AtDropdownItem) reads fine as a real
-             `border` on a static box, but rendered through 8 stacked
-             drop-shadow copies it compounded into a heavy, glowing outline
-             that overpowered a floating popover. 8 offset directions (not
-             AtTooltip's 4) -- 4 cardinal-only offsets left a visible notch at
-             the arrow's tip, where its two edges meet at an angle no cardinal
-             shift covers; the 4 added diagonals (offset 1/sqrt(2), same
-             radial distance) round that corner out without thickening the
-             line. -->
+        <!-- Same drop-shadow silhouette trick as AtTooltip's TooltipArrow,
+             at the same 4-direction, 1px weight -- a plain `border` only
+             outlines the content box's own rect, so it cuts across the
+             arrow's base where the two shapes meet; tracing box+arrow as one
+             silhouette wraps the border continuously around the point. The
+             flat surface's actual 3px border (AtSelect/AtDropdownItem) reads
+             fine as a real `border` on a static box, but rendered through
+             this trick it compounded into a heavy, glowing outline that
+             overpowered a floating popover -- dropped to AtTooltip's weight
+             instead. A prior attempt added 4 diagonal offsets to round out
+             the tip's corner, but their fractional-pixel offset (1/sqrt(2))
+             anti-aliased differently per edge than the whole-pixel cardinal
+             ones, reading as an uneven line weight -- not worth it at 1px,
+             where the tip notch it was fixing is already barely visible. -->
         <PopoverArrow class="fill-surface-default" />
       </PopoverContent>
     </PopoverPortal>
