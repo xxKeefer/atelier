@@ -15,6 +15,7 @@ export { default as AtDropdownItem } from './components/Dropdown/AtDropdownItem.
 export { default as AtIcon } from './components/Icon/AtIcon.vue'
 export { default as AtInput } from './components/Input/AtInput.vue'
 export { default as AtModal } from './components/Modal/AtModal.vue'
+export { default as AtPopover } from './components/Popover/AtPopover.vue'
 export { default as AtProgressBar } from './components/ProgressBar/AtProgressBar.vue'
 export { default as AtRadio } from './components/Radio/AtRadio.vue'
 export { default as AtRadioGroup } from './components/Radio/AtRadioGroup.vue'
