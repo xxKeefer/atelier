@@ -126,7 +126,7 @@ const panelClasses = computed(() => [
             </DialogDescription>
           </div>
           <DialogClose v-if="showCloseButton" as-child>
-            <Button variant="flat" intent="neutral" size="sm" aria-label="Close">
+            <Button variant="flat" intent="neutral" size="md" aria-label="Close">
               <Icon :icon="PhX" size="lg" />
             </Button>
           </DialogClose>

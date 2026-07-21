@@ -9,7 +9,7 @@ const Star = (testid: string) =>
 
 const intents = ['primary', 'secondary', 'neutral', 'danger', 'success', 'warning', 'info'] as const
 const variants = ['default', 'flat'] as const
-const sizes = ['sm', 'md', 'lg'] as const
+const sizes = ['sm', 'md', 'lg', 'xl'] as const
 
 const meta = {
   title: 'Components/Button',

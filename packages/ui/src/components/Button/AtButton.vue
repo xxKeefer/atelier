@@ -5,7 +5,7 @@ import Icon from '../Icon/AtIcon.vue'
 
 type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
 type Variant = 'default' | 'flat'
-type Size = 'sm' | 'md' | 'lg'
+type Size = 'sm' | 'md' | 'lg' | 'xl'
 
 const props = withDefaults(
   defineProps<{
@@ -88,16 +88,24 @@ const base =
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so
 // they read square. gap drives the spacing between icon slots and the label.
+// sm's text uses leading-none (unlike every other tier) so its box height
+// matches its icon-only sibling exactly -- an icon glyph is already
+// effectively line-height:1 (AtIcon's wrapper is leading-none), so a text
+// button at the same font size only lines up if it drops the font's own
+// line-height too. The other tiers don't need this: nothing forced their
+// icon-only/text pair to match height, so they keep their inherited mismatch.
 const sizes: Record<Size, string> = {
-  sm: 'text-sm px-3 py-1.5 gap-1.5',
-  md: 'text-base px-4 py-2 gap-2',
-  lg: 'text-lg px-6 py-3 gap-2',
+  sm: 'text-sm leading-none px-3 py-1.5 gap-1.5',
+  md: 'text-sm px-3 py-1.5 gap-1.5',
+  lg: 'text-base px-4 py-2 gap-2',
+  xl: 'text-lg px-6 py-3 gap-2',
 }
 
 const iconOnlySizes: Record<Size, string> = {
   sm: 'text-sm p-1.5 gap-1.5',
-  md: 'text-base p-2 gap-2',
-  lg: 'text-lg p-3 gap-2',
+  md: 'text-sm p-1.5 gap-1.5',
+  lg: 'text-base p-2 gap-2',
+  xl: 'text-lg p-3 gap-2',
 }
 
 // The mechanic -- rest, press, depress. default rides the elevation lift util off
