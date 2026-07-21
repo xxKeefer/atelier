@@ -1,7 +1,7 @@
 import { composeStories } from '@storybook/vue3-vite'
 import { render, screen, within } from '@testing-library/vue'
 import { userEvent } from 'vitest/browser'
-import { expect, test, vi } from 'vitest'
+import { expect, test } from 'vitest'
 import { h } from 'vue'
 import Toast from './AtToast.vue'
 import * as stories from './AtToast.stories'
@@ -37,8 +37,8 @@ test('omits the icon when icon is false', () => {
   expect(screen.queryByTestId('toast-icon')).toBeNull()
 })
 
-// No timeout -- a close button is the only way to dismiss.
-test('renders a close button when no timeout is given', () => {
+// Close button shows by default -- the common case is a permanent toast.
+test('renders a close button by default', () => {
   render(Toast, { slots: { default: () => 'Body' } })
   expect(screen.getByTestId('toast-close')).toBeInTheDocument()
 })
@@ -49,38 +49,11 @@ test('clicking the close button emits close', async () => {
   expect(view.emitted().close).toHaveLength(1)
 })
 
-// A timeout suppresses the close button -- the toast dismisses itself.
-test('omits the close button when a timeout is given', () => {
-  render(Toast, { props: { timeout: 3000 }, slots: { default: () => 'Body' } })
+// showClose is driven from outside -- a wrapper (AtToastProvider) suppresses
+// it for toasts it's auto-dismissing on a timer. AtToast owns no timing.
+test('omits the close button when showClose is false', () => {
+  render(Toast, { props: { showClose: false }, slots: { default: () => 'Body' } })
   expect(screen.queryByTestId('toast-close')).toBeNull()
-})
-
-test('emits close after the timeout elapses', async () => {
-  vi.useFakeTimers()
-  const view = render(Toast, { props: { timeout: 3000 }, slots: { default: () => 'Body' } })
-  await vi.advanceTimersByTimeAsync(3000)
-  expect(view.emitted().close).toHaveLength(1)
-  vi.useRealTimers()
-})
-
-// Focus inside the toast pauses the timeout; it resumes once focus leaves.
-// A real focusable descendant (e.g. a future action button) is needed to
-// exercise this -- the toast root itself isn't focusable.
-test('pauses the timeout while focus is inside the toast', async () => {
-  vi.useFakeTimers()
-  const view = render(Toast, {
-    props: { timeout: 3000 },
-    slots: { default: () => h('button', 'Action') },
-  })
-  const action = screen.getByRole('button', { name: 'Action' })
-  action.focus()
-  await vi.advanceTimersByTimeAsync(3000)
-  expect(view.emitted().close).toBeUndefined()
-
-  action.blur()
-  await vi.advanceTimersByTimeAsync(3000)
-  expect(view.emitted().close).toHaveLength(1)
-  vi.useRealTimers()
 })
 
 // Actions are an optional region; absent, no actions row renders.
