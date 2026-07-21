@@ -16,8 +16,9 @@ const meta = {
   parameters: { a11y: { test: 'error' } },
   argTypes: {
     orientation: { control: 'select', options: ['horizontal', 'vertical'] },
+    variant: { control: 'select', options: ['default', 'flat'] },
   },
-  args: { orientation: 'horizontal' },
+  args: { orientation: 'horizontal', variant: 'default' },
 } satisfies Meta<typeof Tabs>
 
 export default meta
@@ -29,6 +30,25 @@ export const Playground: Story = {
     setup: () => ({ args, selected: ref('account') }),
     template: `
       <Tabs v-bind="args" v-model="selected">
+        <TabsList>
+          <TabsTrigger value="account">Account</TabsTrigger>
+          <TabsTrigger value="password">Password</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">Manage your account details here.</TabsContent>
+        <TabsContent value="password">Update your password here.</TabsContent>
+        <TabsContent value="team">Invite and manage teammates here.</TabsContent>
+      </Tabs>
+    `,
+  }),
+}
+
+export const Flat: Story = {
+  render: () => ({
+    components: { Tabs, TabsList, TabsTrigger, TabsContent },
+    setup: () => ({ selected: ref('account') }),
+    template: `
+      <Tabs variant="flat" v-model="selected">
         <TabsList>
           <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="password">Password</TabsTrigger>

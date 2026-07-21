@@ -66,6 +66,18 @@ export const SnapshotView = defineComponent({
           <TabsContent value="account">Manage your account details here.</TabsContent>
         </Tabs>
       </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="font-heading font-bold text-fg-default text-lg">Flat</h2>
+        <Tabs variant="flat" modelValue="account">
+          <TabsList>
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="password" disabled>Password</TabsTrigger>
+            <TabsTrigger value="team">Team</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">Manage your account details here.</TabsContent>
+        </Tabs>
+      </section>
     </div>
   `,
 })

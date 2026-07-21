@@ -1,17 +1,23 @@
+<script lang="ts">
+import type { ComputedRef, InjectionKey } from 'vue'
+
+export type TabsVariant = 'default' | 'flat'
+
+// AtTabsList/AtTabsTrigger read the active variant off this instead of a
+// prop drilled through every intermediate slot -- they're siblings-of-a-
+// slot under TabsRoot, not direct children of AtTabs.
+export const TABS_VARIANT_KEY: InjectionKey<ComputedRef<TabsVariant>> = Symbol('tabs-variant')
+</script>
+
 <script setup lang="ts">
 import { TabsRoot } from 'reka-ui'
-import { computed } from 'vue'
-
-// variant is stubbed to 'default' only -- the Flat/underlined look is a
-// future step (see the Tabs task doc). Accepting the prop now means
-// AtTabsList/AtTabsTrigger don't need a breaking prop addition later.
-type Variant = 'default'
+import { computed, provide } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
     defaultValue?: string
-    variant?: Variant
+    variant?: TabsVariant
     orientation?: 'horizontal' | 'vertical'
   }>(),
   {
@@ -30,6 +36,11 @@ const modelValue = computed({
     emit('update:modelValue', v)
   },
 })
+
+provide(
+  TABS_VARIANT_KEY,
+  computed(() => props.variant),
+)
 </script>
 
 <template>

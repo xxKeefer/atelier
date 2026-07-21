@@ -131,6 +131,29 @@ test('moves focus to the first trigger on Home', async () => {
   expect(tabs[0]).toHaveFocus()
 })
 
+// Variants: the Flat variant carries the same selection/disabled/keyboard
+// behaviour as Default -- reka-ui owns that regardless of styling, so this
+// only asserts the styling seam (variant threaded via provide/inject) works.
+const FlatTabs = {
+  components: { Tabs, TabsList, TabsTrigger, TabsContent },
+  template: `
+    <Tabs variant="flat" modelValue="a">
+      <TabsList>
+        <TabsTrigger value="a">Apple</TabsTrigger>
+        <TabsTrigger value="b" disabled>Banana</TabsTrigger>
+      </TabsList>
+      <TabsContent value="a">Apple content</TabsContent>
+      <TabsContent value="b">Banana content</TabsContent>
+    </Tabs>
+  `,
+}
+
+test('Flat variant selects and disables triggers same as Default', () => {
+  render(FlatTabs)
+  expect(screen.getByText('Apple')).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByText('Banana')).toBeDisabled()
+})
+
 // The single visual snap for Tabs: the Snapshot story's board.
 // Baseline: __snaps__/tabs-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
