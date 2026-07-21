@@ -1,56 +1,29 @@
 <script setup lang="ts">
 import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond, PhX } from '@phosphor-icons/vue'
-import { computed, onBeforeUnmount, onMounted, useSlots, useTemplateRef, type Component } from 'vue'
+import { computed, useSlots, type Component } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
 import Button from '../Button/AtButton.vue'
 
 type Intent = 'info' | 'success' | 'warning' | 'danger'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     intent?: Intent
     // false suppresses the role icon entirely; omitted/true shows the
     // intent's default glyph, same colourblind-safe hint as Alert.
     icon?: boolean
-    // Auto-dismiss delay in ms. Omitted -- no auto-dismiss, and a close
-    // button renders instead, per AC ("long enough timeout... if there is
-    // no timeout, provide a button to close").
-    timeout?: number
+    // Whether to render the close button. Driven from outside -- a toast
+    // wrapper (e.g. AtToastProvider) decides this based on whether it gave
+    // the toast an auto-dismiss timeout; AtToast itself owns no timing.
+    showClose?: boolean
   }>(),
-  { intent: 'info', icon: true, timeout: undefined },
+  { intent: 'info', icon: true, showClose: true },
 )
 
 const emit = defineEmits<{ close: [] }>()
 
 const slots = useSlots()
 const hasActions = computed(() => slots.actions !== undefined)
-
-const rootRef = useTemplateRef<HTMLElement>('root')
-let timer: ReturnType<typeof setTimeout> | undefined
-
-function startTimer() {
-  if (props.timeout === undefined) return
-  timer = setTimeout(() => {
-    emit('close')
-  }, props.timeout)
-}
-function stopTimer() {
-  clearTimeout(timer)
-}
-
-onMounted(startTimer)
-onBeforeUnmount(stopTimer)
-
-// Focus anywhere inside the toast (e.g. a future action button) pauses the
-// timeout so it can't dismiss out from under an in-progress interaction;
-// focus leaving the toast entirely resumes it.
-function onFocusIn() {
-  stopTimer()
-}
-function onFocusOut(event: FocusEvent) {
-  if (rootRef.value?.contains(event.relatedTarget as Node | null)) return
-  startTimer()
-}
 
 const intentIcons: Record<Intent, Component> = {
   info: PhInfo,
@@ -95,15 +68,7 @@ const classes =
 <template>
   <!-- role=status + aria-live=polite: a non-interrupting notification,
        announced without stealing focus -- unlike Alert's role=alert. -->
-  <div
-    ref="root"
-    role="status"
-    aria-live="polite"
-    :class="classes"
-    :style="intentVars[intent]"
-    @focusin="onFocusIn"
-    @focusout="onFocusOut"
-  >
+  <div role="status" aria-live="polite" :class="classes" :style="intentVars[intent]">
     <Icon
       v-if="icon"
       data-testid="toast-icon"
@@ -118,7 +83,7 @@ const classes =
       <slot name="actions" />
     </div>
     <Button
-      v-if="timeout === undefined"
+      v-if="showClose"
       data-testid="toast-close"
       variant="flat"
       :intent="intent"

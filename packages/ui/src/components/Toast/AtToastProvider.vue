@@ -25,7 +25,7 @@ const visible = computed(() => queue.slice(0, MAX_VISIBLE))
     >
       <AtToast
         :intent="entry.intent"
-        :timeout="entry.timeout ?? undefined"
+        :show-close="entry.timeout == null"
         @close="dismiss(entry.id)"
       >
         {{ entry.message }}
