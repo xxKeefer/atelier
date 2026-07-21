@@ -44,14 +44,19 @@ withDefaults(
         :align="align"
         :side-offset="sideOffset"
         data-testid="popover-content"
-        class="z-50 rounded-md bg-surface-default p-4 font-body text-fg-default [filter:drop-shadow(0_3px_0_var(--color-border-default))_drop-shadow(0_-3px_0_var(--color-border-default))_drop-shadow(3px_0_0_var(--color-border-default))_drop-shadow(-3px_0_0_var(--color-border-default))]"
+        class="z-50 rounded-md bg-surface-default p-4 font-body text-fg-default [filter:drop-shadow(0_3px_0_var(--color-border-default))_drop-shadow(0_-3px_0_var(--color-border-default))_drop-shadow(3px_0_0_var(--color-border-default))_drop-shadow(-3px_0_0_var(--color-border-default))_drop-shadow(2.1px_2.1px_0_var(--color-border-default))_drop-shadow(2.1px_-2.1px_0_var(--color-border-default))_drop-shadow(-2.1px_2.1px_0_var(--color-border-default))_drop-shadow(-2.1px_-2.1px_0_var(--color-border-default))]"
       >
         <slot />
         <!-- Same drop-shadow silhouette trick as AtTooltip's TooltipArrow --
              a plain `border` only outlines the content box's own rect, so it
              cuts across the arrow's base where the two shapes meet. Tracing
              box+arrow as one silhouette wraps the border continuously around
-             the point, at the flat surface's 3px border weight. -->
+             the point, at the flat surface's 3px border weight. 8 offset
+             directions (not AtTooltip's 4) -- at this thicker 3px weight the
+             4 cardinal-only offsets left a visible notch at the arrow's tip,
+             where its two edges meet at an angle no cardinal shift covers;
+             the 4 added diagonals (offset 3/sqrt(2), same radial distance)
+             round that corner out. -->
         <PopoverArrow class="fill-surface-default" />
       </PopoverContent>
     </PopoverPortal>
