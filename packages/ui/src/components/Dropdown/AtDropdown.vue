@@ -81,6 +81,17 @@ function onContentCloseAutoFocus() {
   closeReturnsFocus = true
 }
 
+// reka-ui's own MenuContent keydown handler swallows Tab entirely while
+// focus is inside (by design -- menus aren't meant to be Tab-navigated
+// internally, see reka-ui's MenuContentImpl.vue handleKeyDown), so without
+// this the dropdown would never close via Tab and focus would be stuck.
+// Closing here (not preventing default ourselves) lets the browser's own
+// focus-outside detection and remaining Tab semantics apply as normal once
+// the content unmounts.
+function onContentKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Tab') open.value = false
+}
+
 function onTriggerFocusIn(event: FocusEvent) {
   if (closeReturnsFocus) {
     closeReturnsFocus = false
@@ -148,6 +159,7 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
         @mouseenter="scheduleOpen"
         @mouseleave="scheduleClose"
         @close-auto-focus="onContentCloseAutoFocus"
+        @keydown="onContentKeyDown"
       >
         <slot />
       </DropdownMenuContent>
