@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RadioGroupItem } from 'reka-ui'
+import { pressGroupLadder } from '../../constants/pressGroupLadder'
 
 defineProps<{
   value: string
@@ -9,7 +10,7 @@ defineOptions({ inheritAttrs: false })
 
 const base =
   'relative inline-flex h-10 items-center justify-center border-[3px] border-solid px-4 font-body font-bold text-sm text-fg-default ' +
-  'transition-[transform,box-shadow,filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[transform,box-shadow,filter] transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   // z-10 so the focus outline isn't painted over by a later (rightward)
   // sibling, which otherwise sits on top in normal paint order.
@@ -19,11 +20,11 @@ const base =
 // popped at `higher`, hover presses halfway to `high`, checked reads like the
 // ladder's `active` rung (`low`, flush) and stays there -- the depressed look
 // IS the checked indicator, driven off reka-ui's data-state, not real :active.
-const neutral =
-  'data-[state=unchecked]:enabled:shadow-higher data-[state=unchecked]:enabled:-translate-y-lift-full data-[state=unchecked]:enabled:bg-surface-strong data-[state=unchecked]:enabled:border-border-strong ' +
-  'hover:enabled:data-[state=unchecked]:shadow-high hover:enabled:data-[state=unchecked]:-translate-y-lift-half hover:enabled:data-[state=unchecked]:brightness-[1.08] ' +
-  'data-[state=checked]:enabled:shadow-low data-[state=checked]:enabled:translate-y-0 data-[state=checked]:enabled:bg-surface-default data-[state=checked]:enabled:border-border-default ' +
-  'disabled:opacity-50 disabled:shadow-flat disabled:translate-y-0'
+// pressGroupLadder() composes the shared press-group-higher/-high/-low
+// utilities (packages/tokens/src/utilities.css), which already match both
+// this component's unchecked/checked data-state values and AtTabsTrigger's
+// inactive/active ones in the same rung.
+const neutral = pressGroupLadder()
 
 // Rounding and border-as-seam ownership are pure CSS, keyed off DOM position
 // and reka-ui's `data-state`, not JS-tracked sibling registration. reka-ui's

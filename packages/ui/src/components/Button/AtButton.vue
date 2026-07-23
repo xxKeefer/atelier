@@ -83,7 +83,7 @@ const iconOnly = computed(() => {
 const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
-  'transition-[filter] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[filter] transition-press ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
 // Text buttons get asymmetric padding; icon-only buttons get equal padding so

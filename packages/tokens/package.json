@@ -17,7 +17,7 @@
     }
   },
   "scripts": {
-    "build": "style-dictionary build --config style-dictionary.config.js",
+    "build": "style-dictionary build --config style-dictionary.config.js && node scripts/append-utilities.js",
     "dev": "style-dictionary build --config style-dictionary.config.js --watch",
     "test": "echo \"no tests yet\" && exit 0",
     "typecheck": "tsc --noEmit"

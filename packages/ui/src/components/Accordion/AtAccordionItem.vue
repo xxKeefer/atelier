@@ -35,7 +35,7 @@ withDefaults(
           :icon="PhCaretDown"
           weight="fill"
           size="sm"
-          class="shrink-0 transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none group-data-[state=open]:rotate-180"
+          class="shrink-0 transition-transform transition-press group-data-[state=open]:rotate-180"
         />
       </AccordionTrigger>
     </AccordionHeader>
@@ -44,7 +44,7 @@ withDefaults(
          clips the collapsing 0fr row; motion-reduce kills the tween outright. -->
     <AccordionContent
       data-testid="accordion-content"
-      class="grid transition-[grid-template-rows] duration-[120ms] ease-[ease] motion-reduce:transition-none data-[state=closed]:grid-rows-[0fr] data-[state=open]:grid-rows-[1fr]"
+      class="grid transition-[grid-template-rows] transition-press data-[state=closed]:grid-rows-[0fr] data-[state=open]:grid-rows-[1fr]"
     >
       <div class="overflow-hidden">
         <div class="px-4 py-4 text-fg-default">

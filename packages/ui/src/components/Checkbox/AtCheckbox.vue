@@ -57,7 +57,7 @@ const modelValue = computed({
 const base =
   'relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md ' +
   'border-[3px] border-solid text-fg-default ' +
-  'transition-[transform,box-shadow] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[transform,box-shadow] transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 

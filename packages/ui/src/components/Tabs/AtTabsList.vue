@@ -41,7 +41,7 @@ const variant = computed(() => injectedVariant?.value ?? 'default')
     <slot />
     <TabsIndicator
       v-if="variant === 'flat'"
-      class="absolute bottom-0 h-[3px] w-[var(--reka-tabs-indicator-size)] translate-x-[var(--reka-tabs-indicator-position)] bg-[color:var(--color-primary-default)] transition-[transform,width] duration-[120ms] ease-[ease] motion-reduce:transition-none"
+      class="absolute bottom-0 h-[3px] w-[var(--reka-tabs-indicator-size)] translate-x-[var(--reka-tabs-indicator-position)] bg-[color:var(--color-primary-default)] transition-[transform,width] transition-press"
     />
   </TabsList>
 </template>

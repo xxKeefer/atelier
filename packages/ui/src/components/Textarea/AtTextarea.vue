@@ -58,7 +58,7 @@ const base =
   'bg-surface-default placeholder:text-fg-subtle ' +
   'border-[3px] border-solid border-border-default ' +
   'shadow-lower disabled:shadow-low ' +
-  'transition-[box-shadow,border-color,background-color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[box-shadow,border-color,background-color] transition-press ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus ' +
   'rounded-md'
