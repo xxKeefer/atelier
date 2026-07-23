@@ -14,7 +14,7 @@ const meta = {
     title: { control: 'text' },
     icon: { control: 'boolean' },
   },
-  args: { intent: 'info', title: 'Heads up', icon: true },
+  args: { intent: 'neutral', title: 'Heads up', icon: true },
 } satisfies Meta<typeof Alert>
 
 export default meta
@@ -41,6 +41,10 @@ export const WithActions: Story = {
 }
 
 export const Plain: Story = {
+  args: {
+    intent: 'neutral',
+  },
+
   render: () => ({ components: { PlainView }, template: `<PlainView />` }),
 }
 

@@ -22,7 +22,7 @@ test('clicking the trigger opens and closes the dropdown', async () => {
   const trigger = screen.getByRole('button', { name: 'Open' })
 
   await userEvent.click(trigger)
-  expect(screen.getByRole('menu')).toBeInTheDocument()
+  expect(await screen.findByRole('menu')).toBeInTheDocument()
 
   await userEvent.click(trigger)
   expect(screen.queryByRole('menu')).not.toBeInTheDocument()
@@ -60,7 +60,7 @@ test('tabbing to the trigger opens the dropdown', async () => {
     },
   })
   await userEvent.tab()
-  expect(screen.getByRole('menu')).toBeInTheDocument()
+  expect(await screen.findByRole('menu')).toBeInTheDocument()
 })
 
 // Escape closes the content and returns focus to the trigger -- reka-ui's
@@ -76,7 +76,7 @@ test('pressing Escape closes the dropdown and returns focus to the trigger', asy
   const trigger = screen.getByRole('button', { name: 'Open' })
 
   await userEvent.click(trigger)
-  expect(screen.getByRole('menu')).toBeInTheDocument()
+  expect(await screen.findByRole('menu')).toBeInTheDocument()
 
   await userEvent.keyboard('{Escape}')
   expect(screen.queryByRole('menu')).not.toBeInTheDocument()
@@ -121,7 +121,7 @@ test('tabbing away from the content closes the dropdown', async () => {
   const trigger = screen.getByRole('button', { name: 'Open' })
 
   await userEvent.click(trigger)
-  expect(screen.getByRole('menu')).toBeInTheDocument()
+  expect(await screen.findByRole('menu')).toBeInTheDocument()
 
   await userEvent.tab()
   expect(screen.queryByRole('menu')).not.toBeInTheDocument()

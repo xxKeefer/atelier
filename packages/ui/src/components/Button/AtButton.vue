@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { PhCircleNotch } from '@phosphor-icons/vue'
 import { Comment, computed, useSlots } from 'vue'
+import { type Intent, intentButtonVars } from '../../constants/intents'
 import Icon from '../Icon/AtIcon.vue'
 
-type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
 type Variant = 'default' | 'flat'
 type Size = 'sm' | 'md' | 'lg' | 'xl'
 
@@ -146,49 +146,6 @@ const intentShadows: Record<Intent, string> = {
   info: 'shadow-info-higher hover:enabled:shadow-info-high active:enabled:shadow-info-low',
 }
 
-// Each intent supplies the fill, the text colour, and its own dark edge (the
-// skeuomorphic "side"). The mechanic above is the same for every intent,
-// driven off these three vars.
-const intentVars: Record<Intent, Record<'--btn-bg' | '--btn-fg' | '--btn-edge', string>> = {
-  primary: {
-    '--btn-bg': 'var(--color-primary-default)',
-    '--btn-fg': 'var(--color-primary-fg)',
-    '--btn-edge': 'var(--color-primary-edge)',
-  },
-  secondary: {
-    '--btn-bg': 'var(--color-secondary-default)',
-    '--btn-fg': 'var(--color-secondary-fg)',
-    '--btn-edge': 'var(--color-secondary-edge)',
-  },
-  neutral: {
-    '--btn-bg': 'var(--color-surface-default)',
-    // the fill is already dark, so a darker "side" vanishes into the canvas;
-    // the structural border colour is the visible neutral edge.
-    '--btn-fg': 'var(--color-fg-default)',
-    '--btn-edge': 'var(--color-border-default)',
-  },
-  danger: {
-    '--btn-bg': 'var(--color-danger-solid)',
-    '--btn-fg': 'var(--color-danger-on-solid)',
-    '--btn-edge': 'var(--color-danger-edge)',
-  },
-  success: {
-    '--btn-bg': 'var(--color-success-solid)',
-    '--btn-fg': 'var(--color-success-on-solid)',
-    '--btn-edge': 'var(--color-success-edge)',
-  },
-  warning: {
-    '--btn-bg': 'var(--color-warning-solid)',
-    '--btn-fg': 'var(--color-warning-on-solid)',
-    '--btn-edge': 'var(--color-warning-edge)',
-  },
-  info: {
-    '--btn-bg': 'var(--color-info-solid)',
-    '--btn-fg': 'var(--color-info-on-solid)',
-    '--btn-edge': 'var(--color-info-edge)',
-  },
-}
-
 const classes = computed(() => [
   base,
   cursor.value,
@@ -213,7 +170,7 @@ const classes = computed(() => [
        carries the per-element attrs. aria-label (and any other native attr)
        falls through. It is required for icon-only buttons so they still
        announce; axe enforces it. -->
-  <component :is="tag" v-bind="rootProps" :class="classes" :style="intentVars[intent]">
+  <component :is="tag" v-bind="rootProps" :class="classes" :style="intentButtonVars[intent]">
     <!-- While loading a default circle-notch spinner replaces the #left slot
          (overriding any consumer icon); otherwise the slot renders untouched,
          preserving icon DOM order. -->

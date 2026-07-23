@@ -16,7 +16,7 @@ const meta = {
     icon: { control: 'boolean' },
     showClose: { control: 'boolean' },
   },
-  args: { intent: 'info', icon: true },
+  args: { intent: 'neutral', icon: true },
 } satisfies Meta<typeof Toast>
 
 export default meta

@@ -5,7 +5,7 @@ import Toast from '../AtToast.vue'
 export const PlainView = defineComponent({
   components: { Toast },
   template: `
-    <Toast intent="info" :icon="false" class="w-96">
+    <Toast :icon="false" class="w-96">
       A minimal toast with no icon.
     </Toast>
   `,

@@ -5,7 +5,9 @@
   "license": "MIT",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src/fonts/OFL-AtkinsonHyperlegible.txt",
+    "src/fonts/OFL-JetBrainsMono.txt"
   ],
   "exports": {
     ".": {

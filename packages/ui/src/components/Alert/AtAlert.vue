@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond } from '@phosphor-icons/vue'
-import { computed, useSlots, type Component } from 'vue'
+import { computed, useSlots } from 'vue'
+import { INTENT_ICONS, STATUS_INTENT_TOKENS, type StatusIntent } from '../../constants/intents'
 import Icon from '../Icon/AtIcon.vue'
 
-type Intent = 'info' | 'success' | 'warning' | 'danger'
-
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    intent?: Intent
+    intent?: StatusIntent
     // Rendered bold above the body. A single text prop, not a slot -- Alert's
     // title is always short, unlike Card's header region which composes
     // arbitrary markup.
@@ -18,44 +16,23 @@ withDefaults(
     // would defeat that.
     icon?: boolean
   }>(),
-  { intent: 'info', title: undefined, icon: true },
+  { intent: 'neutral', title: undefined, icon: true },
 )
 
 const slots = useSlots()
 const hasActions = computed(() => slots.actions !== undefined)
 
-const intentIcons: Record<Intent, Component> = {
-  info: PhInfo,
-  success: PhCheckSquare,
-  warning: PhWarning,
-  danger: PhWarningDiamond,
-}
-
 // Tinted banner: bg + border + fg from the status colour group's canvas-tint
 // shape (not the solid-fill shape Button uses -- Alert sits on the page as a
 // tinted panel, not a filled control).
-const intentVars: Record<Intent, Record<'--alert-bg' | '--alert-border' | '--alert-fg', string>> = {
-  info: {
-    '--alert-bg': 'var(--color-info-bg)',
-    '--alert-border': 'var(--color-info-border)',
-    '--alert-fg': 'var(--color-info-fg)',
-  },
-  success: {
-    '--alert-bg': 'var(--color-success-bg)',
-    '--alert-border': 'var(--color-success-border)',
-    '--alert-fg': 'var(--color-success-fg)',
-  },
-  warning: {
-    '--alert-bg': 'var(--color-warning-bg)',
-    '--alert-border': 'var(--color-warning-border)',
-    '--alert-fg': 'var(--color-warning-fg)',
-  },
-  danger: {
-    '--alert-bg': 'var(--color-danger-bg)',
-    '--alert-border': 'var(--color-danger-border)',
-    '--alert-fg': 'var(--color-danger-fg)',
-  },
-}
+const intentVars = computed(() => {
+  const tokens = STATUS_INTENT_TOKENS[props.intent]
+  return {
+    '--alert-bg': tokens.bg,
+    '--alert-border': tokens.border,
+    '--alert-fg': tokens.fg,
+  }
+})
 
 const classes =
   'w-full flex items-start gap-3 rounded-md border-[3px] border-solid p-4 font-body ' +
@@ -66,11 +43,11 @@ const classes =
   <!-- role=alert: an interruption pattern by nature (all four intents), so
        assistive tech announces it on mount without a separate live/status
        prop. -->
-  <div role="alert" :class="classes" :style="intentVars[intent]">
+  <div role="alert" :class="classes" :style="intentVars">
     <Icon
       v-if="icon"
       data-testid="alert-icon"
-      :icon="intentIcons[intent]"
+      :icon="INTENT_ICONS[intent]"
       size="lg"
       class="shrink-0"
     />

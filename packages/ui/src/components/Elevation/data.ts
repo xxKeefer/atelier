@@ -78,236 +78,63 @@ export const surfaces = [
 //     than the solid), and the bright-edge lifting shadow.
 // Border tiers and shadows are the per-colourway tokens; the {c}.600 shared plane
 // is reached via the surface-recess token.
-// Tailwind only scans literals -- every utility is spelled out in full below.
-export const colourways = [
-  {
-    name: 'primary',
-    surface: 'bg-primary-default',
-    ramp: [
-      { label: 'subtle', class: 'bg-primary-surface-subtle' },
-      { label: 'default', class: 'bg-primary-default' },
-      { label: 'strong', class: 'bg-primary-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-primary-lower',
-        surface: 'bg-primary-surface-recess',
-        border: 'border-primary-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-primary-low',
-        surface: 'bg-primary-surface-recess',
-        border: 'border-primary-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-primary-surface-recess',
-        border: 'border-primary-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-primary-high',
-        border: 'border-primary-border-strong',
-      },
-      {
-        name: 'higher',
-        class: 'shadow-primary-higher',
-        border: 'border-primary-border-strong',
-      },
-    ],
-  },
-  {
-    name: 'secondary',
-    surface: 'bg-secondary-default',
-    ramp: [
-      { label: 'subtle', class: 'bg-secondary-surface-subtle' },
-      { label: 'default', class: 'bg-secondary-default' },
-      { label: 'strong', class: 'bg-secondary-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-secondary-lower',
-        surface: 'bg-secondary-surface-recess',
-        border: 'border-secondary-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-secondary-low',
-        surface: 'bg-secondary-surface-recess',
-        border: 'border-secondary-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-secondary-surface-recess',
-        border: 'border-secondary-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-secondary-high',
-        border: 'border-secondary-border-strong',
-      },
-      {
-        name: 'higher',
-        class: 'shadow-secondary-higher',
-        border: 'border-secondary-border-strong',
-      },
-    ],
-  },
-  {
-    name: 'danger',
-    surface: 'bg-danger-solid',
-    ramp: [
-      { label: 'subtle', class: 'bg-danger-surface-subtle' },
-      { label: 'default', class: 'bg-danger-solid' },
-      { label: 'strong', class: 'bg-danger-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-danger-lower',
-        surface: 'bg-danger-surface-recess',
-        border: 'border-danger-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-danger-low',
-        surface: 'bg-danger-surface-recess',
-        border: 'border-danger-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-danger-surface-recess',
-        border: 'border-danger-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-danger-high',
-        border: 'border-danger-border-strong',
-      },
-      {
-        name: 'higher',
-        class: 'shadow-danger-higher',
-        border: 'border-danger-border-strong',
-      },
-    ],
-  },
-  {
-    name: 'success',
-    surface: 'bg-success-solid',
-    ramp: [
-      { label: 'subtle', class: 'bg-success-surface-subtle' },
-      { label: 'default', class: 'bg-success-solid' },
-      { label: 'strong', class: 'bg-success-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-success-lower',
-        surface: 'bg-success-surface-recess',
-        border: 'border-success-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-success-low',
-        surface: 'bg-success-surface-recess',
-        border: 'border-success-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-success-surface-recess',
-        border: 'border-success-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-success-high',
-        border: 'border-success-border-strong',
-      },
-      {
-        name: 'higher',
-        class: 'shadow-success-higher',
-        border: 'border-success-border-strong',
-      },
-    ],
-  },
-  {
-    name: 'warning',
-    surface: 'bg-warning-solid',
-    ramp: [
-      { label: 'subtle', class: 'bg-warning-surface-subtle' },
-      { label: 'default', class: 'bg-warning-solid' },
-      { label: 'strong', class: 'bg-warning-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-warning-lower',
-        surface: 'bg-warning-surface-recess',
-        border: 'border-warning-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-warning-low',
-        surface: 'bg-warning-surface-recess',
-        border: 'border-warning-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-warning-surface-recess',
-        border: 'border-warning-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-warning-high',
-        border: 'border-warning-border-strong',
-      },
-      {
-        name: 'higher',
-        class: 'shadow-warning-higher',
-        border: 'border-warning-border-strong',
-      },
-    ],
-  },
-  {
-    name: 'info',
-    surface: 'bg-info-solid',
-    ramp: [
-      { label: 'subtle', class: 'bg-info-surface-subtle' },
-      { label: 'default', class: 'bg-info-solid' },
-      { label: 'strong', class: 'bg-info-surface-strong' },
-    ],
-    ladder: [
-      {
-        name: 'lower',
-        class: 'shadow-info-lower',
-        surface: 'bg-info-surface-recess',
-        border: 'border-info-border-default',
-      },
-      {
-        name: 'low',
-        class: 'shadow-info-low',
-        surface: 'bg-info-surface-recess',
-        border: 'border-info-border-default',
-      },
-      {
-        name: 'flat',
-        class: 'shadow-flat',
-        surface: 'bg-info-surface-recess',
-        border: 'border-info-border-default',
-      },
-      {
-        name: 'high',
-        class: 'shadow-info-high',
-        border: 'border-info-border-strong',
-      },
-      { name: 'higher', class: 'shadow-info-higher', border: 'border-info-border-strong' },
-    ],
-  },
+export const colourwayNames = [
+  'primary',
+  'secondary',
+  'danger',
+  'success',
+  'warning',
+  'info',
 ] as const
+export type ColourwayName = (typeof colourwayNames)[number]
+
+// primary/secondary's resting fill is a `default` step; the four status colourways
+// (danger/success/warning/info) use `solid` instead -- both name the same rung, the
+// key just differs per token group.
+const fillStep: Record<ColourwayName, 'default' | 'solid'> = {
+  primary: 'default',
+  secondary: 'default',
+  danger: 'solid',
+  success: 'solid',
+  warning: 'solid',
+  info: 'solid',
+}
+
+const colourway = (name: ColourwayName) => {
+  const fill = `bg-${name}-${fillStep[name]}`
+  const recess = `bg-${name}-surface-recess`
+  const rim = `border-${name}-border-default`
+  return {
+    name,
+    surface: fill,
+    ramp: [
+      { label: 'subtle', class: `bg-${name}-surface-subtle` },
+      { label: 'default', class: fill },
+      { label: 'strong', class: `bg-${name}-surface-strong` },
+    ],
+    ladder: [
+      { name: 'lower', class: `shadow-${name}-lower`, surface: recess, border: rim },
+      { name: 'low', class: `shadow-${name}-low`, surface: recess, border: rim },
+      { name: 'flat', class: 'shadow-flat', surface: recess, border: rim },
+      { name: 'high', class: `shadow-${name}-high`, border: `border-${name}-border-strong` },
+      { name: 'higher', class: `shadow-${name}-higher`, border: `border-${name}-border-strong` },
+    ],
+  }
+}
+
+export const colourways = colourwayNames.map(colourway)
+
+// Tailwind only scans literals in source text -- the template above builds classes
+// via `${name}` interpolation, which it can't resolve. This block is never
+// evaluated; it exists purely so every generated class also appears as a literal
+// string for the scanner to pick up. Keep in sync with `colourway()` above.
+// prettier-ignore
+const _tailwindScanSafelist = [
+  'bg-primary-surface-subtle', 'bg-primary-default', 'bg-primary-surface-strong', 'bg-primary-surface-recess', 'border-primary-border-default', 'border-primary-border-strong', 'shadow-primary-lower', 'shadow-primary-low', 'shadow-primary-high', 'shadow-primary-higher',
+  'bg-secondary-surface-subtle', 'bg-secondary-default', 'bg-secondary-surface-strong', 'bg-secondary-surface-recess', 'border-secondary-border-default', 'border-secondary-border-strong', 'shadow-secondary-lower', 'shadow-secondary-low', 'shadow-secondary-high', 'shadow-secondary-higher',
+  'bg-danger-surface-subtle', 'bg-danger-solid', 'bg-danger-surface-strong', 'bg-danger-surface-recess', 'border-danger-border-default', 'border-danger-border-strong', 'shadow-danger-lower', 'shadow-danger-low', 'shadow-danger-high', 'shadow-danger-higher',
+  'bg-success-surface-subtle', 'bg-success-solid', 'bg-success-surface-strong', 'bg-success-surface-recess', 'border-success-border-default', 'border-success-border-strong', 'shadow-success-lower', 'shadow-success-low', 'shadow-success-high', 'shadow-success-higher',
+  'bg-warning-surface-subtle', 'bg-warning-solid', 'bg-warning-surface-strong', 'bg-warning-surface-recess', 'border-warning-border-default', 'border-warning-border-strong', 'shadow-warning-lower', 'shadow-warning-low', 'shadow-warning-high', 'shadow-warning-higher',
+  'bg-info-surface-subtle', 'bg-info-solid', 'bg-info-surface-strong', 'bg-info-surface-recess', 'border-info-border-default', 'border-info-border-strong', 'shadow-info-lower', 'shadow-info-low', 'shadow-info-high', 'shadow-info-higher',
+]
+void _tailwindScanSafelist

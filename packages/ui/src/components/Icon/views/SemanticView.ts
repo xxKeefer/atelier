@@ -5,6 +5,7 @@ import {
   PhArrowSquareOut,
   PhBackspace,
   PhCaretDown,
+  PhChatText,
   PhCheckSquare,
   PhCircleNotch,
   PhCopy,
@@ -24,6 +25,12 @@ import Icon from '../AtIcon.vue'
 // This story is the documentation -- the source of truth other components defer to.
 const semantic = {
   Status: [
+    {
+      icon: PhChatText,
+      name: 'Notification',
+      note: 'neutral notification, no status',
+      tone: '',
+    },
     {
       icon: PhCheckSquare,
       name: 'Success',

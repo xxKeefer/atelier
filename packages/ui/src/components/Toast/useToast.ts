@@ -1,10 +1,9 @@
 import { reactive, type VNode } from 'vue'
-
-type Intent = 'info' | 'success' | 'warning' | 'danger'
+import type { StatusIntent } from '../../constants/intents'
 
 export interface ToastEntry {
   id: number
-  intent: Intent
+  intent: StatusIntent
   message: string
   actions?: () => VNode
   // Resolved ms delay, or null for no auto-dismiss.
@@ -12,7 +11,7 @@ export interface ToastEntry {
 }
 
 export interface ToastOptions {
-  intent: Intent
+  intent: StatusIntent
   message: string
   actions?: () => VNode
   timeout?: number | null
@@ -20,7 +19,8 @@ export interface ToastOptions {
 
 // success is disposable; every other intent needs to actually be read, so it
 // stays on screen until closed.
-const defaultTimeouts: Record<Intent, number | null> = {
+const defaultTimeouts: Record<StatusIntent, number | null> = {
+  neutral: null,
   info: null,
   success: 5000,
   warning: null,

@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond, PhX } from '@phosphor-icons/vue'
-import { computed, useSlots, type Component } from 'vue'
+import { PhX } from '@phosphor-icons/vue'
+import { computed, useSlots } from 'vue'
+import { INTENT_ICONS, STATUS_INTENT_TOKENS, type StatusIntent } from '../../constants/intents'
 import Icon from '../Icon/AtIcon.vue'
 import Button from '../Button/AtButton.vue'
 
-type Intent = 'info' | 'success' | 'warning' | 'danger'
-
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    intent?: Intent
+    intent?: StatusIntent
     // false suppresses the role icon entirely; omitted/true shows the
     // intent's default glyph, same colourblind-safe hint as Alert.
     icon?: boolean
@@ -17,7 +16,7 @@ withDefaults(
     // the toast an auto-dismiss timeout; AtToast itself owns no timing.
     showClose?: boolean
   }>(),
-  { intent: 'info', icon: true, showClose: true },
+  { intent: 'neutral', icon: true, showClose: true },
 )
 
 const emit = defineEmits<{ close: [] }>()
@@ -25,36 +24,15 @@ const emit = defineEmits<{ close: [] }>()
 const slots = useSlots()
 const hasActions = computed(() => slots.actions !== undefined)
 
-const intentIcons: Record<Intent, Component> = {
-  info: PhInfo,
-  success: PhCheckSquare,
-  warning: PhWarning,
-  danger: PhWarningDiamond,
-}
-
 // Tinted card: same canvas-tint shape as Alert's status colour group.
-const intentVars: Record<Intent, Record<'--toast-bg' | '--toast-border' | '--toast-fg', string>> = {
-  info: {
-    '--toast-bg': 'var(--color-info-bg)',
-    '--toast-border': 'var(--color-info-border)',
-    '--toast-fg': 'var(--color-info-fg)',
-  },
-  success: {
-    '--toast-bg': 'var(--color-success-bg)',
-    '--toast-border': 'var(--color-success-border)',
-    '--toast-fg': 'var(--color-success-fg)',
-  },
-  warning: {
-    '--toast-bg': 'var(--color-warning-bg)',
-    '--toast-border': 'var(--color-warning-border)',
-    '--toast-fg': 'var(--color-warning-fg)',
-  },
-  danger: {
-    '--toast-bg': 'var(--color-danger-bg)',
-    '--toast-border': 'var(--color-danger-border)',
-    '--toast-fg': 'var(--color-danger-fg)',
-  },
-}
+const intentVars = computed(() => {
+  const tokens = STATUS_INTENT_TOKENS[props.intent]
+  return {
+    '--toast-bg': tokens.bg,
+    '--toast-border': tokens.border,
+    '--toast-fg': tokens.fg,
+  }
+})
 
 const classes =
   'flex w-full max-w-sm items-start gap-3 rounded-md border-[3px] border-solid p-4 font-body shadow-md ' +
@@ -68,11 +46,11 @@ const classes =
 <template>
   <!-- role=status + aria-live=polite: a non-interrupting notification,
        announced without stealing focus -- unlike Alert's role=alert. -->
-  <div role="status" aria-live="polite" :class="classes" :style="intentVars[intent]">
+  <div role="status" aria-live="polite" :class="classes" :style="intentVars">
     <Icon
       v-if="icon"
       data-testid="toast-icon"
-      :icon="intentIcons[intent]"
+      :icon="INTENT_ICONS[intent]"
       size="lg"
       class="shrink-0"
     />
