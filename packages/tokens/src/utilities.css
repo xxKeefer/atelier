@@ -59,3 +59,43 @@
   border-color: var(--color-danger-border-default);
   box-shadow: var(--shadow-danger-low);
 }
+
+/*
+ * 3-rung "grouped control" press ladder (AtButtonGroupItem/AtTabsTrigger via
+ * pressGroupLadder.ts). Two reka-ui primitives key the same three rungs off
+ * different data-state vocabularies (RadioGroupItem's unchecked/checked vs
+ * Tabs' inactive/active), so each rung's selector matches both spellings
+ * directly rather than making callers apply the utility twice per variant.
+ * Named distinctly from press-high/press-low above (2-rung ladder) since the
+ * values differ (rest here is "higher" with a filter on hover, not "high").
+ */
+@utility press-group-higher {
+  &[data-state='unchecked'],
+  &[data-state='inactive'] {
+    transform: translateY(calc(-1 * var(--spacing-lift-full)));
+    background-color: var(--color-surface-strong);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-higher);
+  }
+}
+
+@utility press-group-high {
+  &[data-state='unchecked'],
+  &[data-state='inactive'] {
+    transform: translateY(calc(-1 * var(--spacing-lift-half)));
+    background-color: var(--color-surface-strong);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-high);
+    filter: brightness(1.08);
+  }
+}
+
+@utility press-group-low {
+  &[data-state='checked'],
+  &[data-state='active'] {
+    transform: translateY(0);
+    background-color: var(--color-surface-default);
+    border-color: var(--color-border-default);
+    box-shadow: var(--shadow-low);
+  }
+}

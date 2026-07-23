@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TabsTrigger } from 'reka-ui'
 import { computed, inject } from 'vue'
+import { pressGroupLadder } from '../../constants/pressGroupLadder'
 import { TABS_VARIANT_KEY } from './AtTabs.vue'
 
 defineProps<{
@@ -26,13 +27,11 @@ const base =
 // "inactive" instead of RadioGroup's "checked"/"unchecked". Rest sits popped
 // at `higher`, hover presses halfway to `high`, active reads like the
 // ladder's pressed rung (`low`, flush) and stays there -- the depressed look
-// IS the selected indicator.
-const neutral =
-  'text-fg-default ' +
-  'data-[state=inactive]:enabled:shadow-higher data-[state=inactive]:enabled:-translate-y-lift-full data-[state=inactive]:enabled:bg-surface-strong data-[state=inactive]:enabled:border-border-strong ' +
-  'hover:enabled:data-[state=inactive]:shadow-high hover:enabled:data-[state=inactive]:-translate-y-lift-half hover:enabled:data-[state=inactive]:brightness-[1.08] ' +
-  'data-[state=active]:enabled:shadow-low data-[state=active]:enabled:translate-y-0 data-[state=active]:enabled:bg-surface-default data-[state=active]:enabled:border-border-default ' +
-  'disabled:opacity-50 disabled:shadow-flat disabled:translate-y-0'
+// IS the selected indicator. pressGroupLadder() composes the shared
+// press-group-higher/-high/-low utilities, which already match both this
+// component's inactive/active data-state values and AtButtonGroupItem's
+// unchecked/checked ones in the same rung.
+const neutral = 'text-fg-default ' + pressGroupLadder()
 
 // Same border-as-seam ownership as AtButtonGroupItem: only the run's outer
 // ends round outward, every segment but the first cedes its left border to
