@@ -1,3 +1,6 @@
+import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond } from '@phosphor-icons/vue'
+import type { Component } from 'vue'
+
 // The 7-value action-intent vocabulary shared by AtButton and AtSpinner.
 export type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
 
@@ -55,4 +58,45 @@ export const intentSpinnerColors: Record<Intent, string> = {
   success: 'var(--color-success-solid)',
   warning: 'var(--color-warning-solid)',
   info: 'var(--color-info-solid)',
+}
+
+// The 4-value status-intent vocabulary shared by AtAlert, AtToast, and useToast.
+export type StatusIntent = 'info' | 'success' | 'warning' | 'danger'
+
+// Colourblind-safe role glyph, one per status intent. Byte-identical between
+// Alert and Toast before this consolidation.
+export const INTENT_ICONS: Record<StatusIntent, Component> = {
+  info: PhInfo,
+  success: PhCheckSquare,
+  warning: PhWarning,
+  danger: PhWarningDiamond,
+}
+
+// Tinted-banner colour values per status intent (bg/border/fg from the status
+// colour group's canvas-tint shape). Alert and Toast each bind these to their
+// own CSS custom-property names (--alert-* / --toast-*) locally.
+export const STATUS_INTENT_TOKENS: Record<
+  StatusIntent,
+  { bg: string; border: string; fg: string }
+> = {
+  info: {
+    bg: 'var(--color-info-bg)',
+    border: 'var(--color-info-border)',
+    fg: 'var(--color-info-fg)',
+  },
+  success: {
+    bg: 'var(--color-success-bg)',
+    border: 'var(--color-success-border)',
+    fg: 'var(--color-success-fg)',
+  },
+  warning: {
+    bg: 'var(--color-warning-bg)',
+    border: 'var(--color-warning-border)',
+    fg: 'var(--color-warning-fg)',
+  },
+  danger: {
+    bg: 'var(--color-danger-bg)',
+    border: 'var(--color-danger-border)',
+    fg: 'var(--color-danger-fg)',
+  },
 }
