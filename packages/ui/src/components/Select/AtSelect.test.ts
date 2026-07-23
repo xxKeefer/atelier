@@ -19,7 +19,7 @@ const options = [
 test('emits update:modelValue when an option is picked', async () => {
   const view = render(Select, { props: { label: 'Fruit', options } })
   await userEvent.click(screen.getByRole('combobox', { name: 'Fruit' }))
-  await userEvent.click(screen.getByRole('option', { name: 'Banana' }))
+  await userEvent.click(await screen.findByRole('option', { name: 'Banana' }))
   expect(view.emitted()['update:modelValue']?.at(-1)).toEqual(['banana'])
 })
 
@@ -28,7 +28,7 @@ test('emits update:modelValue when an option is picked', async () => {
 test('clicking the label opens the dropdown', async () => {
   render(Select, { props: { label: 'Fruit', options } })
   await userEvent.click(screen.getByText('Fruit'))
-  expect(screen.getByRole('listbox')).toBeInTheDocument()
+  expect(await screen.findByRole('listbox')).toBeInTheDocument()
 })
 
 // With no value selected, the trigger shows the placeholder text.
