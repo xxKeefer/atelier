@@ -12,3 +12,50 @@
     transition: none;
   }
 }
+
+/*
+ * 2-rung checked-state press ladder (AtCheckbox/AtRadio via checkedState.ts).
+ * Each utility bundles the translate/bg/border/shadow tuple for one rung;
+ * callers apply them behind data-state/enabled/disabled variants.
+ */
+@utility press-high {
+  transform: translateY(calc(-1 * var(--spacing-lift-half)));
+  background-color: var(--color-surface-strong);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-high);
+}
+
+@utility press-flat {
+  transform: translateY(0);
+  background-color: var(--color-surface-default);
+  border-color: var(--color-border-default);
+  box-shadow: var(--shadow-flat);
+}
+
+@utility press-low {
+  transform: translateY(0);
+  background-color: var(--color-surface-default);
+  border-color: var(--color-border-default);
+  box-shadow: var(--shadow-low);
+}
+
+@utility press-danger-high {
+  transform: translateY(calc(-1 * var(--spacing-lift-half)));
+  background-color: var(--color-danger-surface-strong);
+  border-color: var(--color-danger-border-strong);
+  box-shadow: var(--shadow-danger-high);
+}
+
+@utility press-danger-flat {
+  transform: translateY(0);
+  background-color: var(--color-danger-surface-recess);
+  border-color: var(--color-danger-border-default);
+  box-shadow: var(--shadow-flat);
+}
+
+@utility press-danger-low {
+  transform: translateY(0);
+  background-color: var(--color-danger-surface-recess);
+  border-color: var(--color-danger-border-default);
+  box-shadow: var(--shadow-danger-low);
+}
