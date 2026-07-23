@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RadioGroupIndicator, RadioGroupItem } from 'reka-ui'
 import { computed, useId } from 'vue'
+import { checkedStateLadder } from '../../constants/checkedState'
 
 const props = withDefaults(
   defineProps<{
@@ -42,23 +43,10 @@ const base =
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
-// Neutral colourway, keyed by reka-ui's data-state (unchecked/checked).
-const neutral =
-  'data-[state=unchecked]:enabled:-translate-y-lift-half data-[state=unchecked]:enabled:bg-surface-strong data-[state=unchecked]:enabled:border-border-strong data-[state=unchecked]:enabled:shadow-high ' +
-  'hover:enabled:data-[state=unchecked]:translate-y-0 hover:enabled:data-[state=unchecked]:bg-surface-default hover:enabled:data-[state=unchecked]:border-border-default hover:enabled:data-[state=unchecked]:shadow-flat ' +
-  'data-[state=checked]:enabled:translate-y-0 data-[state=checked]:enabled:bg-surface-default data-[state=checked]:enabled:border-border-default data-[state=checked]:enabled:shadow-low ' +
-  'disabled:opacity-50 ' +
-  'disabled:data-[state=unchecked]:-translate-y-lift-half disabled:data-[state=unchecked]:bg-surface-strong disabled:data-[state=unchecked]:border-border-strong disabled:data-[state=unchecked]:shadow-high ' +
-  'disabled:data-[state=checked]:translate-y-0 disabled:data-[state=checked]:bg-surface-default disabled:data-[state=checked]:border-border-default disabled:data-[state=checked]:shadow-low'
-
-// Error colourway: same mechanic, danger-tinted ladder.
-const danger =
-  'data-[state=unchecked]:enabled:-translate-y-lift-half data-[state=unchecked]:enabled:bg-danger-surface-strong data-[state=unchecked]:enabled:border-danger-border-strong data-[state=unchecked]:enabled:shadow-danger-high ' +
-  'hover:enabled:data-[state=unchecked]:translate-y-0 hover:enabled:data-[state=unchecked]:bg-danger-surface-recess hover:enabled:data-[state=unchecked]:border-danger-border-default hover:enabled:data-[state=unchecked]:shadow-flat ' +
-  'data-[state=checked]:enabled:translate-y-0 data-[state=checked]:enabled:bg-danger-surface-recess data-[state=checked]:enabled:border-danger-border-default data-[state=checked]:enabled:shadow-danger-low ' +
-  'disabled:opacity-50 ' +
-  'disabled:data-[state=unchecked]:-translate-y-lift-half disabled:data-[state=unchecked]:bg-danger-surface-strong disabled:data-[state=unchecked]:border-danger-border-strong disabled:data-[state=unchecked]:shadow-danger-high ' +
-  'disabled:data-[state=checked]:translate-y-0 disabled:data-[state=checked]:bg-danger-surface-recess disabled:data-[state=checked]:border-danger-border-default disabled:data-[state=checked]:shadow-danger-low'
+// Neutral/danger colourways, keyed by reka-ui's data-state
+// (unchecked/checked). Shared with AtCheckbox; Radio has no indeterminate state.
+const neutral = checkedStateLadder('neutral', ['unchecked', 'checked'])
+const danger = checkedStateLadder('danger', ['unchecked', 'checked'])
 
 const buttonClasses = computed(() => [base, props.error ? danger : neutral])
 </script>
