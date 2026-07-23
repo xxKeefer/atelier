@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { PhCircleNotch } from '@phosphor-icons/vue'
 import { computed } from 'vue'
+import { type Intent, intentSpinnerColors } from '../../constants/intents'
 import Icon from '../Icon/AtIcon.vue'
 
-type Intent = 'primary' | 'secondary' | 'neutral' | 'danger' | 'success' | 'warning' | 'info'
 type Size = 'sm' | 'md' | 'lg'
 
 const props = withDefaults(
@@ -19,19 +19,6 @@ const props = withDefaults(
   { intent: 'primary', size: 'md', label: undefined },
 )
 
-// Same status-fill tokens Button's solid variant uses for its background,
-// reused here as a foreground glyph colour since the spinner has no chip of
-// its own to sit on.
-const intentColors: Record<Intent, string> = {
-  primary: 'var(--color-primary-default)',
-  secondary: 'var(--color-secondary-default)',
-  neutral: 'var(--color-fg-default)',
-  danger: 'var(--color-danger-solid)',
-  success: 'var(--color-success-solid)',
-  warning: 'var(--color-warning-solid)',
-  info: 'var(--color-info-solid)',
-}
-
 // One step up from AtIcon's own scale so a "sm" spinner still reads at a
 // glance -- a spinner is the sole content of its area, not text-adjacent.
 const iconSizes: Record<Size, 'md' | 'lg' | '2xl'> = {
@@ -40,7 +27,7 @@ const iconSizes: Record<Size, 'md' | 'lg' | '2xl'> = {
   lg: '2xl',
 }
 
-const color = computed(() => intentColors[props.intent])
+const color = computed(() => intentSpinnerColors[props.intent])
 const iconSize = computed(() => iconSizes[props.size])
 </script>
 
