@@ -15,7 +15,7 @@ const variant = computed(() => injectedVariant?.value ?? 'default')
 
 const base =
   'relative inline-flex h-10 items-center justify-center gap-1.5 border-[3px] border-solid px-4 font-body font-bold text-sm ' +
-  'transition-[transform,box-shadow,filter,color] duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-[transform,box-shadow,filter,color] transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   // z-10 so the focus outline isn't painted over by a later (rightward)
   // sibling, which otherwise sits on top in normal paint order.

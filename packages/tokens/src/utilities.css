@@ -1,0 +1,14 @@
+/**
+ * Hand-authored Tailwind v4 utilities. Appended onto the generated theme.css
+ * by scripts/append-utilities.js so they land alongside @theme -- everything
+ * else in this package is Style Dictionary output from the JSON tokens.
+ */
+
+@utility transition-press {
+  transition-duration: 120ms;
+  transition-timing-function: ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
