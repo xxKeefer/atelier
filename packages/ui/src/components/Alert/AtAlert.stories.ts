@@ -41,6 +41,10 @@ export const WithActions: Story = {
 }
 
 export const Plain: Story = {
+  args: {
+    intent: 'neutral',
+  },
+
   render: () => ({ components: { PlainView }, template: `<PlainView />` }),
 }
 

@@ -5,7 +5,7 @@ import Alert from '../AtAlert.vue'
 export const PlainView = defineComponent({
   components: { Alert },
   template: `
-    <Alert intent="info" :icon="false" class="w-96">
+    <Alert :icon="false" class="w-96">
       A minimal alert with no title and no icon.
     </Alert>
   `,
