@@ -1,4 +1,4 @@
-import { PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond } from '@phosphor-icons/vue'
+import { PhChatText, PhCheckSquare, PhInfo, PhWarning, PhWarningDiamond } from '@phosphor-icons/vue'
 import type { Component } from 'vue'
 
 // The 7-value action-intent vocabulary shared by AtButton and AtSpinner.
@@ -60,12 +60,14 @@ export const intentSpinnerColors: Record<Intent, string> = {
   info: 'var(--color-info-solid)',
 }
 
-// The 4-value status-intent vocabulary shared by AtAlert, AtToast, and useToast.
-export type StatusIntent = 'info' | 'success' | 'warning' | 'danger'
+// The 5-value status-intent vocabulary shared by AtAlert, AtToast, and useToast.
+// neutral is the default -- a plain notification with no status to signal.
+export type StatusIntent = 'neutral' | 'info' | 'success' | 'warning' | 'danger'
 
 // Colourblind-safe role glyph, one per status intent. Byte-identical between
 // Alert and Toast before this consolidation.
 export const INTENT_ICONS: Record<StatusIntent, Component> = {
+  neutral: PhChatText,
   info: PhInfo,
   success: PhCheckSquare,
   warning: PhWarning,
@@ -74,11 +76,18 @@ export const INTENT_ICONS: Record<StatusIntent, Component> = {
 
 // Tinted-banner colour values per status intent (bg/border/fg from the status
 // colour group's canvas-tint shape). Alert and Toast each bind these to their
-// own CSS custom-property names (--alert-* / --toast-*) locally.
+// own CSS custom-property names (--alert-* / --toast-*) locally. neutral has
+// no status colour group of its own -- it reuses the structural surface/fg/
+// border tokens, the same shape Button's neutral intent draws from.
 export const STATUS_INTENT_TOKENS: Record<
   StatusIntent,
   { bg: string; border: string; fg: string }
 > = {
+  neutral: {
+    bg: 'var(--color-surface-default)',
+    border: 'var(--color-border-default)',
+    fg: 'var(--color-fg-default)',
+  },
   info: {
     bg: 'var(--color-info-bg)',
     border: 'var(--color-info-border)',

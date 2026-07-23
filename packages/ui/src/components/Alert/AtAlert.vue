@@ -16,7 +16,7 @@ const props = withDefaults(
     // would defeat that.
     icon?: boolean
   }>(),
-  { intent: 'info', title: undefined, icon: true },
+  { intent: 'neutral', title: undefined, icon: true },
 )
 
 const slots = useSlots()

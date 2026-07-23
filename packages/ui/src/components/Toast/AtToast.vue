@@ -16,7 +16,7 @@ const props = withDefaults(
     // the toast an auto-dismiss timeout; AtToast itself owns no timing.
     showClose?: boolean
   }>(),
-  { intent: 'info', icon: true, showClose: true },
+  { intent: 'neutral', icon: true, showClose: true },
 )
 
 const emit = defineEmits<{ close: [] }>()

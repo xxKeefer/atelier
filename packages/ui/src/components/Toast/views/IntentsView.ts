@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue'
 import Toast from '../AtToast.vue'
 
-export const intents = ['info', 'success', 'warning', 'danger'] as const
+export const intents = ['neutral', 'info', 'success', 'warning', 'danger'] as const
 
 // Every intent, on canvas -- the colour + icon role matrix.
 export const IntentsView = defineComponent({

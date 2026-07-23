@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue'
 import Alert from '../AtAlert.vue'
 
-export const intents = ['info', 'success', 'warning', 'danger'] as const
+export const intents = ['neutral', 'info', 'success', 'warning', 'danger'] as const
 
 // Every intent, titled, on canvas -- the colour + icon role matrix.
 export const IntentsView = defineComponent({
