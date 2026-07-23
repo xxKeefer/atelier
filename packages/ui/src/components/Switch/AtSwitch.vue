@@ -49,7 +49,7 @@ const modelValue = computed({
 // -- so primary uses bg-primary-surface-recess here, not surface-strong.
 const track =
   'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-[3px] border-solid px-1 shadow-low ' +
-  'transition-colors duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-colors transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus ' +
   'data-[state=unchecked]:enabled:bg-surface-default data-[state=unchecked]:enabled:border-border-default ' +
@@ -74,7 +74,7 @@ const track =
 // (border.default) reads as light grey next to a bright fg-default face.
 const thumb =
   'inline-block h-5 w-5 rounded-sm border-2 border-solid -translate-y-lift-half ' +
-  'transition-transform duration-[120ms] ease-[ease] motion-reduce:transition-none ' +
+  'transition-transform transition-press ' +
   'data-[state=unchecked]:translate-x-0 data-[state=checked]:translate-x-4 ' +
   'data-[state=unchecked]:bg-fg-default data-[state=unchecked]:border-border-strong data-[state=unchecked]:shadow-[0_2px_0_0_var(--color-surface-subtle)] ' +
   'data-[state=checked]:bg-primary-default data-[state=checked]:border-primary-border-strong data-[state=checked]:shadow-primary-high'

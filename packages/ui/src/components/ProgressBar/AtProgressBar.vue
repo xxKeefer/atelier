@@ -60,7 +60,7 @@ const trackClasses = computed(
 const fillClasses = computed(() =>
   indeterminate.value
     ? 'h-full w-full bg-primary-default animate-pulse motion-reduce:animate-none'
-    : 'h-full bg-primary-default transition-[width] duration-[120ms] ease-[ease]',
+    : 'h-full bg-primary-default transition-[width] transition-press',
 )
 </script>
 

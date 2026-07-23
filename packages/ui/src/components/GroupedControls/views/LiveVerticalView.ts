@@ -16,7 +16,7 @@ export const LiveVerticalView = defineComponent({
           v-for="s in liveVerticalSegments"
           :key="s.label"
           type="button"
-          class="flex items-center border-[3px] border-solid border-border-default bg-surface-default px-4 py-2 text-left font-body text-sm cursor-pointer shadow-flat transition-colors duration-[120ms] ease-[ease] motion-reduce:transition-none hover:bg-surface-subtle hover:shadow-low"
+          class="flex items-center border-[3px] border-solid border-border-default bg-surface-default px-4 py-2 text-left font-body text-sm cursor-pointer shadow-flat transition-colors transition-press hover:bg-surface-subtle hover:shadow-low"
           :class="s.position"
         >
           {{ s.label }}
