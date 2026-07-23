@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, useId, useSlots } from 'vue'
-
-type Size = 'sm' | 'md' | 'lg'
+import { computed, useSlots } from 'vue'
+import type { Size } from '../../composables/useFieldChrome'
+import { useFieldChrome } from '../../composables/useFieldChrome'
+import FieldLabel from '../Field/FieldLabel.vue'
+import FieldMessage from '../Field/FieldMessage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -39,14 +41,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 // real control.
 defineOptions({ inheritAttrs: false })
 
-const autoId = useId()
-const fieldId = computed(() => props.id ?? autoId)
-
-// "Messaged" mode: the field carries a label and/or a help/error line. In this
-// mode the field reserves a fixed line of space below for the message so toggling
-// it never shifts the layout (the message swaps in place). A bare field -- no
-// label, help, or error -- stays vertically compact, reserving nothing.
-const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
+const { fieldId, messaged } = useFieldChrome(props)
 
 // The #icon slot is optional -- a consumer drops in an AtIcon to mark the
 // field's purpose. Detected via useSlots (mirrors AtButton's iconOnly check)
@@ -106,13 +101,6 @@ const sizes: Record<Size, string> = {
   lg: 'text-lg px-6 py-3',
 }
 
-// The label rides one step below the field's text size, muted, on the surface.
-const labelSizes: Record<Size, string> = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-}
-
 // The icon sits inside the recess at the field's start, inset by the same
 // amount as the field's own horizontal padding so it lines up with where text
 // would otherwise begin.
@@ -147,14 +135,7 @@ const prefixSuffixClasses =
   <div class="flex flex-col gap-1">
     <!-- Label on the normal surface, tied to the field by id: clicking it focuses
          the input. -->
-    <label
-      v-if="label"
-      :for="fieldId"
-      class="font-body font-bold text-fg-muted"
-      :class="labelSizes[size]"
-    >
-      {{ label }}
-    </label>
+    <FieldLabel v-if="label" :field-id="fieldId" :size="size">{{ label }}</FieldLabel>
 
     <div class="flex items-stretch">
       <!-- Prefix: a shallower recess flanking the field, e.g. a currency
@@ -212,13 +193,6 @@ const prefixSuffixClasses =
     <!-- The reserved message line: present only in messaged mode, with a minimum
          of one line of height so swapping error <-> help <-> nothing never shifts
          the layout. Error displaces help when both are set. -->
-    <p
-      v-if="messaged"
-      data-testid="input-message"
-      class="min-h-[1lh] text-xs"
-      :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
-    >
-      {{ error || help }}
-    </p>
+    <FieldMessage v-if="messaged" testid="input-message" :error="error" :help="help" />
   </div>
 </template>

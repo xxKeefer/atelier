@@ -11,10 +11,12 @@ import {
   SelectValue,
   SelectViewport,
 } from 'reka-ui'
-import { computed, ref, useId, useSlots } from 'vue'
+import { computed, ref, useSlots } from 'vue'
+import type { Size } from '../../composables/useFieldChrome'
+import { useFieldChrome } from '../../composables/useFieldChrome'
+import FieldLabel from '../Field/FieldLabel.vue'
+import FieldMessage from '../Field/FieldMessage.vue'
 import Icon from '../Icon/AtIcon.vue'
-
-type Size = 'sm' | 'md' | 'lg'
 
 const props = withDefaults(
   defineProps<{
@@ -60,8 +62,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 defineOptions({ inheritAttrs: false })
 
-const autoId = useId()
-const fieldId = computed(() => props.id ?? autoId)
+const { fieldId, messaged } = useFieldChrome(props)
 
 // The #icon slot is optional -- a consumer drops in an AtIcon to mark the
 // field's purpose, at the trigger's start. Mirrors AtInput's hasIcon check.
@@ -143,17 +144,6 @@ const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
 
-// "Messaged" mode: the field carries a label, help, and/or an error line,
-// reserving a fixed line of space below so the message swaps in place
-// without shifting the layout. Mirrors AtInput's `messaged`.
-const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
-
-const labelSizes: Record<Size, string> = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-}
-
 // The options menu is the GroupedControls vertical gang (Foundations/GroupedControls
 // Vertical story): each option carries its own border and rounds only at the
 // stack's outer-top/outer-bottom ends, flush zero-gap otherwise -- border-as-seam,
@@ -179,15 +169,9 @@ const itemPosition = (index: number, length: number) => [
 
 <template>
   <div class="flex flex-col gap-1">
-    <label
-      v-if="label"
-      :for="fieldId"
-      class="font-body font-bold text-fg-muted"
-      :class="labelSizes[size]"
-      @click="onLabelClick"
-    >
-      {{ label }}
-    </label>
+    <FieldLabel v-if="label" :field-id="fieldId" :size="size" @click="onLabelClick">{{
+      label
+    }}</FieldLabel>
 
     <div
       ref="groupEl"
@@ -279,13 +263,6 @@ const itemPosition = (index: number, length: number) => [
          help, or error set), with a minimum of one line of height so
          swapping error <-> help <-> nothing never shifts the layout. Error
          displaces help when both are set. -->
-    <p
-      v-if="messaged"
-      data-testid="select-message"
-      class="min-h-[1lh] text-xs"
-      :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
-    >
-      {{ error || help }}
-    </p>
+    <FieldMessage v-if="messaged" testid="select-message" :error="error" :help="help" />
   </div>
 </template>

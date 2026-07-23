@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, useId } from 'vue'
-
-type Size = 'sm' | 'md' | 'lg'
+import type { Size } from '../../composables/useFieldChrome'
+import { useFieldChrome } from '../../composables/useFieldChrome'
+import FieldLabel from '../Field/FieldLabel.vue'
+import FieldMessage from '../Field/FieldMessage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -41,14 +42,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 // the real control.
 defineOptions({ inheritAttrs: false })
 
-const autoId = useId()
-const fieldId = computed(() => props.id ?? autoId)
-
-// "Messaged" mode: the field carries a label and/or a help/error line. In this
-// mode the field reserves a fixed line of space below for the message so
-// toggling it never shifts the layout. A bare field stays vertically compact,
-// reserving nothing.
-const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
+const { fieldId, messaged } = useFieldChrome(props)
 
 const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLTextAreaElement).value)
@@ -79,27 +73,13 @@ const sizes: Record<Size, string> = {
   md: 'text-base px-4 py-2',
   lg: 'text-lg px-6 py-3',
 }
-
-// The label rides one step below the field's text size, muted, on the surface.
-const labelSizes: Record<Size, string> = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-}
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
     <!-- Label on the normal surface, tied to the field by id: clicking it
          focuses the field. -->
-    <label
-      v-if="label"
-      :for="fieldId"
-      class="font-body font-bold text-fg-muted"
-      :class="labelSizes[size]"
-    >
-      {{ label }}
-    </label>
+    <FieldLabel v-if="label" :field-id="fieldId" :size="size">{{ label }}</FieldLabel>
 
     <textarea
       :id="fieldId"
@@ -114,13 +94,6 @@ const labelSizes: Record<Size, string> = {
     <!-- The reserved message line: present only in messaged mode, with a
          minimum of one line of height so swapping error <-> help <-> nothing
          never shifts the layout. Error displaces help when both are set. -->
-    <p
-      v-if="messaged"
-      data-testid="textarea-message"
-      class="min-h-[1lh] text-xs"
-      :class="error ? 'text-danger-fg' : 'text-fg-subtle'"
-    >
-      {{ error || help }}
-    </p>
+    <FieldMessage v-if="messaged" testid="textarea-message" :error="error" :help="help" />
   </div>
 </template>
