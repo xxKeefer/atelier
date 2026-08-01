@@ -36,7 +36,12 @@ test('a delay holds the tooltip closed until it elapses', async () => {
   })
   await userEvent.hover(screen.getByText('Hover me'))
   expect(screen.queryByTestId('tooltip-content')).not.toBeInTheDocument()
-  expect(await screen.findByTestId('tooltip-content', {}, { timeout: 1000 })).toBeInTheDocument()
+  // 200ms delay + a wide assertion timeout: the delay is a real reka-ui
+  // setTimeout (see AtTooltip Test Flake -- Delay Assertion Timing Under Full
+  // Suite.md), which can fire late under full-suite CPU contention. The 200ms
+  // prop documents intended UX timing; the assertion just needs slack for
+  // scheduling jitter, not a tight bound.
+  expect(await screen.findByTestId('tooltip-content', {}, { timeout: 4000 })).toBeInTheDocument()
 })
 
 // Keyboard support: focusing the trigger (not just hovering it) opens the
