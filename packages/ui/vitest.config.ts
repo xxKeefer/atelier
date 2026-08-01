@@ -30,6 +30,13 @@ const browser = () => ({
   // recorded in CLAUDE.md, not the filename).
   expect: {
     toMatchScreenshot: {
+      // Default is 5000ms. The full suite runs ~68 browser-mode files sharing one
+      // chromium instance; under that CPU contention the matcher's back-to-back
+      // stability-retry loop (screenshot, compare, repeat until two match) gets
+      // fewer retries per run, not because of anything first-run-specific. See
+      // notes/05-projects/atelier/tasks/Cross-Component Snapshot Instability --
+      // Modal, Select, Tooltip.md.
+      timeout: 15_000,
       resolveScreenshotPath: ({
         root,
         arg,
