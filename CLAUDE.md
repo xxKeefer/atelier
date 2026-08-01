@@ -39,8 +39,6 @@ Pattern is fixed -- mirror `packages/ui/src/components/AtIcon.vue` and `AtButton
   `hooks/`, or similar type-based directory for a single instance.
 - Stories carry a `Snapshot` story with a `data-testid="snap-board"` board; the test snaps it via `snapBoard` (baseline in `__snaps__/`, regenerate with `test:update`).
 
-First test run in a session warms the browser and may flake (`Matcher did not succeed in time`, transient render fails). Re-run before treating it as a real failure.
-
 ## Agent skills
 
 ### Issue tracker

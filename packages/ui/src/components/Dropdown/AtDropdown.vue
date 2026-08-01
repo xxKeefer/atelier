@@ -42,11 +42,27 @@ let closeTimer: ReturnType<typeof setTimeout> | undefined
 // hover-open (mirroring AtTooltip's delay-before-show) lets a real click
 // resolve well before the timer fires, so the toggle acts on a still-closed
 // menu; a genuine hover (no click) opens after the delay as normal.
+//
+// That ordering is only a wall-clock race, not a guarantee -- under enough
+// event-loop contention (confirmed under the full suite's parallel
+// browser-mode tests) the timer can fire and flip `open` to true before the
+// click itself is even dispatched, so reka-ui's own trigger click handler
+// (which toggles rather than sets `open`) reads it as already open and
+// closes it again. `openedByHoverTimer` plus the capture-phase click handler
+// below closes this outright rather than narrowing it: a capture listener on
+// an ancestor is guaranteed by the DOM event-dispatch spec to run before the
+// target's own listener for the *same* click event, independent of how much
+// wall-clock time passed getting there. It undoes a premature hover-open
+// immediately before reka-ui's toggle runs, so the toggle always acts on the
+// pre-hover intent regardless of timing.
+let openedByHoverTimer = false
+
 function scheduleOpen() {
   clearTimeout(closeTimer)
   clearTimeout(openTimer)
   openTimer = setTimeout(() => {
     open.value = true
+    openedByHoverTimer = true
   }, OPEN_DELAY_MS)
 }
 
@@ -56,6 +72,13 @@ function scheduleClose() {
   closeTimer = setTimeout(() => {
     open.value = false
   }, CLOSE_DELAY_MS)
+}
+
+function onTriggerClickCapture() {
+  if (openedByHoverTimer) {
+    openedByHoverTimer = false
+    open.value = false
+  }
 }
 
 // Focusing the trigger opens it immediately (no delay -- keyboard users
@@ -110,9 +133,17 @@ function onTriggerFocusIn(event: FocusEvent) {
 // down its open-delay after the click already opened the menu). Once state
 // changes for any reason, a pending timer is stale and would otherwise fire
 // later and flip `open` back against the current, more recent state.
-watch(open, () => {
+//
+// `openedByHoverTimer` is only cleared here on a close (not on every change):
+// it needs to survive from the moment scheduleOpen's timer fires until the
+// very next click-capture (see onTriggerClickCapture above) consumes it,
+// which happens synchronously within that click's own dispatch -- well
+// before this watcher's next (async) flush. Clearing it unconditionally here
+// would race it closed before the click ever got a chance to read it.
+watch(open, (isOpen) => {
   clearTimeout(openTimer)
   clearTimeout(closeTimer)
+  if (!isOpen) openedByHoverTimer = false
 })
 
 onUnmounted(() => {
@@ -144,6 +175,7 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
       class="contents"
       @mouseenter="scheduleOpen"
       @mouseleave="scheduleClose"
+      @click.capture="onTriggerClickCapture"
       @focusin="onTriggerFocusIn"
     >
       <DropdownMenuTrigger as-child>
