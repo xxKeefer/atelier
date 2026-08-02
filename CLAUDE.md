@@ -39,6 +39,10 @@ Pattern is fixed -- mirror `packages/ui/src/components/AtIcon.vue` and `AtButton
   `hooks/`, or similar type-based directory for a single instance.
 - Stories carry a `Snapshot` story with a `data-testid="snap-board"` board; the test snaps it via `snapBoard` (baseline in `__snaps__/`, regenerate with `test:update`).
 
+## Comments
+
+Default to no comments. Only add one when the WHY is non-obvious -- a hidden constraint, a subtle invariant, or a workaround for a specific bug. Never narrate what changed, what was fixed, or reference prior states, bugs, or diffs (no "Bug:", "previously", "before/after fix" style narration). A comment describing what code does, rather than a non-obvious why, should be deleted instead.
+
 ## Agent skills
 
 ### Issue tracker
