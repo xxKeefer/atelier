@@ -1,5 +1,6 @@
 import { composeStories } from '@storybook/vue3-vite'
 import { render, screen, within } from '@testing-library/vue'
+import { userEvent } from 'vitest/browser'
 import { expect, test } from 'vitest'
 import { PhHouse } from '@phosphor-icons/vue'
 import Breadcrumbs from './AtBreadcrumbs.vue'
@@ -76,6 +77,64 @@ test('default separator does not precede the first item', () => {
   const secondSeparator = within(secondItem).getByTestId('breadcrumb-separator')
   expect(getComputedStyle(firstSeparator).display).toBe('none')
   expect(getComputedStyle(secondSeparator).display).not.toBe('none')
+})
+
+test('under maxItems, no items collapse', () => {
+  render(Breadcrumbs, {
+    props: { maxItems: 5 },
+    global: { components: { BreadcrumbItem } },
+    slots: {
+      default: `
+        <BreadcrumbItem href="/">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/settings">Settings</BreadcrumbItem>
+        <BreadcrumbItem current>Profile</BreadcrumbItem>
+      `,
+    },
+  })
+  expect(screen.getAllByRole('listitem')).toHaveLength(3)
+  expect(screen.queryByTestId('breadcrumb-overflow-trigger')).toBeNull()
+})
+
+test('over maxItems, middle items collapse behind an overflow trigger', () => {
+  render(Breadcrumbs, {
+    props: { maxItems: 3 },
+    global: { components: { BreadcrumbItem } },
+    slots: {
+      default: `
+        <BreadcrumbItem href="/">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/a">A</BreadcrumbItem>
+        <BreadcrumbItem href="/a/b">B</BreadcrumbItem>
+        <BreadcrumbItem href="/a/b/c">C</BreadcrumbItem>
+        <BreadcrumbItem current>Profile</BreadcrumbItem>
+      `,
+    },
+  })
+  // first item + overflow trigger + (maxItems - 1) trailing items.
+  expect(screen.getAllByRole('listitem')).toHaveLength(4)
+  expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'C' })).toBeInTheDocument()
+  expect(screen.getByText('Profile')).toHaveAttribute('aria-current', 'page')
+  expect(screen.queryByRole('link', { name: 'A' })).toBeNull()
+  expect(screen.queryByRole('link', { name: 'B' })).toBeNull()
+})
+
+test('the overflow trigger opens a menu revealing the hidden items', async () => {
+  render(Breadcrumbs, {
+    props: { maxItems: 3 },
+    global: { components: { BreadcrumbItem } },
+    slots: {
+      default: `
+        <BreadcrumbItem href="/">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/a">A</BreadcrumbItem>
+        <BreadcrumbItem href="/a/b">B</BreadcrumbItem>
+        <BreadcrumbItem href="/a/b/c">C</BreadcrumbItem>
+        <BreadcrumbItem current>Profile</BreadcrumbItem>
+      `,
+    },
+  })
+  await userEvent.click(screen.getByTestId('breadcrumb-overflow-trigger'))
+  expect(await screen.findByRole('menuitem', { name: 'A' })).toBeInTheDocument()
+  expect(screen.getByRole('menuitem', { name: 'B' })).toBeInTheDocument()
 })
 
 test('Snapshot matches the visual board baseline', async () => {

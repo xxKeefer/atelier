@@ -5,6 +5,7 @@ import { BasicView } from './views/BasicView'
 import { IconsView } from './views/IconsView'
 import { DisabledItemView } from './views/DisabledItemView'
 import { CustomSeparatorView } from './views/CustomSeparatorView'
+import { CollapsedView } from './views/CollapsedView'
 
 const meta = {
   title: 'Components/Breadcrumbs',
@@ -34,6 +35,12 @@ export const CustomSeparator: Story = {
   render: () => ({ components: { CustomSeparatorView }, template: `<CustomSeparatorView />` }),
 }
 
+// maxItems collapses middle items behind an overflow trigger, always keeping
+// the first item and the trailing (maxItems - 1) items visible.
+export const Collapsed: Story = {
+  render: () => ({ components: { CollapsedView }, template: `<CollapsedView />` }),
+}
+
 // Exercises the empty-slot / bare-item render path outside the shared views.
 export const SingleItem: Story = {
   render: () => ({
@@ -48,7 +55,7 @@ export const SingleItem: Story = {
 
 export const Snapshot: Story = {
   render: () => ({
-    components: { BasicView, IconsView, DisabledItemView, CustomSeparatorView },
+    components: { BasicView, IconsView, DisabledItemView, CustomSeparatorView, CollapsedView },
     template: `
       <div class="flex w-max flex-col gap-6 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-2">
@@ -66,6 +73,10 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg text-fg-default">Custom separator</h2>
           <CustomSeparatorView />
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg text-fg-default">Collapsed</h2>
+          <CollapsedView />
         </section>
       </div>
     `,
