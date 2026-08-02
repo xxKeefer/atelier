@@ -95,7 +95,7 @@ function buildOverflowItem(hidden: VNode[]) {
               },
               {
                 default: () => [
-                  meta.icon ? h(AtIcon, { icon: meta.icon, size: 'sm', class: 'mr-1.5' }) : null,
+                  meta.icon ? h(AtIcon, { icon: meta.icon, size: 'md', class: 'mr-1.5' }) : null,
                   meta.label,
                 ],
               },

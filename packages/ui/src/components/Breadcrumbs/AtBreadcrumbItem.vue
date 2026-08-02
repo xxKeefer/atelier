@@ -34,11 +34,11 @@ const separator = inject(BREADCRUMB_SEPARATOR_KEY, PhCaretRight)
       aria-current="page"
       class="inline-flex items-center gap-1.5 text-fg-default"
     >
-      <AtIcon v-if="icon" :icon="icon" size="sm" />
+      <AtIcon v-if="icon" :icon="icon" size="md" />
       <slot />
     </span>
     <AtLink v-else :href="href" :disabled="disabled" class="text-fg-muted">
-      <template v-if="icon" #left><AtIcon :icon="icon" size="sm" /></template>
+      <template v-if="icon" #left><AtIcon :icon="icon" size="md" /></template>
       <slot />
     </AtLink>
   </li>
