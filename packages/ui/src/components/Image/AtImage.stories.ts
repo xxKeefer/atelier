@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Image from './AtImage.vue'
 import { FixedSizeView } from './views/FixedSizeView'
 import { AspectRatioView } from './views/AspectRatioView'
+import { FallbackView } from './views/FallbackView'
 import { placeholderSrc } from './views/PlaceholderSrc'
 
 const meta = {
@@ -37,10 +38,14 @@ export const AspectRatio: Story = {
   render: () => ({ components: { AspectRatioView }, template: `<AspectRatioView />` }),
 }
 
-// The visual board: fixed-size and aspect-ratio-scaled images together.
+export const Fallback: Story = {
+  render: () => ({ components: { FallbackView }, template: `<FallbackView />` }),
+}
+
+// The visual board: fixed-size, aspect-ratio-scaled, and fallback images together.
 export const Snapshot: Story = {
   render: () => ({
-    components: { FixedSizeView, AspectRatioView },
+    components: { FixedSizeView, AspectRatioView, FallbackView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
@@ -50,6 +55,10 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Aspect ratio</h2>
           <AspectRatioView />
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Fallback</h2>
+          <FallbackView />
         </section>
       </div>
     `,

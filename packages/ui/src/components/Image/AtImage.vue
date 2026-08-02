@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { PhImageBroken } from '@phosphor-icons/vue'
+import AtIcon from '../Icon/AtIcon.vue'
 
 const props = withDefaults(
   defineProps<{
-    src: string
+    src?: string
     // Pass "" for a purely decorative image -- an empty alt hides it from
     // assistive tech instead of falling back to the filename.
     alt: string
@@ -13,7 +15,7 @@ const props = withDefaults(
     // its parent's width and derives height from this ratio (CSS aspect-ratio).
     aspectRatio?: number | string
   }>(),
-  { width: undefined, height: undefined, aspectRatio: undefined },
+  { src: undefined, width: undefined, height: undefined, aspectRatio: undefined },
 )
 
 const toDimension = (value: number | string) =>
@@ -29,8 +31,31 @@ const style = computed(() => ({
   height: props.height !== undefined ? toDimension(props.height) : undefined,
   aspectRatio: props.aspectRatio !== undefined ? String(props.aspectRatio) : undefined,
 }))
+
+const failed = ref(false)
+watch(
+  () => props.src,
+  () => (failed.value = false),
+)
+const showFallback = computed(() => !props.src || failed.value)
 </script>
 
 <template>
-  <img :src="src" :alt="alt" class="block object-cover" :style="style" />
+  <img
+    v-if="!showFallback"
+    :src="src"
+    :alt="alt"
+    class="block object-cover"
+    :style="style"
+    @error="failed = true"
+  />
+  <div
+    v-else
+    class="flex items-center justify-center border-[3px] border-solid border-border-default bg-surface-subtle text-fg-subtle"
+    :style="style"
+    role="img"
+    :aria-label="alt || undefined"
+  >
+    <AtIcon :icon="PhImageBroken" size="lg" />
+  </div>
 </template>
