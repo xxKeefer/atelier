@@ -65,6 +65,21 @@ function goTo(page: number) {
   emit('update:modelValue', page)
 }
 
+// Dynamic labels give assistive tech real context instead of a bare number --
+// "Go to page 5 of 20" rather than just "5". Indeterminate mode drops the
+// "of N" clause since the total is unknown.
+function pageButtonLabel(page: number) {
+  return props.totalPages === undefined
+    ? `Go to page ${String(page)}`
+    : `Go to page ${String(page)} of ${String(props.totalPages)}`
+}
+
+const currentPageLabel = computed(() =>
+  props.totalPages === undefined
+    ? `Page ${String(props.modelValue)}, current page`
+    : `Page ${String(props.modelValue)} of ${String(props.totalPages)}, current page`,
+)
+
 const showPageSize = computed(() => props.pageSizeOptions.length > 0)
 const pageSizeItems = computed(() =>
   props.pageSizeOptions.map((size) => ({ value: String(size), label: String(size) })),
@@ -132,6 +147,7 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
       v-if="isIndeterminate"
       data-testid="pagination-page"
       aria-current="page"
+      :aria-label="currentPageLabel"
       :class="currentPageClasses"
       >{{ modelValue }}</span
     >
@@ -159,6 +175,7 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
         v-else-if="item === modelValue"
         data-testid="pagination-page"
         aria-current="page"
+        :aria-label="currentPageLabel"
         :class="currentPageClasses"
         >{{ item }}</span
       >
@@ -166,6 +183,7 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
         v-else
         type="button"
         data-testid="pagination-page"
+        :aria-label="pageButtonLabel(item)"
         :class="pageButtonBase"
         @click="goTo(item)"
       >
@@ -197,5 +215,12 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
       :model-value="pageSizeModelValue"
       @update:model-value="onPageSizeChange"
     />
+
+    <!-- Visually hidden live region: announces the current page whenever it
+         changes, so a screen reader user navigating by keyboard hears the new
+         state even though focus stays on the prev/next button they pressed. -->
+    <span data-testid="pagination-live-region" aria-live="polite" class="sr-only">{{
+      currentPageLabel
+    }}</span>
   </nav>
 </template>

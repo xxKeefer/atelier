@@ -162,6 +162,34 @@ test('indeterminate mode: clicking next/previous emits the adjacent page', async
   expect(view.emitted()['update:modelValue']).toEqual([[4], [2]])
 })
 
+// -- Accessibility: page labels and live region ------------------------------
+
+test('page buttons announce their destination and total', () => {
+  render(Pagination, { props: { modelValue: 10, totalPages: 20 } })
+  expect(screen.getByRole('button', { name: 'Go to page 9 of 20' })).toBeInTheDocument()
+})
+
+test('the current page announces itself as current, with total', () => {
+  render(Pagination, { props: { modelValue: 10, totalPages: 20 } })
+  const current = screen.getByText('10', { selector: '[aria-current="page"]' })
+  expect(current).toHaveAttribute('aria-label', 'Page 10 of 20, current page')
+})
+
+test('indeterminate mode drops the "of N" clause from labels', () => {
+  render(Pagination, { props: { modelValue: 3 } })
+  const current = screen.getByText('3', { selector: '[aria-current="page"]' })
+  expect(current).toHaveAttribute('aria-label', 'Page 3, current page')
+})
+
+test('a live region announces the current page and updates when it changes', async () => {
+  const view = render(Pagination, { props: { modelValue: 10, totalPages: 20 } })
+  const liveRegion = screen.getByTestId('pagination-live-region')
+  expect(liveRegion).toHaveAttribute('aria-live', 'polite')
+  expect(liveRegion).toHaveTextContent('Page 10 of 20, current page')
+  await view.rerender({ modelValue: 11, totalPages: 20 })
+  expect(liveRegion).toHaveTextContent('Page 11 of 20, current page')
+})
+
 // The single visual snap for Pagination: the Snapshot story's board (every
 // range shape -- no window, start, middle, end, widened window -- on one
 // screen). Baseline: __snaps__/pagination-chromium-linux.png. Rebaseline:
