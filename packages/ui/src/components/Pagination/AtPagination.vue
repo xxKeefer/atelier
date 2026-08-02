@@ -9,11 +9,17 @@ const props = withDefaults(
   defineProps<{
     // v-model: the current 1-indexed page.
     modelValue: number
-    totalPages: number
+    // Omit when the total page count is unknown ahead of time -- the
+    // component switches to indeterminate mode: prev/next only, no page
+    // buttons, no windowing/ellipsis.
+    totalPages?: number
     // Pages shown on each side of the current page.
     siblingCount?: number
     // Pages always pinned at the very start/end of the range.
     boundaryCount?: number
+    // Indeterminate mode only: whether a next page exists. Only the
+    // consumer's data source knows this, so it isn't derived internally.
+    hasNextPage?: boolean
     // v-model:pageSize: the currently selected items-per-page value.
     pageSize?: number
     // Selectable items-per-page values. The selector only renders when this
@@ -22,8 +28,10 @@ const props = withDefaults(
     pageSizeOptions?: number[]
   }>(),
   {
+    totalPages: undefined,
     siblingCount: 1,
     boundaryCount: 1,
+    hasNextPage: true,
     pageSize: undefined,
     pageSizeOptions: () => [],
   },
@@ -34,15 +42,26 @@ const emit = defineEmits<{
   'update:pageSize': [size: number]
 }>()
 
-const range = computed(() =>
-  getPaginationRange(props.modelValue, props.totalPages, props.siblingCount, props.boundaryCount),
-)
+const isIndeterminate = computed(() => props.totalPages === undefined)
+
+const range = computed(() => {
+  if (props.totalPages === undefined) return []
+  return getPaginationRange(
+    props.modelValue,
+    props.totalPages,
+    props.siblingCount,
+    props.boundaryCount,
+  )
+})
 
 const canGoPrev = computed(() => props.modelValue > 1)
-const canGoNext = computed(() => props.modelValue < props.totalPages)
+const canGoNext = computed(() =>
+  props.totalPages === undefined ? props.hasNextPage : props.modelValue < props.totalPages,
+)
 
 function goTo(page: number) {
-  if (page === props.modelValue || page < 1 || page > props.totalPages) return
+  if (page === props.modelValue || page < 1) return
+  if (props.totalPages !== undefined && page > props.totalPages) return
   emit('update:modelValue', page)
 }
 
@@ -106,7 +125,22 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
       <Icon :icon="PhCaretLeft" />
     </button>
 
-    <template v-for="(item, index) in range" :key="item === ELLIPSIS ? `ellipsis-${index}` : item">
+    <!-- Indeterminate mode: total page count is unknown, so there's no
+         window to compute -- just the current page, navigated one at a
+         time via prev/next. -->
+    <span
+      v-if="isIndeterminate"
+      data-testid="pagination-page"
+      aria-current="page"
+      :class="currentPageClasses"
+      >{{ modelValue }}</span
+    >
+
+    <template
+      v-for="(item, index) in range"
+      v-else
+      :key="item === ELLIPSIS ? `ellipsis-${index}` : item"
+    >
       <span
         v-if="item === ELLIPSIS"
         data-testid="pagination-ellipsis"

@@ -133,6 +133,35 @@ test('selecting a page size emits update:pageSize with the chosen value', async 
   expect(view.emitted()['update:pageSize']).toEqual([[25]])
 })
 
+// -- Indeterminate mode (unknown totalPages) ---------------------------------
+
+test('indeterminate mode renders the current page with no page buttons or ellipsis', () => {
+  render(Pagination, { props: { modelValue: 3 } })
+  const current = screen.getByText('3', { selector: '[aria-current="page"]' })
+  expect(current).toBeInTheDocument()
+  expect(current.tagName).not.toBe('BUTTON')
+  expect(screen.queryByTestId('pagination-ellipsis')).toBeNull()
+  expect(screen.getAllByTestId('pagination-page')).toHaveLength(1)
+})
+
+test('indeterminate mode: previous is disabled on the first page, next follows hasNextPage', () => {
+  render(Pagination, { props: { modelValue: 1, hasNextPage: true } })
+  expect(screen.getByTestId('pagination-prev')).toBeDisabled()
+  expect(screen.getByTestId('pagination-next')).toBeEnabled()
+})
+
+test('indeterminate mode: next is disabled when hasNextPage is false', () => {
+  render(Pagination, { props: { modelValue: 3, hasNextPage: false } })
+  expect(screen.getByTestId('pagination-next')).toBeDisabled()
+})
+
+test('indeterminate mode: clicking next/previous emits the adjacent page', async () => {
+  const view = render(Pagination, { props: { modelValue: 3, hasNextPage: true } })
+  await userEvent.click(screen.getByTestId('pagination-next'))
+  await userEvent.click(screen.getByTestId('pagination-prev'))
+  expect(view.emitted()['update:modelValue']).toEqual([[4], [2]])
+})
+
 // The single visual snap for Pagination: the Snapshot story's board (every
 // range shape -- no window, start, middle, end, widened window -- on one
 // screen). Baseline: __snaps__/pagination-chromium-linux.png. Rebaseline:

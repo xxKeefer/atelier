@@ -12,6 +12,7 @@ const meta = {
     totalPages: { control: 'number' },
     siblingCount: { control: 'number' },
     boundaryCount: { control: 'number' },
+    hasNextPage: { control: 'boolean' },
     pageSize: { control: 'number' },
     pageSizeOptions: { control: 'object' },
   },
@@ -90,6 +91,21 @@ export const WiderWindow: Story = {
     components: { Pagination },
     setup: () => ({ args }),
     template: `<Pagination v-bind="args" />`,
+  }),
+}
+
+// When the total page count is unknown ahead of time (e.g. a stream of
+// results with no count), omit totalPages -- the component drops the
+// numbered window entirely and navigates one page at a time.
+export const IndeterminateTotal: Story = {
+  args: { modelValue: 3, totalPages: undefined, hasNextPage: true },
+  render: (args) => ({
+    components: { Pagination },
+    setup: () => {
+      const page = ref(args.modelValue)
+      return { args, page }
+    },
+    template: `<Pagination v-bind="args" v-model="page" />`,
   }),
 }
 
