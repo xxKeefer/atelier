@@ -1,6 +1,6 @@
 import { composeStories } from '@storybook/vue3-vite'
 import { render, screen } from '@testing-library/vue'
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { nextTick } from 'vue'
 import Image from './AtImage.vue'
 import * as stories from './AtImage.stories'
@@ -17,6 +17,17 @@ test('renders the src and alt text', () => {
 test('an empty alt gives the image no accessible name', () => {
   render(Image, { props: { src: '/photo.jpg', alt: '' } })
   expect(screen.getByRole('img', { name: '' })).toHaveAttribute('alt', '')
+})
+
+// `alt` has no default, so Vue's compiled prop options mark it required and
+// warn in dev if a caller skips it -- there is no runtime way to tell an
+// omitted alt apart from an intentionally decorative "" one, so this warning
+// is the only enforcement point for "non-decorative images need alt text".
+test('a missing alt warns in dev', () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+  render(Image, { props: { src: '/photo.jpg' } as never })
+  expect(warn.mock.calls[0]?.[0]).toContain('Missing required prop: "alt"')
+  warn.mockRestore()
 })
 
 test('numeric width/height render as pixel dimensions', () => {
