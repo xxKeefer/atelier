@@ -8,7 +8,7 @@ export const BREADCRUMB_SEPARATOR_KEY: InjectionKey<Component> = Symbol('breadcr
 </script>
 
 <script setup lang="ts">
-import { PhCaretRight, PhDotsThree } from '@phosphor-icons/vue'
+import { PhCaretRight } from '@phosphor-icons/vue'
 import { Comment, h, provide, useSlots, type VNode } from 'vue'
 import AtDropdown from '../Dropdown/AtDropdown.vue'
 import AtDropdownItem from '../Dropdown/AtDropdownItem.vue'
@@ -18,6 +18,11 @@ const props = withDefaults(defineProps<{ separator?: Component; maxItems?: numbe
   separator: () => PhCaretRight,
   maxItems: undefined,
 })
+
+// Same three-static-dots glyph as AtPagination's ellipsis, sized up a step
+// (size-1.5 vs Pagination's size-1) since this one sits inline in a text-sm
+// row rather than a fixed h-9 button.
+const overflowDotClasses = 'size-1.5 rounded-full bg-fg-subtle group-hover:bg-fg-default'
 
 provide(BREADCRUMB_SEPARATOR_KEY, props.separator)
 
@@ -68,10 +73,14 @@ function buildOverflowItem(hidden: VNode[]) {
             {
               type: 'button',
               'aria-label': 'Show hidden breadcrumb items',
-              class: 'flex items-center text-fg-muted hover:text-fg-default',
+              class: 'group flex items-center gap-0.5',
               'data-testid': 'breadcrumb-overflow-trigger',
             },
-            [h(AtIcon, { icon: PhDotsThree, size: 'sm' })],
+            [
+              h('span', { class: overflowDotClasses }),
+              h('span', { class: overflowDotClasses }),
+              h('span', { class: overflowDotClasses }),
+            ],
           ),
         default: () =>
           hidden.map((vnode) => {
