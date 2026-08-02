@@ -2,6 +2,7 @@
 import { PhCaretLeft, PhCaretRight } from '@phosphor-icons/vue'
 import { computed } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
+import Select from '../Select/AtSelect.vue'
 import { ELLIPSIS, getPaginationRange } from './usePaginationRange'
 
 const props = withDefaults(
@@ -13,14 +14,25 @@ const props = withDefaults(
     siblingCount?: number
     // Pages always pinned at the very start/end of the range.
     boundaryCount?: number
+    // v-model:pageSize: the currently selected items-per-page value.
+    pageSize?: number
+    // Selectable items-per-page values. The selector only renders when this
+    // is non-empty -- it's an opt-in addition, not every consumer paginates
+    // a resizable list.
+    pageSizeOptions?: number[]
   }>(),
   {
     siblingCount: 1,
     boundaryCount: 1,
+    pageSize: undefined,
+    pageSizeOptions: () => [],
   },
 )
 
-const emit = defineEmits<{ 'update:modelValue': [page: number] }>()
+const emit = defineEmits<{
+  'update:modelValue': [page: number]
+  'update:pageSize': [size: number]
+}>()
 
 const range = computed(() =>
   getPaginationRange(props.modelValue, props.totalPages, props.siblingCount, props.boundaryCount),
@@ -32,6 +44,20 @@ const canGoNext = computed(() => props.modelValue < props.totalPages)
 function goTo(page: number) {
   if (page === props.modelValue || page < 1 || page > props.totalPages) return
   emit('update:modelValue', page)
+}
+
+const showPageSize = computed(() => props.pageSizeOptions.length > 0)
+const pageSizeItems = computed(() =>
+  props.pageSizeOptions.map((size) => ({ value: String(size), label: String(size) })),
+)
+const pageSizeModelValue = computed(() =>
+  props.pageSize === undefined ? undefined : String(props.pageSize),
+)
+
+function onPageSizeChange(value: string) {
+  const size = Number(value)
+  if (size === props.pageSize) return
+  emit('update:pageSize', size)
 }
 
 // The mechanic mirrors AtButtonGroupItem: rest sits popped at `higher`, hover
@@ -123,5 +149,19 @@ const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
     >
       <Icon :icon="PhCaretRight" />
     </button>
+
+    <!-- Opt-in items-per-page control, built on AtSelect (itself built on
+         reka-ui's Select primitive) rather than hand-rolled. Only renders
+         when the consumer supplies pageSizeOptions. -->
+    <Select
+      v-if="showPageSize"
+      data-testid="pagination-page-size"
+      class="ml-1"
+      size="sm"
+      aria-label="Items per page"
+      :options="pageSizeItems"
+      :model-value="pageSizeModelValue"
+      @update:model-value="onPageSizeChange"
+    />
   </nav>
 </template>

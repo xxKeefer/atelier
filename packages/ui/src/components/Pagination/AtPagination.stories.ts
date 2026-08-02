@@ -12,23 +12,34 @@ const meta = {
     totalPages: { control: 'number' },
     siblingCount: { control: 'number' },
     boundaryCount: { control: 'number' },
+    pageSize: { control: 'number' },
+    pageSizeOptions: { control: 'object' },
   },
-  args: { modelValue: 5, totalPages: 20, siblingCount: 1, boundaryCount: 1 },
+  args: {
+    modelValue: 5,
+    totalPages: 20,
+    siblingCount: 1,
+    boundaryCount: 1,
+    pageSize: 10,
+    pageSizeOptions: [10, 25, 50, 100],
+  },
 } satisfies Meta<typeof Pagination>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-// A stateful wrapper: the playground needs modelValue to actually update on
-// click, which a plain args-bound story can't do (args are static per render).
+// A stateful wrapper: the playground needs modelValue/pageSize to actually
+// update on click, which a plain args-bound story can't do (args are static
+// per render).
 export const Playground: Story = {
   render: (args) => ({
     components: { Pagination },
     setup: () => {
       const page = ref(args.modelValue)
-      return { args, page }
+      const pageSize = ref(args.pageSize)
+      return { args, page, pageSize }
     },
-    template: `<Pagination v-bind="args" v-model="page" />`,
+    template: `<Pagination v-bind="args" v-model="page" v-model:page-size="pageSize" />`,
   }),
 }
 

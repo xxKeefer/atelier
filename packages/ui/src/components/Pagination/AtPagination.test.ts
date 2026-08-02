@@ -110,6 +110,29 @@ test('no ellipsis renders when the total page count fits the window', () => {
   expect(screen.queryByTestId('pagination-ellipsis')).toBeNull()
 })
 
+// -- Items-per-page selector -------------------------------------------------
+
+test('the page-size selector does not render when no options are supplied', () => {
+  render(Pagination, { props: { modelValue: 2, totalPages: 4 } })
+  expect(screen.queryByTestId('pagination-page-size')).toBeNull()
+})
+
+test('the page-size selector renders when options are supplied', () => {
+  render(Pagination, {
+    props: { modelValue: 2, totalPages: 4, pageSize: 10, pageSizeOptions: [10, 25, 50] },
+  })
+  expect(screen.getByTestId('pagination-page-size')).toBeInTheDocument()
+})
+
+test('selecting a page size emits update:pageSize with the chosen value', async () => {
+  const view = render(Pagination, {
+    props: { modelValue: 2, totalPages: 4, pageSize: 10, pageSizeOptions: [10, 25, 50] },
+  })
+  await userEvent.click(screen.getByTestId('pagination-page-size'))
+  await userEvent.click(screen.getByText('25'))
+  expect(view.emitted()['update:pageSize']).toEqual([[25]])
+})
+
 // The single visual snap for Pagination: the Snapshot story's board (every
 // range shape -- no window, start, middle, end, widened window -- on one
 // screen). Baseline: __snaps__/pagination-chromium-linux.png. Rebaseline:
