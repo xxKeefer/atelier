@@ -48,11 +48,9 @@ export const WithActions: Story = {
 }
 
 // The visual board: AtToastProvider always teleports its viewport to
-// document.body (no scoped-viewport escape hatch like AtModal's
-// disable-teleport), so a board built from live queued toasts can't be
-// captured self-contained the way AtModal's snapshot is. Instead this reuses
-// AtToast's own snapshot fragments -- the toast shapes AtToastProvider wraps
-// -- same as AtToast.stories.ts's board.
+// document.body, so a board built from live queued toasts can't be captured
+// self-contained (unlike AtModal's disable-teleport). Instead this reuses
+// AtToast's own snapshot fragments, same as AtToast.stories.ts's board.
 export const Snapshot: Story = {
   render: () => ({
     components: { IntentsView, PlainView, ComposedView, NoCloseView, ActionsView },

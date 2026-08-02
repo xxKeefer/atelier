@@ -40,13 +40,11 @@ const modelValue = computed({
   },
 })
 
-// Track: fixed pill, always resting at the recessed `low` well the thumb slides
-// in (shadow.json: "low ... switch track" -- a single rung, not a ladder like
-// Checkbox, since the track itself never lifts). A recess pairs with the
-// *recessed* colourway, not the raised one -- mirrors Checkbox's own checked
-// (shadow-low) state, which pairs bg-surface-default/border-border-default
-// neutral, and its danger checked state, which pairs bg-danger-surface-recess
-// -- so primary uses bg-primary-surface-recess here, not surface-strong.
+// Track: fixed pill, always resting at the recessed `low` well the thumb
+// slides in (a single rung, not a ladder like Checkbox, since the track
+// itself never lifts). A recess pairs with the recessed colourway, not the
+// raised one -- mirrors Checkbox's checked state, so primary uses
+// bg-primary-surface-recess here, not surface-strong.
 const track =
   'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-[3px] border-solid px-1 shadow-low ' +
   'transition-colors transition-press ' +
@@ -58,20 +56,14 @@ const track =
   'disabled:data-[state=unchecked]:bg-surface-default disabled:data-[state=unchecked]:border-border-default ' +
   'disabled:data-[state=checked]:bg-primary-surface-recess disabled:data-[state=checked]:border-primary-border-default disabled:data-[state=checked]:shadow-primary-low'
 
-// Thumb: sits at the raised `high` rung -- pressed up out of the track's
-// recess by lift-half (offset matches the shadow's own 2px drop, same
-// translate-up/shadow-down baseline Button uses) so the hard-edge shadow
-// reads as a real gap, not a flush square. Off-state fill is fg-default: the
-// neutral ladder's -strong/-default surfaces sit within one step of each
-// other in this dark theme (bg-surface-strong nearly disappears against
-// bg-surface-default), so the thumb needs the high-contrast foreground token
-// to read as a distinct raised piece; primary.default carries the same job
-// for the on state, since it's already the brightest tone in that ladder. A
-// single -strong border on every edge is enough highlight -- a separate
-// darker bottom edge plus a long (offset-4) cast shadow doubled up into one
-// big black slab. Shortened to the `high` rung's offset-2 geometry, still
-// recoloured off-state to surface-subtle since shadow-high's own colour
-// (border.default) reads as light grey next to a bright fg-default face.
+// Thumb: sits at the raised `high` rung, pressed up out of the track's
+// recess by lift-half so the hard-edge shadow reads as a real gap, not a
+// flush square. Off-state fill is fg-default: the neutral ladder's
+// -strong/-default surfaces sit within one step of each other in this dark
+// theme, so the thumb needs the high-contrast foreground token to read as a
+// distinct raised piece; primary.default carries the same job for the on
+// state. Recoloured off-state to surface-subtle since shadow-high's own
+// colour reads as light grey next to a bright fg-default face.
 const thumb =
   'inline-block h-5 w-5 rounded-sm border-2 border-solid -translate-y-lift-half ' +
   'transition-transform transition-press ' +

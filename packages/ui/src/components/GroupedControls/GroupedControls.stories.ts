@@ -4,13 +4,10 @@ import { LiveHorizontalView } from './views/LiveHorizontalView'
 import { LiveVerticalView } from './views/LiveVerticalView'
 import { VerticalView } from './views/VerticalView'
 
-// GroupedControls has no backing component -- it's a token-layer foundation,
-// proving the "gang" rule (zero gap, square inner joins, outer-ends-only
-// rounding, border-as-seam) already implemented ad hoc in AtInput/AtSelect's
-// icon/prefix/field/suffix row, generalized to the two shapes Button Groups
-// and Select's option list need: a horizontal run of extruded segments and a
-// vertical run of recessed ones. Mirrors Elevation/Colour's component-less
-// pattern.
+// GroupedControls has no backing component -- a token-layer foundation
+// proving the "gang" rule (zero gap, outer-ends-only rounding, border-as-seam)
+// generalized to Button Groups' horizontal extruded run and Select's vertical
+// recessed run. Mirrors Elevation/Colour's component-less pattern.
 const meta = {
   title: 'Foundations/GroupedControls',
   parameters: { a11y: { test: 'error' } },

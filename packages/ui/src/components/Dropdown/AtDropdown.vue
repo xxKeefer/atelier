@@ -25,35 +25,26 @@ const props = withDefaults(
 
 const open = ref(props.defaultOpen)
 
-// Focusing the trigger opens it immediately. A click also focuses the
-// trigger; :focus-visible only matches keyboard-driven focus, not a mouse
-// click's incidental focus, so this only fires for Tab/keyboard users and
-// the click path is unaffected. Listens on `focusin` (bubbles)
-// rather than `focus` since it's bound on the wrapping span, not the trigger
-// element itself -- see the template comment on why the listeners live on a
-// wrapper instead of DropdownMenuTrigger.
+// Focusing the trigger opens it immediately, but only for keyboard focus:
+// :focus-visible skips a mouse click's incidental focus. Listens on
+// `focusin` (bubbles) since it is bound on the wrapping span, not the
+// trigger itself -- see the template comment below.
 //
-// Closing (Escape, or click-outside) also returns focus to the trigger --
-// reka-ui's FocusScope does this itself once content unmounts -- which is
-// keyboard-driven focus too and would otherwise satisfy :focus-visible and
-// immediately reopen what Escape just closed. `closeReturnsFocus` is set by
-// DropdownMenuContent's `close-auto-focus` event (fired as that return-focus
-// is being scheduled) and consumed by the very next focusin, so only that
-// one specific refocus is suppressed -- a genuine Tab onto the trigger still
-// opens normally.
+// Closing (Escape/click-outside) also returns focus to the trigger via
+// reka-ui's FocusScope, which is keyboard-driven focus too and would
+// otherwise reopen what Escape just closed. `closeReturnsFocus`, set by
+// DropdownMenuContent's `close-auto-focus` event, suppresses only that one
+// refocus so a genuine Tab onto the trigger still opens normally.
 let closeReturnsFocus = false
 
 function onContentCloseAutoFocus() {
   closeReturnsFocus = true
 }
 
-// reka-ui's own MenuContent keydown handler swallows Tab entirely while
-// focus is inside (by design -- menus aren't meant to be Tab-navigated
-// internally, see reka-ui's MenuContentImpl.vue handleKeyDown), so without
-// this the dropdown would never close via Tab and focus would be stuck.
-// Closing here (not preventing default ourselves) lets the browser's own
-// focus-outside detection and remaining Tab semantics apply as normal once
-// the content unmounts.
+// reka-ui's MenuContent swallows Tab entirely while focus is inside (by
+// design, MenuContentImpl.vue's handleKeyDown), so without this the
+// dropdown would never close via Tab. Closing here (not preventing default)
+// lets the browser's own focus-outside detection apply once content unmounts.
 function onContentKeyDown(event: KeyboardEvent) {
   if (event.key === 'Tab') open.value = false
 }
@@ -81,13 +72,10 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
        (portalled content sits outside it) -- non-modal keeps the trigger
        clickable to toggle closed, and doesn't block the page like a dialog. -->
   <DropdownMenuRoot v-model:open="open" :modal="false">
-    <!-- The focusin listener lives on this wrapper, not DropdownMenuTrigger
-         itself -- attaching it directly to DropdownMenuTrigger's as-child
-         slot broke its own internal click-toggle (reka-ui merges attrs
-         through several nested as-child layers down to the real element, and
-         adding extra listeners at that entry point disrupted it). A
-         `contents`-display span sits outside that merge chain and adds no
-         box of its own. -->
+    <!-- Listener lives on this wrapper, not DropdownMenuTrigger itself: reka-ui
+         merges attrs through nested as-child layers, and listening there broke
+         its internal click-toggle. This `contents`-display span sits outside
+         that merge chain and adds no box of its own. -->
     <span class="contents" @focusin="onTriggerFocusIn">
       <DropdownMenuTrigger as-child>
         <slot name="trigger" />

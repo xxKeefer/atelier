@@ -69,31 +69,18 @@ const iconOnly = computed(() => {
   return nodes.every((n) => n.children === null || n.children === '' || n.type === Comment)
 })
 
-// Fill, text, and transition shared by both variants. The intent vars
-// (--btn-bg/-fg/-edge) are bound per-element via :style below. enabled: gates
-// the interaction states so disabled buttons stay inert. motion-reduce kills
-// the transition. ease-[ease] preserves the CSS keyword (not Tailwind's default
-// ease-in-out curve).
-// Only filter (brightness) is transitioned. The shadow edge and the lift
-// translate must change in lockstep to keep the edge's bottom pinned, but
-// Tailwind's box-shadow rides --tw-shadow (syntax "*", non-interpolable) so it
-// can never tween -- it snaps. Were transform tweened on its own it would lag
-// the snapping shadow, unpinning the base mid-transition (shadow jumps up, then
-// the cap drifts down). So the geometry snaps as one; only the glow eases.
+// Only filter (brightness) transitions. Tailwind's box-shadow (--tw-shadow)
+// can't tween, so it always snaps; tweening the lift translate on its own
+// would desync from the snapping shadow. Geometry snaps as one, glow eases.
 const base =
   'inline-flex items-center justify-center font-body font-bold rounded-md select-none ' +
   'bg-[var(--btn-bg)] text-[var(--btn-fg)] ' +
   'transition-[filter] transition-press ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
-// Text buttons get asymmetric padding; icon-only buttons get equal padding so
-// they read square. gap drives the spacing between icon slots and the label.
-// sm's text uses leading-none (unlike every other tier) so its box height
-// matches its icon-only sibling exactly -- an icon glyph is already
-// effectively line-height:1 (AtIcon's wrapper is leading-none), so a text
-// button at the same font size only lines up if it drops the font's own
-// line-height too. The other tiers don't need this: nothing forced their
-// icon-only/text pair to match height, so they keep their inherited mismatch.
+// sm alone uses leading-none: AtIcon's wrapper is already line-height:1, so
+// only sm's icon-only/text pair needs the font's line-height dropped to match
+// height. Other tiers keep their inherited mismatch.
 const sizes: Record<Size, string> = {
   sm: 'text-sm leading-none px-3 py-1.5 gap-1.5',
   md: 'text-sm px-3 py-1.5 gap-1.5',
@@ -108,14 +95,10 @@ const iconOnlySizes: Record<Size, string> = {
   xl: 'text-lg p-3 gap-2',
 }
 
-// The mechanic -- rest, press, depress. default rides the elevation lift util off
-// the shadow + lift tokens: every state pins the hard edge's bottom to the same
-// baseline (translate-up == shadow-down). Rest sits popped at the `higher` rung
-// (lift-full); hover presses halfway to `high` (lift-half); active drops flush
-// (translate-0) onto the colourway's inset `low`, so the press travel reads as a
-// real key sinking into the surface. The coloured edge comes from the per-intent
-// shadow tokens (intentShadows below); flat is a quieter intent-tied border off
-// --btn-edge.
+// default rides the elevation lift tokens: rest sits at `higher` (lift-full),
+// hover presses to `high` (lift-half), active drops flush onto the inset `low`,
+// so translate-up tracks shadow-down and the press reads as a key sinking in.
+// Coloured edge is per-intent (intentShadows below); flat uses a plain border.
 const variants: Record<Variant, string> = {
   default:
     '-translate-y-lift-full ' +

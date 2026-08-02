@@ -1,11 +1,9 @@
-// The neutral/danger checked-state ladder shared by AtCheckbox and AtRadio.
-// Both are skeuomorphic controls keyed by reka-ui's data-state: unchecked
-// rests popped at `high`, hovering flattens to `flat`, checked depresses to
-// `low`. Checkbox additionally has an indeterminate state (flat, no depth
-// cue); Radio has none, so callers pass only the states they support.
-//
-// AtSwitch has a materially different shape (no danger colourway, no
-// indeterminate) and does not consume this table.
+// The neutral/danger checked-state ladder shared by AtCheckbox and AtRadio,
+// keyed by reka-ui's data-state: unchecked rests at `high`, hover flattens to
+// `flat`, checked depresses to `low`. Checkbox additionally has an
+// indeterminate state; Radio has none, so callers pass only the states they
+// support. AtSwitch has a materially different shape and does not consume
+// this table.
 
 export type CheckedStateKey = 'unchecked' | 'checked' | 'indeterminate'
 

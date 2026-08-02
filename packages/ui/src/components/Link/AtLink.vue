@@ -35,13 +35,12 @@ const rootProps = computed(() =>
     : { type: 'button', disabled: props.disabled },
 )
 
-// inherit (the default) sets no colour class at all: Tailwind's preflight
-// already resets `a { color: inherit }`, so the link picks up whatever colour
-// its parent text has. Every other value paints from that intent's status/
-// brand text token -- the same "fg" tone used for text on canvas elsewhere.
-// primary uses a dedicated "text" token, not "default": the fill token is
-// tuned for solid buttons and fails AA contrast as standalone text; secondary's
-// "default" already clears AA on its own, so it needs no equivalent.
+// inherit (the default) sets no colour class: Tailwind's preflight already
+// resets `a { color: inherit }`. Every other value paints from that intent's
+// status/brand text token. primary uses a dedicated "text" token, not
+// "default": the fill token is tuned for solid buttons and fails AA contrast
+// as standalone text; secondary's "default" already clears AA, so needs no
+// equivalent.
 const intentColors: Record<Intent, string> = {
   primary: 'text-[var(--color-primary-text)]',
   secondary: 'text-[var(--color-secondary-default)]',
