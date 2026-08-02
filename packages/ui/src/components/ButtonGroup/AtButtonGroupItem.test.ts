@@ -76,13 +76,8 @@ test('every segment but the first drops its left border when nothing is checked'
   expect(getComputedStyle(third as Element).borderLeftWidth).toBe('0px')
 })
 
-// Elevation-aware seam ownership: a checked (pressed/lower) segment must not
-// let its own border win a seam against an unchecked (higher) neighbour --
-// the higher neighbour keeps its border, the checked segment drops its own
-// border on that side instead. Bug: previously the border-drop was purely
-// positional ("every segment but the first drops left"), so checking the
-// middle segment left its unchecked right neighbour dropping a border it
-// should have kept.
+// Elevation-aware seam ownership: a checked (pressed/lower) segment drops its
+// own border at a seam, not its unchecked (higher) neighbour's.
 test('a checked middle segment drops its own border, not its unchecked neighbours', async () => {
   render(ThreeButtonGroup, { props: { modelValue: 'b' } })
   await nextTick()

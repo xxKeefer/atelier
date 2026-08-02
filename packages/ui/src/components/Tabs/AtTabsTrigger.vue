@@ -22,15 +22,10 @@ const base =
   // sibling, which otherwise sits on top in normal paint order.
   'focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
-// Same gang mechanic as AtButtonGroupItem (see its comments for the full
-// rationale), re-keyed off reka-ui Tabs' data-state values: "active"/
-// "inactive" instead of RadioGroup's "checked"/"unchecked". Rest sits popped
-// at `higher`, hover presses halfway to `high`, active reads like the
-// ladder's pressed rung (`low`, flush) and stays there -- the depressed look
-// IS the selected indicator. pressGroupLadder() composes the shared
-// press-group-higher/-high/-low utilities, which already match both this
-// component's inactive/active data-state values and AtButtonGroupItem's
-// unchecked/checked ones in the same rung.
+// Same gang mechanic as AtButtonGroupItem, re-keyed off reka-ui Tabs'
+// data-state values ("active"/"inactive" instead of "checked"/"unchecked").
+// pressGroupLadder() composes the shared press-group utilities, matching
+// both this component's and AtButtonGroupItem's state values to the same rung.
 const neutral = 'text-fg-default ' + pressGroupLadder()
 
 // Same border-as-seam ownership as AtButtonGroupItem: only the run's outer

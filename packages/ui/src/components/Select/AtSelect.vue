@@ -115,12 +115,9 @@ const trigger =
 // border token, same border treatment as the trigger's default rim.
 const errorClasses = 'border-danger-border-default'
 
-// The icon/prefix/trigger/suffix run gangs into one flush assembly,
-// mirroring AtInput's prefix/suffix seam treatment: only the outer ends of
-// the whole run round, and every joined edge carries no border on one side
-// -- the neighbouring segment's border is the seam, so segments don't stack
-// into a doubled line. The trigger rounds left only when nothing flanks it
-// there (no icon, no prefix); right only when no suffix flanks it.
+// The icon/prefix/trigger/suffix run gangs into one flush assembly, mirroring
+// AtInput's seam treatment -- only the whole run's outer ends round, and the
+// neighbouring segment's border is the seam.
 const triggerRounding = computed(() => [
   !hasIcon.value && !hasPrefix.value && 'rounded-l-md',
   !hasSuffix.value && 'rounded-r-md',

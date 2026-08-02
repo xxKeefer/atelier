@@ -96,20 +96,16 @@ export const AriaLabelOnly: Story = {
 }
 
 // The visual board: one representative open modal (title, subtitle, body,
-// footer actions). Modals are viewport-covering overlays -- unlike Tooltip's
-// grid of simultaneously-open instances, several open modals would just stack
-// and occlude each other, so the board shows the component's full chrome once
-// rather than every position/size combination (those are covered by the
-// Positions/Sizes stories' own play-fn assertions instead).
+// footer actions). Modals are viewport-covering overlays, so several open at
+// once would just occlude each other -- the board shows full chrome once;
+// Positions/Sizes stories cover the position/size matrix via play-fn assertions.
 //
-// AtModal's panel is `position: fixed`, normally centering on the whole
-// browser viewport via its portal to `document.body`. A `transform` utility
-// on the board makes it the CSS containing block for fixed-position
-// descendants (spec behaviour), and `disable-teleport` keeps the modal's DOM
-// nested inside the board instead of teleported to body -- together they
-// scope the "viewport" the modal centers on to the board itself, so the snap
-// captures a sized, self-contained board instead of a fixed panel positioned
-// relative to the whole (much larger) test viewport.
+// AtModal's panel is `position: fixed`, normally centering on the browser
+// viewport via its portal to document.body. A `transform` utility on the
+// board makes it the CSS containing block for fixed descendants, and
+// `disable-teleport` keeps the modal nested inside the board -- together
+// they scope centering to the board, so the snap captures a self-contained
+// board instead of a panel positioned against the full test viewport.
 export const Snapshot: Story = {
   render: () => ({
     components: { Modal, Button },

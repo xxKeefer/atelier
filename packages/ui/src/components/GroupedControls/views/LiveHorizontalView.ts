@@ -1,16 +1,11 @@
 import { defineComponent } from 'vue'
 import { liveHorizontalSegments } from '../data'
 
-// The horizontal gang under real interaction: real <button> elements riding
-// :hover/:active pseudo-state, mirroring AtButton's neutral rest/hover/active
-// mechanic (shadow-higher/high/low + lift translate + brightness) instead of
-// each segment being pinned to a fixed rung. Rounding (rounded-l-md on REW,
-// rounded-r-md on STOP) is structural/positional, unchanged from the static
-// ladder. Border-drop is NOT purely structural here -- see `seam` in data.ts
-// for why real interaction needs the elevation-aware peer/peer-hover rule
-// instead of the static ladder's "every segment but the first drops left".
-// `relative focus-visible:z-10` lifts a focused segment above its following
-// sibling in paint order, so the focus ring isn't clipped by it.
+// The horizontal gang under real interaction: real <button>s riding
+// :hover/:active, mirroring AtButton's neutral mechanic. Border-drop is not
+// purely structural here -- see `seam` in data.ts for the elevation-aware
+// peer/peer-hover rule. `relative focus-visible:z-10` lifts a focused
+// segment above its following sibling so the focus ring isn't clipped.
 export const LiveHorizontalView = defineComponent({
   setup: () => ({ liveHorizontalSegments }),
   template: `

@@ -54,12 +54,9 @@ const base =
 // Static card: high on the elevation ladder, one tier quieter than a button (higher).
 const staticShadow = 'shadow-high'
 
-// Interactive card: the same extruded mechanic as a default button -- a chunky
-// hard bottom edge plus ambient, sinking toward the cursor on hover and pressing
-// flush on click. The edge is the card's border colour, not the canvas shade:
-// the page is near-black, so a canvas-coloured lip would vanish into it -- the
-// border tone reads as the card's thickness. motion-reduce stills it; the focus
-// ring matches the rest of the system.
+// Interactive card: same extruded mechanic as a default button. Edge uses the
+// card's border colour, not the canvas shade -- the page is near-black, so a
+// canvas-coloured lip would vanish into it; the border tone reads as thickness.
 const interactive =
   'cursor-pointer transition-[transform,box-shadow,filter] transition-press ' +
   'shadow-[0_6px_0_0_var(--color-border-default),0_8px_8px_0_rgba(0,0,0,0.4)] ' +

@@ -7,24 +7,12 @@ import { SemanticsView } from './views/SemanticsView'
 // eyeballed and snapped: the shadow ladder and the surface ramp.
 
 // Hover animations: a tile rests at one rung and transitions one level on hover.
-// The grid runs every colourway (neutral, then the semantics) down the rows; the
-// columns are the eight transitions, sink first (higher down to lower) then lift (lower
-// up to higher). Two rules make the skeuomorphism read:
-//   1. Surface AND border tier by rung, mirroring the Semantics ladder: the recess
-//      group (lower / low / flat) sits on the colourway's recess plane with its dimmer
-//      lit rim (border-default); the lifts (high / higher) rise to the solid fill with
-//      the brighter rim (border-strong). Both transition on hover in lockstep with the
-//      shadow, so a tile that sinks from a lift into the recess group drops its plane
-//      and rim too, not just the shadow -- the same depth read as Semantics, animated.
-//   2. Lifted rungs translate up by the shadow's drop distance, in lockstep with
-//      the hard bottom-edge shadow. The translate consumes the generated
-//      translate-y-lift-* utilities (from --spacing-lift-*, the spacing namespace
-//      Tailwind translate reads), whose values equal the matching shadow's edge
-//      height -- high pairs with lift-half, higher with lift-full -- so the two
-//      can never drift. The element rises while the shadow's outer edge stays pinned
-//      to the baseline, so it extrudes from the plane instead of the plane falling away.
-// Class strings are spelled out in full -- Tailwind only scans literals, so the
-// `hover:` surface / border / shadow / translate utilities must all appear verbatim.
+// Grid runs every colourway down the rows; columns are sink (higher->lower) then
+// lift (lower->higher) transitions. Surface AND border tier move with the shadow
+// in lockstep (recess group vs lift group), and lifted rungs translate up by the
+// shadow's drop distance via the generated translate-y-lift-* utilities (paired
+// 1:1 with shadow tiers so they can't drift). Classes are spelled out in full --
+// Tailwind only scans literals.
 const sinkLabels = ['higher -> high', 'high -> flat', 'flat -> low', 'low -> lower'] as const
 const liftLabels = ['lower -> low', 'low -> flat', 'flat -> high', 'high -> higher'] as const
 

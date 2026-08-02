@@ -1,13 +1,9 @@
 // The 3-rung "grouped control" press ladder shared by AtButtonGroupItem and
-// AtTabsTrigger. Both are skeuomorphic gang controls where rest sits popped
-// at `higher`, hover presses halfway to `high` (+brightness), and the
-// checked/active member depresses to `low` and stays there -- the depressed
-// look IS the selection indicator. The two reka-ui primitives key the same
-// rungs off different data-state vocabularies (RadioGroupItem's
-// unchecked/checked vs Tabs' inactive/active); press-group-higher/-high/-low
-// (packages/tokens/src/utilities.css) already match both spellings in one
-// utility, so this module only needs to compose the enabled/hover/disabled
-// variant chain, not repeat the state matching per caller.
+// AtTabsTrigger: rest sits at `higher`, hover presses to `high`, the
+// checked/active member depresses to `low` and stays. The two reka-ui
+// primitives key the same rungs off different data-state vocabularies;
+// press-group-higher/-high/-low already match both spellings in one utility,
+// so this module only composes the enabled/hover/disabled variant chain.
 //
 // Neutral only -- there is no danger colourway for grouped controls today.
 

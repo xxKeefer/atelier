@@ -56,17 +56,10 @@ const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
 }
 
-// The recess -- the inverse of the button's extruded bottom edge. The field
-// sits on the elevation ladder's deep-recess rung (shadow-lower: the same
-// hard-edge, zero-blur inset shadow every other recessed surface in the
-// system uses -- Elevation's recess tiles, Checkbox/Radio's checked state),
-// not a hand-rolled blurred shadow. That hard edge is what reads as a real
-// depression instead of a soft bordered box. Disabled drops to shadow-low,
-// the ladder's shallow-recess rung -- a shallower bucket, mirroring the
-// button's own half-depressed disabled geometry, same depth idiom as before
-// but off the real rungs instead of a custom depth var. The placeholder,
-// being centred text, sits in the deepest part of the bucket. Focus swaps to
-// the system pink ring, matching the button.
+// The recess -- inverse of the button's extruded edge. Sits on shadow-lower
+// (the same hard-edge inset shadow every recessed surface uses), not a
+// hand-rolled blur, so it reads as a real depression. Disabled drops to
+// shadow-low, mirroring the button's own half-depressed disabled geometry.
 const base =
   'w-full font-body text-fg-default ' +
   'bg-surface-default placeholder:text-fg-subtle ' +
@@ -76,12 +69,9 @@ const base =
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
-// The field and its prefix/suffix gang into one flush assembly -- like a
-// cassette deck's transport-button row, each segment butted zero-gap against
-// its neighbour, the seam itself (border + shadow) doing the separating
-// instead of a visible gap. Only the outer ends of the whole run are
-// rounded; a join between two segments is always square on both sides that
-// touch. The field rounds whichever of its own ends has no flanking segment.
+// The field and its prefix/suffix gang into one flush assembly, cassette-deck
+// style -- each segment butted zero-gap, seam doing the separating instead of
+// a visible gap. Only the whole run's outer ends round.
 const fieldRounding = computed(() => [
   !hasPrefix.value && 'rounded-l-md',
   !hasSuffix.value && 'rounded-r-md',
@@ -118,14 +108,11 @@ const iconPadding: Record<Size, string> = {
   lg: 'pl-12',
 }
 
-// A prefix/suffix box: bordered frame on the ladder's flat rung (shadow-flat,
-// pairs with surface.default per the token's own doc) rather than the
-// field's own deep recess -- a flush, unrecessed tab flanking the bucket
-// that actually receives input, mirroring how AtButton's flat variant reads
-// next to its default extruded one. Only its outer edge rounds (prefix:
-// left, suffix: right); the edge butted against the field carries no border
-// at all -- the field's own border is the seam, so the two segments don't
-// stack into a double-width line where they touch.
+// A prefix/suffix box sits on the flat rung (shadow-flat), not the field's
+// deep recess -- a flush tab flanking the input bucket, mirroring AtButton's
+// flat variant next to its default. Only the outer edge rounds; the edge
+// butted against the field carries no border, since the field's own border
+// is the seam.
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
   'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'

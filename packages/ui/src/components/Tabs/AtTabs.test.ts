@@ -88,11 +88,8 @@ test('renders an icon slotted alongside the trigger label', () => {
 })
 
 // Equal width layout: fullWidth stretches each trigger to share the list's
-// width equally. The rule is applied via a descendant selector on the list
-// (AtTabsList), not a class on each trigger, so assert the resulting layout
-// (equal widths, within a few px -- the border-as-seam mechanic shifts a
-// segment's own border between adjacent triggers) rather than a literal
-// class string.
+// width equally, applied via a descendant selector on the list, not a class
+// on each trigger -- assert layout, not a literal class string.
 test('fullWidth stretches triggers to share the list width equally', () => {
   render(ThreeTabs, { props: { modelValue: 'a', fullWidth: true } })
   const widths = screen.getAllByRole('tab').map((tab) => tab.getBoundingClientRect().width)

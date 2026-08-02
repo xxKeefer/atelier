@@ -63,16 +63,12 @@ test('pressing Escape closes the dropdown and returns focus to the trigger', asy
   expect(trigger).toHaveFocus()
 })
 
-// Opening the dropdown via keyboard (Tab onto the trigger, which our
-// hand-rolled focus-open opens immediately -- see AtDropdown.vue) moves focus
-// onto its first item. reka-ui's MenuContent only auto-focuses the first item
-// when the open was keyboard-driven (confirmed by reading
-// MenuContentImpl.vue: its `entry-focus` handler calls `event.preventDefault()`
-// unless `rootContext.isUsingKeyboardRef` is true, deliberately not yanking
-// focus for a mouse-click open) -- Tab itself is a keyboard event, so that
-// condition is already satisfied by the time the dropdown opens. Uses real
-// AtDropdownItems, not plain divs, since reka-ui's roving-focus collection
-// only tracks items registered through its own MenuItem component.
+// Opening via keyboard (Tab, which our hand-rolled focus-open opens
+// immediately) moves focus onto the first item: reka-ui's MenuContent only
+// auto-focuses the first item on a keyboard-driven open (MenuContentImpl.vue's
+// `entry-focus` handler skips it otherwise), and Tab satisfies that. Uses real
+// AtDropdownItems since reka-ui's roving-focus collection only tracks its own
+// MenuItem-registered children.
 test('opening the dropdown via keyboard moves focus onto the first item', async () => {
   render(Dropdown, {
     slots: {
@@ -85,12 +81,10 @@ test('opening the dropdown via keyboard moves focus onto the first item', async 
   await expect.element(screen.getByText('First')).toHaveFocus()
 })
 
-// Tabbing away from the dropdown's content closes it -- this is the
-// "keyboard navigation" AC's separate close action. reka-ui's MenuContent
-// itself swallows the Tab keydown while focus is inside (by design, menus
-// aren't Tab-navigated internally -- see MenuContentImpl.vue's handleKeyDown),
-// so without AtDropdown closing on Tab itself, focus would be stuck inside a
-// menu that never releases it.
+// Tabbing away from the content closes it: reka-ui's MenuContent swallows Tab
+// while focus is inside (MenuContentImpl.vue's handleKeyDown, by design), so
+// without this Tab-close, focus would be stuck inside a menu that never
+// releases it.
 test('tabbing away from the content closes the dropdown', async () => {
   render(Dropdown, {
     slots: {

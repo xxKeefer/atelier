@@ -1,12 +1,9 @@
 import tokens from '@atelier/tokens'
 
-// The palette is private to the token layer -- components/stories may not consume
-// --palette-* CSS vars (see src/test/no-palette-vars.test.ts), and Tailwind only
-// generates utilities off the --color-* namespace, so no bg-palette-* class exists
-// either. This story is the one legitimate exception: it exists to show the raw
-// palette itself. It reaches the resolved hex values through @atelier/tokens' JS
-// build instead of the CSS layer, and paints swatches via inline style -- so no
-// --palette- var reference (class, arbitrary value, or var()) ever appears in source.
+// The palette is private to the token layer (src/test/no-palette-vars.test.ts)
+// -- no --palette-* class exists. This story is the one legitimate exception:
+// it reaches resolved hex values via @atelier/tokens' JS build and paints
+// swatches with inline style, so no --palette- var ever appears in source.
 export const shadeNames = Object.keys(
   tokens.palette.neutral,
 ) as (keyof typeof tokens.palette.neutral)[]
@@ -19,16 +16,10 @@ export const colourways = Object.entries(tokens.palette).map(([name, shades]) =>
   })),
 }))
 
-// The four semantic statuses, each carrying the same fixed set of tier-2 tokens
-// (see packages/tokens/src/color-semantic.json). Unlike the palette primitives above,
-// these already have working Tailwind classes off --color-{status}-{key} -- no
-// palette-var workaround needed, swatches use real utility classes.
-//
-// Tailwind only scans literal class strings, so (as in Elevation/data.ts) every
-// utility below is spelled out in full per status rather than built from a template.
-// bg/solid/surface-* are fills; border/border-* + edge are rims (rendered as
-// outline-only swatches); fg/on-solid are text colours (rendered as sample text,
-// not a swatch).
+// The four semantic statuses share tier-2 tokens (color-semantic.json) with
+// working Tailwind classes, unlike the palette primitives above -- no
+// palette-var workaround needed. Every utility is spelled out per status (as
+// in Elevation/data.ts) since Tailwind only scans literal class strings.
 export const statusColumnLabels = [
   'bg',
   'solid',
@@ -44,15 +35,10 @@ export const statusColumnLabels = [
   'on-solid',
 ] as const
 
-// The three brand rows: primary and secondary carry the same tier-2 shape as the
-// statuses above (surface ramp + border tiers + edge + fg), minus a `solid`/`bg`/
-// `on-solid` split -- brand's `default` fill IS the surface-default plane, there's
-// no separate solid/bg distinction. Neutral has no such `color.neutral` object in
-// color-semantic.json -- its equivalent keys are spread across the top-level
-// `color.bg`/`color.surface`/`color.border`/`color.fg` groups, and it has no `edge`
-// token at all (edge is "skeuomorphic shadowed side of a lit fill" -- neutral has no
-// lit fill to shadow). That cell renders empty (kind: 'none') rather than faking a
-// substitute -- a documented asymmetry, not a bug.
+// Brand rows share statuses' tier-2 shape minus solid/bg/on-solid: brand's
+// default fill IS the surface-default plane. Neutral has no `edge` token
+// (edge is a lit fill's shadowed side, and neutral has no lit fill) -- that
+// cell renders empty (kind: 'none'), a documented asymmetry, not a bug.
 export const brandColumnLabels = [
   'surface-subtle',
   'surface-default',
