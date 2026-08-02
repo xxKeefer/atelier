@@ -1,0 +1,127 @@
+<script setup lang="ts">
+import { PhCaretLeft, PhCaretRight } from '@phosphor-icons/vue'
+import { computed } from 'vue'
+import Icon from '../Icon/AtIcon.vue'
+import { ELLIPSIS, getPaginationRange } from './usePaginationRange'
+
+const props = withDefaults(
+  defineProps<{
+    // v-model: the current 1-indexed page.
+    modelValue: number
+    totalPages: number
+    // Pages shown on each side of the current page.
+    siblingCount?: number
+    // Pages always pinned at the very start/end of the range.
+    boundaryCount?: number
+  }>(),
+  {
+    siblingCount: 1,
+    boundaryCount: 1,
+  },
+)
+
+const emit = defineEmits<{ 'update:modelValue': [page: number] }>()
+
+const range = computed(() =>
+  getPaginationRange(props.modelValue, props.totalPages, props.siblingCount, props.boundaryCount),
+)
+
+const canGoPrev = computed(() => props.modelValue > 1)
+const canGoNext = computed(() => props.modelValue < props.totalPages)
+
+function goTo(page: number) {
+  if (page === props.modelValue || page < 1 || page > props.totalPages) return
+  emit('update:modelValue', page)
+}
+
+// The mechanic mirrors AtButtonGroupItem: rest sits popped at `higher`, hover
+// presses halfway to `high`, the current page depresses to `low` and stays --
+// the depressed look IS the "you are here" indicator, not a separate style.
+// Unlike ButtonGroup's reka-ui RadioGroup, the current page is not a
+// radio-checked item -- it's a plain non-interactive element (a <span>, not a
+// <button>), so it can never be re-clicked or refocused as an actionable
+// control per the AC.
+const pageButtonBase =
+  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[3px] border-solid px-2 ' +
+  'font-body text-sm font-bold text-fg-default ' +
+  'transition-[transform,box-shadow,filter] transition-press ' +
+  'border-border-default ' +
+  'cursor-pointer enabled:shadow-higher hover:enabled:shadow-high hover:enabled:brightness-[1.08] ' +
+  'enabled:-translate-y-lift-full hover:enabled:-translate-y-lift-half ' +
+  'active:enabled:translate-y-0 active:enabled:brightness-95 ' +
+  'disabled:translate-y-0 disabled:shadow-flat disabled:opacity-50 disabled:cursor-not-allowed ' +
+  'focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
+
+const currentPageClasses =
+  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[3px] border-solid px-2 ' +
+  'font-body text-sm font-bold select-none ' +
+  'bg-primary-default text-primary-fg border-primary-border-default shadow-flat translate-y-0'
+
+// Matches the page buttons' silhouette (border, radius, height) so it holds
+// the row's rhythm, but styled like a disabled control -- flat shadow, dimmed,
+// no hover -- so it still reads as "not a page". Three static dots rather
+// than a text glyph, evenly spaced like the icon buttons either side of it.
+const ellipsisClasses =
+  'inline-flex h-9 min-w-9 items-center justify-center gap-0.5 rounded-md border-[3px] border-solid px-2 ' +
+  'border-border-default shadow-flat opacity-50 select-none'
+const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
+</script>
+
+<template>
+  <nav aria-label="Pagination" class="flex items-center gap-1.5">
+    <button
+      type="button"
+      data-testid="pagination-prev"
+      aria-label="Previous page"
+      :disabled="!canGoPrev"
+      :class="pageButtonBase"
+      @click="goTo(modelValue - 1)"
+    >
+      <Icon :icon="PhCaretLeft" />
+    </button>
+
+    <template v-for="(item, index) in range" :key="item === ELLIPSIS ? `ellipsis-${index}` : item">
+      <span
+        v-if="item === ELLIPSIS"
+        data-testid="pagination-ellipsis"
+        :class="ellipsisClasses"
+        aria-hidden="true"
+      >
+        <span :class="ellipsisDotClasses" />
+        <span :class="ellipsisDotClasses" />
+        <span :class="ellipsisDotClasses" />
+      </span>
+
+      <!-- The current page is a non-interactive element: aria-current marks it
+           for assistive tech, but it's a <span>, not a <button> -- it never
+           receives a click handler or tab stop, so it can't be re-activated. -->
+      <span
+        v-else-if="item === modelValue"
+        data-testid="pagination-page"
+        aria-current="page"
+        :class="currentPageClasses"
+        >{{ item }}</span
+      >
+      <button
+        v-else
+        type="button"
+        data-testid="pagination-page"
+        :class="pageButtonBase"
+        @click="goTo(item)"
+      >
+        {{ item }}
+      </button>
+    </template>
+
+    <button
+      type="button"
+      data-testid="pagination-next"
+      aria-label="Next page"
+      :disabled="!canGoNext"
+      :class="pageButtonBase"
+      @click="goTo(modelValue + 1)"
+    >
+      <Icon :icon="PhCaretRight" />
+    </button>
+  </nav>
+</template>
