@@ -111,6 +111,10 @@
       "fg": {
         "$value": "{palette.neutral.950}",
         "$description": "text on primary fill"
+      },
+      "text": {
+        "$value": "{palette.magenta.400}",
+        "$description": "brand text standing alone on canvas (links, inline emphasis) -- a lighter rung than 'default', which is tuned for solid fills and fails AA as text"
       }
     },
     "secondary": {
