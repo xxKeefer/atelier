@@ -5,7 +5,7 @@ import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
 } from 'reka-ui'
-import { onUnmounted, ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -25,67 +25,10 @@ const props = withDefaults(
 
 const open = ref(props.defaultOpen)
 
-// reka-ui's DropdownMenu has no built-in hover/focus-open (only
-// click/Enter/Space/ArrowDown on the trigger) -- hand-rolled here. One shared
-// `open` state for click, hover, and focus alike: hovering off closes it even
-// if it was opened by a click. A short close delay lets the cursor travel
-// diagonally from trigger to content without the menu closing underneath it.
-const OPEN_DELAY_MS = 200
-const CLOSE_DELAY_MS = 200
-let openTimer: ReturnType<typeof setTimeout> | undefined
-let closeTimer: ReturnType<typeof setTimeout> | undefined
-
-// A mouse click also fires mouseenter on the trigger just before the click
-// itself (the pointer has to arrive before it can click) -- opening
-// immediately on hover would race the trigger's own click-toggle: hover
-// opens it, then the toggle immediately closes it again. Delaying the
-// hover-open (mirroring AtTooltip's delay-before-show) lets a real click
-// resolve well before the timer fires, so the toggle acts on a still-closed
-// menu; a genuine hover (no click) opens after the delay as normal.
-//
-// That ordering is only a wall-clock race, not a guarantee -- under enough
-// event-loop contention (confirmed under the full suite's parallel
-// browser-mode tests) the timer can fire and flip `open` to true before the
-// click itself is even dispatched, so reka-ui's own trigger click handler
-// (which toggles rather than sets `open`) reads it as already open and
-// closes it again. `openedByHoverTimer` plus the capture-phase click handler
-// below closes this outright rather than narrowing it: a capture listener on
-// an ancestor is guaranteed by the DOM event-dispatch spec to run before the
-// target's own listener for the *same* click event, independent of how much
-// wall-clock time passed getting there. It undoes a premature hover-open
-// immediately before reka-ui's toggle runs, so the toggle always acts on the
-// pre-hover intent regardless of timing.
-let openedByHoverTimer = false
-
-function scheduleOpen() {
-  clearTimeout(closeTimer)
-  clearTimeout(openTimer)
-  openTimer = setTimeout(() => {
-    open.value = true
-    openedByHoverTimer = true
-  }, OPEN_DELAY_MS)
-}
-
-function scheduleClose() {
-  clearTimeout(openTimer)
-  clearTimeout(closeTimer)
-  closeTimer = setTimeout(() => {
-    open.value = false
-  }, CLOSE_DELAY_MS)
-}
-
-function onTriggerClickCapture() {
-  if (openedByHoverTimer) {
-    openedByHoverTimer = false
-    open.value = false
-  }
-}
-
-// Focusing the trigger opens it immediately (no delay -- keyboard users
-// shouldn't wait). A click also focuses the trigger, which would hit the
-// same race as hover; :focus-visible only matches keyboard-driven focus, not
-// a mouse click's incidental focus, so this only fires for Tab/keyboard
-// users and the click path is unaffected. Listens on `focusin` (bubbles)
+// Focusing the trigger opens it immediately. A click also focuses the
+// trigger; :focus-visible only matches keyboard-driven focus, not a mouse
+// click's incidental focus, so this only fires for Tab/keyboard users and
+// the click path is unaffected. Listens on `focusin` (bubbles)
 // rather than `focus` since it's bound on the wrapping span, not the trigger
 // element itself -- see the template comment on why the listeners live on a
 // wrapper instead of DropdownMenuTrigger.
@@ -121,35 +64,9 @@ function onTriggerFocusIn(event: FocusEvent) {
     return
   }
   if ((event.target as HTMLElement).matches(':focus-visible')) {
-    clearTimeout(openTimer)
-    clearTimeout(closeTimer)
     open.value = true
   }
 }
-
-// Any open change not driven by our own timers (a click's toggle, Escape,
-// click-outside -- all reka-ui internals we don't control) can leave a stray
-// scheduled timer behind (e.g. a click's incidental mouseenter still counting
-// down its open-delay after the click already opened the menu). Once state
-// changes for any reason, a pending timer is stale and would otherwise fire
-// later and flip `open` back against the current, more recent state.
-//
-// `openedByHoverTimer` is only cleared here on a close (not on every change):
-// it needs to survive from the moment scheduleOpen's timer fires until the
-// very next click-capture (see onTriggerClickCapture above) consumes it,
-// which happens synchronously within that click's own dispatch -- well
-// before this watcher's next (async) flush. Clearing it unconditionally here
-// would race it closed before the click ever got a chance to read it.
-watch(open, (isOpen) => {
-  clearTimeout(openTimer)
-  clearTimeout(closeTimer)
-  if (!isOpen) openedByHoverTimer = false
-})
-
-onUnmounted(() => {
-  clearTimeout(openTimer)
-  clearTimeout(closeTimer)
-})
 
 // Flat, no elevation -- a menu sits on the surface, it doesn't float above
 // it. The container is just clipping chrome for the item stack's rounded
@@ -164,20 +81,14 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
        (portalled content sits outside it) -- non-modal keeps the trigger
        clickable to toggle closed, and doesn't block the page like a dialog. -->
   <DropdownMenuRoot v-model:open="open" :modal="false">
-    <!-- Hover/focus listeners live on this wrapper, not DropdownMenuTrigger
-         itself -- attaching them directly to DropdownMenuTrigger's as-child
+    <!-- The focusin listener lives on this wrapper, not DropdownMenuTrigger
+         itself -- attaching it directly to DropdownMenuTrigger's as-child
          slot broke its own internal click-toggle (reka-ui merges attrs
          through several nested as-child layers down to the real element, and
          adding extra listeners at that entry point disrupted it). A
          `contents`-display span sits outside that merge chain and adds no
          box of its own. -->
-    <span
-      class="contents"
-      @mouseenter="scheduleOpen"
-      @mouseleave="scheduleClose"
-      @click.capture="onTriggerClickCapture"
-      @focusin="onTriggerFocusIn"
-    >
+    <span class="contents" @focusin="onTriggerFocusIn">
       <DropdownMenuTrigger as-child>
         <slot name="trigger" />
       </DropdownMenuTrigger>
@@ -188,8 +99,6 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
         :class="content"
         align="start"
         :side-offset="4"
-        @mouseenter="scheduleOpen"
-        @mouseleave="scheduleClose"
         @close-auto-focus="onContentCloseAutoFocus"
         @keydown="onContentKeyDown"
       >

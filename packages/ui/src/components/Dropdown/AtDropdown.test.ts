@@ -28,27 +28,7 @@ test('clicking the trigger opens and closes the dropdown', async () => {
   expect(screen.queryByRole('menu')).not.toBeInTheDocument()
 })
 
-// Hovering the trigger opens the dropdown -- reka-ui's DropdownMenu has no
-// built-in hover support (confirmed by reading its source: trigger only
-// reacts to click/Enter/Space/ArrowDown), so this is hand-rolled. The open is
-// deliberately delayed (mirrors AtTooltip's hover delay) so a real click's
-// own incidental mouseenter doesn't race its click-toggle -- so this waits
-// for the delay to elapse via findByRole rather than asserting immediately.
-test('hovering the trigger opens the dropdown', async () => {
-  render(Dropdown, {
-    slots: {
-      trigger: '<button type="button">Open</button>',
-      default: '<div>Content</div>',
-    },
-  })
-  const trigger = screen.getByRole('button', { name: 'Open' })
-
-  await userEvent.hover(trigger)
-  expect(await screen.findByRole('menu')).toBeInTheDocument()
-})
-
-// Focusing the trigger via keyboard (Tab) opens the dropdown -- same
-// hover-parity requirement as above, applied to keyboard users. Tabbing in
+// Focusing the trigger via keyboard (Tab) opens the dropdown. Tabbing in
 // (rather than a programmatic .focus()) is what actually satisfies
 // :focus-visible, which the component uses to tell keyboard focus apart from
 // the incidental focus a mouse click also produces (see AtDropdown.vue).
