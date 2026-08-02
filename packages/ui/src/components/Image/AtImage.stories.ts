@@ -3,6 +3,7 @@ import Image from './AtImage.vue'
 import { FixedSizeView } from './views/FixedSizeView'
 import { AspectRatioView } from './views/AspectRatioView'
 import { FallbackView } from './views/FallbackView'
+import { DensityView } from './views/DensityView'
 import { placeholderSrc } from './views/PlaceholderSrc'
 
 const meta = {
@@ -15,6 +16,7 @@ const meta = {
     width: { control: 'text' },
     height: { control: 'text' },
     aspectRatio: { control: 'text' },
+    srcset: { control: 'text' },
   },
   args: { src: placeholderSrc, alt: 'A decorative geometric placeholder', width: 200, height: 150 },
 } satisfies Meta<typeof Image>
@@ -42,10 +44,14 @@ export const Fallback: Story = {
   render: () => ({ components: { FallbackView }, template: `<FallbackView />` }),
 }
 
-// The visual board: fixed-size, aspect-ratio-scaled, and fallback images together.
+export const Density: Story = {
+  render: () => ({ components: { DensityView }, template: `<DensityView />` }),
+}
+
+// The visual board: fixed-size, aspect-ratio-scaled, fallback, and density images together.
 export const Snapshot: Story = {
   render: () => ({
-    components: { FixedSizeView, AspectRatioView, FallbackView },
+    components: { FixedSizeView, AspectRatioView, FallbackView, DensityView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
@@ -59,6 +65,10 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Fallback</h2>
           <FallbackView />
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">Density</h2>
+          <DensityView />
         </section>
       </div>
     `,

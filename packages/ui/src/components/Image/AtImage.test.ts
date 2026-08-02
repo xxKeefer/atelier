@@ -45,6 +45,18 @@ test('renders a fallback when the image fails to load', async () => {
   expect(screen.getByRole('img', { name: 'A mountain' }).tagName).toBe('DIV')
 })
 
+test('srcset forwards to the underlying img for density-based asset selection', () => {
+  render(Image, {
+    props: {
+      src: '/photo.jpg',
+      srcset: '/photo.jpg 1x, /photo-2x.jpg 2x',
+      alt: 'A mountain',
+    },
+  })
+  const img = screen.getByRole('img', { name: 'A mountain' })
+  expect(img).toHaveAttribute('srcset', '/photo.jpg 1x, /photo-2x.jpg 2x')
+})
+
 test('does not render a fallback for a successfully loaded image', () => {
   render(Image, { props: { src: '/photo.jpg', alt: 'A mountain' } })
   expect(screen.getByRole('img', { name: 'A mountain' }).tagName).toBe('IMG')

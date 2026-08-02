@@ -14,8 +14,17 @@ const props = withDefaults(
     // e.g. "16/9" or 1.78. With no explicit width/height, the image scales to
     // its parent's width and derives height from this ratio (CSS aspect-ratio).
     aspectRatio?: number | string
+    // Native srcset density descriptors, e.g. "photo.jpg 1x, photo-2x.jpg 2x".
+    // Forwarded as-is to the underlying <img> -- the browser picks the asset.
+    srcset?: string
   }>(),
-  { src: undefined, width: undefined, height: undefined, aspectRatio: undefined },
+  {
+    src: undefined,
+    width: undefined,
+    height: undefined,
+    aspectRatio: undefined,
+    srcset: undefined,
+  },
 )
 
 const toDimension = (value: number | string) =>
@@ -44,6 +53,7 @@ const showFallback = computed(() => !props.src || failed.value)
   <img
     v-if="!showFallback"
     :src="src"
+    :srcset="srcset"
     :alt="alt"
     class="block object-cover"
     :style="style"
