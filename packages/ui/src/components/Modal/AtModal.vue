@@ -13,6 +13,7 @@ import {
 } from 'reka-ui'
 import Icon from '../Icon/AtIcon.vue'
 import Button from '../Button/AtButton.vue'
+import ScrollArea from '../ScrollArea/AtScrollArea.vue'
 
 type Position = 'center' | 'left' | 'right' | 'top' | 'bottom'
 type Size = 'sm' | 'md' | 'lg' | 'full'
@@ -132,9 +133,9 @@ const panelClasses = computed(() => [
           </DialogClose>
         </div>
 
-        <div data-testid="modal-body" class="flex-1 overflow-auto px-4 py-4">
+        <ScrollArea data-testid="modal-body" class="flex-1 px-4 py-4">
           <slot />
-        </div>
+        </ScrollArea>
 
         <div
           v-if="hasFooter"
