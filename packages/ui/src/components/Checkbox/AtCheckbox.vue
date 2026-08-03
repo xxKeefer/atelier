@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { PhCheck, PhMinus } from '@phosphor-icons/vue'
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
-import { computed, useId } from 'vue'
+import { computed } from 'vue'
 import { checkedStateLadder } from '../../constants/checkedState'
+import { useFieldId } from '../../composables/useFieldId'
 import Icon from '../Icon/AtIcon.vue'
 
 type CheckedState = boolean | 'indeterminate'
@@ -39,8 +40,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: CheckedState] }>()
 // the wrapper, so the accessible name and form wiring land on the real control.
 defineOptions({ inheritAttrs: false })
 
-const autoId = useId()
-const fieldId = computed(() => props.id ?? autoId)
+const { fieldId } = useFieldId(props)
 
 const modelValue = computed({
   get: () => props.modelValue,
