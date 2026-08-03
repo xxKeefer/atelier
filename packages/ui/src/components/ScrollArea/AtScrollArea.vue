@@ -14,11 +14,12 @@ type ScrollType = 'auto' | 'always' | 'scroll' | 'hover'
 withDefaults(
   defineProps<{
     orientation?: Orientation
-    // reka-ui's ScrollArea `type` -- when the scrollbar shows. `hover` mirrors
-    // the native overlay-scrollbar behaviour consumers already expect.
+    // reka-ui's ScrollArea `type` -- when the scrollbar shows. `always` keeps
+    // the thumb visible without a hover/scroll interaction, so a scrollable
+    // pane always signals it as scrollable rather than hiding the only cue.
     type?: ScrollType
   }>(),
-  { orientation: 'vertical', type: 'hover' },
+  { orientation: 'vertical', type: 'always' },
 )
 
 // reka-ui's ScrollAreaViewport exposes its own DOM node via `expose`, not a

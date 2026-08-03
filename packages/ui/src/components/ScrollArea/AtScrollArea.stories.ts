@@ -14,7 +14,7 @@ const meta = {
     orientation: { control: 'select', options: orientations },
     type: { control: 'select', options: types },
   },
-  args: { orientation: 'vertical', type: 'hover' },
+  args: { orientation: 'vertical', type: 'always' },
 } satisfies Meta<typeof ScrollArea>
 
 export default meta
@@ -64,15 +64,16 @@ export const Both: Story = {
   }),
 }
 
-// Always type keeps thumbs visible without hover/scroll interaction, so the
-// snap board's screenshot catches them without simulating user input.
+// type defaults to "always", so thumbs are visible without hover/scroll
+// interaction -- the snap board's screenshot catches them without simulating
+// user input.
 const SnapshotView = defineComponent({
   components: { ScrollArea },
   template: `
     <div class="flex w-max flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Vertical</h2>
-        <ScrollArea type="always" orientation="vertical" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="vertical" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
           <div class="flex flex-col gap-2 p-4 font-body text-fg-default">
             <p v-for="n in 20" :key="n">Line {{ n }}</p>
           </div>
@@ -81,7 +82,7 @@ const SnapshotView = defineComponent({
 
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Horizontal</h2>
-        <ScrollArea type="always" orientation="horizontal" class="h-20 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="horizontal" class="h-20 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
           <div class="flex w-max gap-2 p-4 font-body text-fg-default">
             <span v-for="n in 20" :key="n" class="w-24 shrink-0">Card {{ n }}</span>
           </div>
@@ -90,7 +91,7 @@ const SnapshotView = defineComponent({
 
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Both</h2>
-        <ScrollArea type="always" orientation="both" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="both" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
           <div class="flex w-[400px] flex-col gap-2 p-4 font-body text-fg-default">
             <p v-for="n in 20" :key="n">Line {{ n }}</p>
           </div>
