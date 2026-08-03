@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVirtualizer } from '@tanstack/vue-virtual'
-import { computed, ref } from 'vue'
+import { computed, useTemplateRef } from 'vue'
+import ScrollArea from '../ScrollArea/AtScrollArea.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -14,12 +15,12 @@ const props = withDefaults(
   },
 )
 
-const scrollParent = ref<HTMLElement | null>(null)
+const scrollAreaRef = useTemplateRef<{ viewportElement: HTMLElement | null }>('scrollArea')
 
 const virtualizer = useVirtualizer(
   computed(() => ({
     count: props.items.length,
-    getScrollElement: () => scrollParent.value,
+    getScrollElement: () => scrollAreaRef.value?.viewportElement ?? null,
     estimateSize: () => props.estimateSize,
     overscan: props.overscan,
   })),
@@ -29,7 +30,7 @@ const virtualItems = computed(() => virtualizer.value.getVirtualItems())
 </script>
 
 <template>
-  <div ref="scrollParent" class="max-h-full overflow-auto">
+  <ScrollArea ref="scrollArea" class="max-h-full">
     <ul
       role="list"
       class="relative w-full list-none pl-0"
@@ -47,5 +48,5 @@ const virtualItems = computed(() => virtualizer.value.getVirtualItems())
         <slot :item="items[virtualItem.index]" :index="virtualItem.index" />
       </li>
     </ul>
-  </div>
+  </ScrollArea>
 </template>

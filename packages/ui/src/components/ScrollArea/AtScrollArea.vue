@@ -6,6 +6,7 @@ import {
   ScrollAreaThumb,
   ScrollAreaViewport,
 } from 'reka-ui'
+import { computed, useTemplateRef } from 'vue'
 
 type Orientation = 'vertical' | 'horizontal' | 'both'
 type ScrollType = 'auto' | 'always' | 'scroll' | 'hover'
@@ -19,11 +20,19 @@ withDefaults(
   }>(),
   { orientation: 'vertical', type: 'hover' },
 )
+
+// reka-ui's ScrollAreaViewport exposes its own DOM node via `expose`, not a
+// plain template ref -- forward it so consumers driving their own scroll
+// logic (e.g. AtVirtualList's tanstack virtualizer) can target the actual
+// scrolling element instead of the ScrollAreaRoot wrapper.
+const viewportRef = useTemplateRef<{ viewportElement?: HTMLElement }>('viewport')
+const viewportElement = computed(() => viewportRef.value?.viewportElement ?? null)
+defineExpose({ viewportElement })
 </script>
 
 <template>
   <ScrollAreaRoot :type="type" class="size-full overflow-hidden">
-    <ScrollAreaViewport class="size-full">
+    <ScrollAreaViewport ref="viewport" class="size-full">
       <slot />
     </ScrollAreaViewport>
     <ScrollAreaScrollbar
