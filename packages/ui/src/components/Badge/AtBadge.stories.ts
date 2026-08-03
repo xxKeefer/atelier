@@ -6,6 +6,7 @@ import { SizesView } from './views/SizesView'
 import { IconView } from './views/IconView'
 import { EmptyView } from './views/EmptyView'
 import { DismissibleView } from './views/DismissibleView'
+import { PositionView } from './views/PositionView'
 import { intents, variants, sizes } from './views/shared'
 
 const meta = {
@@ -56,11 +57,16 @@ export const Dismissible: Story = {
   render: () => ({ components: { DismissibleView }, template: `<DismissibleView />` }),
 }
 
+export const Position: Story = {
+  render: () => ({ components: { PositionView }, template: `<PositionView />` }),
+}
+
 // The visual board: every intent x variant, the size ladder, the icon ladder,
-// the empty/icon-only ladder, and the dismissible ladder, on one screen.
+// the empty/icon-only ladder, the dismissible ladder, and the corner-position
+// ladder, on one screen.
 export const Snapshot: Story = {
   render: () => ({
-    components: { VariantsView, SizesView, IconView, EmptyView, DismissibleView },
+    components: { VariantsView, SizesView, IconView, EmptyView, DismissibleView, PositionView },
     template: `
       <div class="flex w-max flex-col gap-6 bg-bg-default p-6" data-testid="snap-board">
         <VariantsView />
@@ -68,6 +74,7 @@ export const Snapshot: Story = {
         <IconView />
         <EmptyView />
         <DismissibleView />
+        <PositionView />
       </div>
     `,
   }),

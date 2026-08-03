@@ -132,6 +132,30 @@ test('composes the dismiss button with the empty state', () => {
   expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
 })
 
+test('is not absolutely positioned by default', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).not.toHaveClass('absolute')
+})
+
+test('pins to a corner when position is set', () => {
+  const { container } = render(Badge, { props: { position: 'top-right' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('absolute', 'top-0', 'right-0')
+})
+
+test('composes position with the empty state and an icon', () => {
+  const { container } = render(Badge, {
+    props: { position: 'bottom-left', icon: PhCheckSquare },
+  })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('absolute', 'bottom-0', 'left-0', 'aspect-square')
+  expect(screen.getByTestId('badge-icon')).toBeInTheDocument()
+})
+
 // The single visual snap for Badge: the Snapshot story's board (every intent x
 // variant, the size ladder, and the icon ladder, on one screen). Baseline:
 // __snaps__/badge-chromium-linux.png. Rebaseline: pnpm test:update.

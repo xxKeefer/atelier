@@ -10,6 +10,7 @@ import Icon from '../Icon/AtIcon.vue'
 
 type Variant = 'solid' | 'faded'
 type Size = 'sm' | 'md' | 'lg'
+type Position = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 
 const props = withDefaults(
   defineProps<{
@@ -24,8 +25,20 @@ const props = withDefaults(
     // stays presentational, the consumer owns removing it from whatever list
     // renders the badges.
     dismissible?: boolean
+    // Pins the badge to a corner of the nearest positioned ancestor, for a
+    // notification-indicator use case (e.g. an unread count on a bell icon).
+    // The consumer's wrapper needs `relative` -- Badge only owns its own
+    // `absolute` offset, not the ancestor's positioning context.
+    position?: Position
   }>(),
-  { intent: 'neutral', variant: 'solid', size: 'md', icon: undefined, dismissible: false },
+  {
+    intent: 'neutral',
+    variant: 'solid',
+    size: 'md',
+    icon: undefined,
+    dismissible: false,
+    position: undefined,
+  },
 )
 
 const emit = defineEmits<{ dismiss: [] }>()
@@ -75,10 +88,20 @@ const hasLabel = computed(() =>
   }),
 )
 
+// Half-outside overlay, like a notification dot sitting on the corner of the
+// icon it decorates, rather than flush inside the ancestor's edge.
+const positionClasses: Record<Position, string> = {
+  'top-right': 'absolute top-0 right-0 translate-x-1/2 -translate-y-1/2',
+  'top-left': 'absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2',
+  'bottom-right': 'absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2',
+  'bottom-left': 'absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2',
+}
+
 const classes = computed(() => [
   'inline-flex items-center justify-center rounded-full font-body font-bold ' +
     'bg-[var(--badge-bg)] text-[var(--badge-fg)]',
   hasLabel.value ? sizes[props.size] : [emptySizes[props.size], 'aspect-square'],
+  props.position ? positionClasses[props.position] : undefined,
 ])
 </script>
 
