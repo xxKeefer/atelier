@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { PhX } from '@phosphor-icons/vue'
-import { computed, useSlots } from 'vue'
-import { INTENT_ICONS, STATUS_INTENT_TOKENS, type StatusIntent } from '../../constants/intents'
+import { computed, toRef, useSlots } from 'vue'
+import { INTENT_ICONS, type StatusIntent } from '../../constants/intents'
+import { useIntentVars } from '../../composables/useIntentVars'
 import Icon from '../Icon/AtIcon.vue'
 import Button from '../Button/AtButton.vue'
 
@@ -25,14 +26,7 @@ const slots = useSlots()
 const hasActions = computed(() => slots.actions !== undefined)
 
 // Tinted card: same canvas-tint shape as Alert's status colour group.
-const intentVars = computed(() => {
-  const tokens = STATUS_INTENT_TOKENS[props.intent]
-  return {
-    '--toast-bg': tokens.bg,
-    '--toast-border': tokens.border,
-    '--toast-fg': tokens.fg,
-  }
-})
+const intentVars = useIntentVars('toast', toRef(props, 'intent'))
 
 const classes =
   'flex w-full max-w-sm items-start gap-3 rounded-md border-[3px] border-solid p-4 font-body shadow-md ' +
