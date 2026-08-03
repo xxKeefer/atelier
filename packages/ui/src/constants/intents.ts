@@ -109,3 +109,41 @@ export const STATUS_INTENT_TOKENS: Record<
     fg: 'var(--color-danger-fg)',
   },
 }
+
+// Badge's solid-variant fill, one hue-matched chip colour per status intent.
+// Reuses Button's solid-fill tokens (danger/success/warning/info already carry
+// a `-solid`/`-on-solid` pair for this shape). neutral has no status hue of its
+// own, so it takes the surface ramp's `strong` rung against `fg-default` -- a
+// visibly stronger chip than the faded variant's `surface-default`, since the
+// two variants need to read as distinct at the same intent.
+// `edge` is the hard border colour -- reuses Button's per-intent edge tokens
+// (its skeuomorphic "side") so Badge's border reads consistently with every
+// other bordered chip/control in the system, instead of the borderless pill
+// Badge started as.
+export const BADGE_SOLID_TOKENS: Record<StatusIntent, { bg: string; fg: string; edge: string }> = {
+  neutral: {
+    bg: 'var(--color-surface-strong)',
+    fg: 'var(--color-fg-default)',
+    edge: 'var(--color-border-default)',
+  },
+  info: {
+    bg: 'var(--color-info-solid)',
+    fg: 'var(--color-info-on-solid)',
+    edge: 'var(--color-info-edge)',
+  },
+  success: {
+    bg: 'var(--color-success-solid)',
+    fg: 'var(--color-success-on-solid)',
+    edge: 'var(--color-success-edge)',
+  },
+  warning: {
+    bg: 'var(--color-warning-solid)',
+    fg: 'var(--color-warning-on-solid)',
+    edge: 'var(--color-warning-edge)',
+  },
+  danger: {
+    bg: 'var(--color-danger-solid)',
+    fg: 'var(--color-danger-on-solid)',
+    edge: 'var(--color-danger-edge)',
+  },
+}

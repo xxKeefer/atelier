@@ -1,0 +1,165 @@
+import { composeStories } from '@storybook/vue3-vite'
+import { render, screen } from '@testing-library/vue'
+import { PhCheckSquare } from '@phosphor-icons/vue'
+import { expect, test } from 'vitest'
+import { userEvent } from 'vitest/browser'
+import Badge from './AtBadge.vue'
+import * as stories from './AtBadge.stories'
+import { snapBoard } from '../../test/snap'
+
+const { Snapshot } = composeStories(stories)
+
+test('renders default-slot content', () => {
+  render(Badge, { slots: { default: () => 'New' } })
+  expect(screen.getByText('New')).toBeInTheDocument()
+})
+
+// solid is the default variant.
+test('defaults to the solid variant', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveStyle({ backgroundColor: 'var(--color-surface-strong)' })
+})
+
+test('faded variant uses the tinted-panel colour', () => {
+  const { container } = render(Badge, {
+    props: { variant: 'faded' },
+    slots: { default: () => 'New' },
+  })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveStyle({ backgroundColor: 'var(--color-surface-default)' })
+})
+
+// md is the default size.
+test('defaults to the md size', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root?.className).toContain('text-xs')
+})
+
+test('omits the icon when no icon prop is passed', () => {
+  render(Badge, { slots: { default: () => 'New' } })
+  expect(screen.queryByTestId('badge-icon')).not.toBeInTheDocument()
+})
+
+test('renders the icon before the label when passed', () => {
+  render(Badge, { props: { icon: PhCheckSquare }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-icon')).toBeInTheDocument()
+})
+
+// sm/md's text-xs would pair with AtIcon's 'xs', too small to stay
+// recognisable -- both are bumped to AtIcon's 'sm' instead.
+test('bumps the sm icon size up to stay recognisable', () => {
+  render(Badge, { props: { icon: PhCheckSquare, size: 'sm' }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-icon')).toHaveClass('text-sm')
+})
+
+test('bumps the md icon size up to stay recognisable', () => {
+  render(Badge, { props: { icon: PhCheckSquare, size: 'md' }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-icon')).toHaveClass('text-sm')
+})
+
+test('lg icon steps up to AtIcon md', () => {
+  render(Badge, { props: { icon: PhCheckSquare, size: 'lg' }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-icon')).toHaveClass('text-base')
+})
+
+test('renders as an even-padded square when there is no label', () => {
+  const { container } = render(Badge, { props: { icon: PhCheckSquare } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+  expect(root?.className).not.toMatch(/\bpx-/)
+})
+
+test('renders as an even-padded square when the default slot is empty', () => {
+  const { container } = render(Badge)
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+})
+
+test('treats whitespace-only slot content as empty', () => {
+  const { container } = render(Badge, { slots: { default: () => '   ' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+})
+
+test('keeps the label-shaped padding when the default slot has text', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).not.toHaveClass('aspect-square')
+})
+
+test('omits the dismiss button by default', () => {
+  render(Badge, { slots: { default: () => 'New' } })
+  expect(screen.queryByTestId('badge-dismiss')).not.toBeInTheDocument()
+})
+
+test('renders the dismiss button when dismissible', () => {
+  render(Badge, { props: { dismissible: true }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
+})
+
+test('emits dismiss when the dismiss button is clicked', async () => {
+  const view = render(Badge, {
+    props: { dismissible: true },
+    slots: { default: () => 'New' },
+  })
+  await userEvent.click(screen.getByTestId('badge-dismiss'))
+  expect(view.emitted().dismiss).toHaveLength(1)
+})
+
+test('composes the dismiss button alongside an icon', () => {
+  render(Badge, {
+    props: { dismissible: true, icon: PhCheckSquare },
+    slots: { default: () => 'New' },
+  })
+  expect(screen.getByTestId('badge-icon')).toBeInTheDocument()
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
+})
+
+test('composes the dismiss button with the empty state', () => {
+  const { container } = render(Badge, { props: { dismissible: true } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
+})
+
+test('is not absolutely positioned by default', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).not.toHaveClass('absolute')
+})
+
+test('pins to a corner when position is set', () => {
+  const { container } = render(Badge, { props: { position: 'top-right' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('absolute', 'top-0', 'right-0')
+})
+
+test('composes position with the empty state and an icon', () => {
+  const { container } = render(Badge, {
+    props: { position: 'bottom-left', icon: PhCheckSquare },
+  })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('absolute', 'bottom-0', 'left-0', 'aspect-square')
+  expect(screen.getByTestId('badge-icon')).toBeInTheDocument()
+})
+
+// The single visual snap for Badge: the Snapshot story's board (every intent x
+// variant, the size ladder, and the icon ladder, on one screen). Baseline:
+// __snaps__/badge-chromium-linux.png. Rebaseline: pnpm test:update.
+test('Snapshot matches the visual board baseline', async () => {
+  render(Snapshot)
+  await snapBoard('snap-board', 'badge')
+})
