@@ -4,6 +4,7 @@ import { FixedSizeView } from './views/FixedSizeView'
 import { AspectRatioView } from './views/AspectRatioView'
 import { FallbackView } from './views/FallbackView'
 import { DensityView } from './views/DensityView'
+import { SvgView } from './views/SvgView'
 import { placeholderSrc } from './views/PlaceholderSrc'
 
 const meta = {
@@ -48,10 +49,14 @@ export const Density: Story = {
   render: () => ({ components: { DensityView }, template: `<DensityView />` }),
 }
 
-// The visual board: fixed-size, aspect-ratio-scaled, fallback, and density images together.
+export const Svg: Story = {
+  render: () => ({ components: { SvgView }, template: `<SvgView />` }),
+}
+
+// The visual board: fixed-size, aspect-ratio-scaled, fallback, density, and SVG images together.
 export const Snapshot: Story = {
   render: () => ({
-    components: { FixedSizeView, AspectRatioView, FallbackView, DensityView },
+    components: { FixedSizeView, AspectRatioView, FallbackView, DensityView, SvgView },
     template: `
       <div class="flex w-max flex-col gap-8 bg-bg-default p-6 text-fg-default" data-testid="snap-board">
         <section class="flex flex-col gap-2">
@@ -69,6 +74,10 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-2">
           <h2 class="font-heading font-bold text-lg">Density</h2>
           <DensityView />
+        </section>
+        <section class="flex flex-col gap-2">
+          <h2 class="font-heading font-bold text-lg">SVG</h2>
+          <SvgView />
         </section>
       </div>
     `,

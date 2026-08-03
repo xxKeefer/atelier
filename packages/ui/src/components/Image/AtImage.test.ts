@@ -73,6 +73,66 @@ test('does not render a fallback for a successfully loaded image', () => {
   expect(screen.getByRole('img', { name: 'A mountain' }).tagName).toBe('IMG')
 })
 
+const svgDataUri = (body: string) =>
+  `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg">${body}</svg>`)}`
+
+test('inlines SVG markup instead of rendering it via an <img>', async () => {
+  render(Image, { props: { src: svgDataUri('<circle r="4" />'), alt: 'A circle' } })
+  const host = screen.getByRole('img', { name: 'A circle' })
+  expect(host.tagName).toBe('DIV')
+  await vi.waitFor(() => {
+    // eslint-disable-next-line testing-library/no-node-access -- asserting the fetched SVG markup was inlined isn't expressible via role/text queries
+    expect(host.querySelector('svg')).toBeTruthy()
+  })
+})
+
+test('detects SVG by a .svg path extension, not just the data-URI MIME', async () => {
+  render(Image, { props: { src: '/icon.svg', alt: 'An icon' } })
+  const host = await screen.findByRole('img', { name: 'An icon' })
+  expect(host.tagName).toBe('DIV')
+})
+
+test('ignores srcset on the inline-SVG path', async () => {
+  render(Image, {
+    props: {
+      src: svgDataUri('<circle r="4" />'),
+      srcset: `${svgDataUri('<circle r="8" />')} 2x`,
+      alt: 'A circle',
+    },
+  })
+  const host = await screen.findByRole('img', { name: 'A circle' })
+  // eslint-disable-next-line testing-library/no-node-access -- asserting the absence of a forwarded srcset attribute isn't expressible via role/text queries
+  expect(host.querySelector('[srcset]')).toBeNull()
+})
+
+test('strips scripts and event-handler attributes from fetched SVG markup', async () => {
+  render(Image, {
+    props: {
+      src: svgDataUri(
+        '<script>window.pwned = true</script><circle r="4" onclick="window.pwned = true" />',
+      ),
+      alt: 'A circle',
+    },
+  })
+  const host = screen.getByRole('img', { name: 'A circle' })
+  await vi.waitFor(() => {
+    // eslint-disable-next-line testing-library/no-node-access -- asserting sanitized SVG markup isn't expressible via role/text queries
+    expect(host.querySelector('circle')).toBeTruthy()
+  })
+  // eslint-disable-next-line testing-library/no-node-access -- asserting sanitized SVG markup isn't expressible via role/text queries
+  expect(host.querySelector('script')).toBeNull()
+  // eslint-disable-next-line testing-library/no-node-access -- asserting sanitized SVG markup isn't expressible via role/text queries
+  expect(host.querySelector('circle')?.getAttribute('onclick')).toBeNull()
+})
+
+test('renders a fallback when the SVG fails to parse', async () => {
+  // Unclosed tag makes this invalid XML, so DOMParser reports a parsererror.
+  render(Image, { props: { src: svgDataUri('<circle r="4"'), alt: 'A circle' } })
+  await vi.waitFor(() => {
+    expect(screen.getByRole('img', { name: 'A circle' })).toHaveClass('border-border-default')
+  })
+})
+
 // The single visual snap for Image: fixed-size and aspect-ratio boards together.
 // Baseline: __snaps__/image-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
