@@ -4,6 +4,7 @@ import Badge from './AtBadge.vue'
 import { VariantsView } from './views/VariantsView'
 import { SizesView } from './views/SizesView'
 import { IconView } from './views/IconView'
+import { EmptyView } from './views/EmptyView'
 import { intents, variants, sizes } from './views/shared'
 
 const meta = {
@@ -46,16 +47,21 @@ export const WithIcon: Story = {
   }),
 }
 
-// The visual board: every intent x variant, the size ladder, and the icon
-// ladder, on one screen.
+export const Empty: Story = {
+  render: () => ({ components: { EmptyView }, template: `<EmptyView />` }),
+}
+
+// The visual board: every intent x variant, the size ladder, the icon ladder,
+// and the empty/icon-only ladder, on one screen.
 export const Snapshot: Story = {
   render: () => ({
-    components: { VariantsView, SizesView, IconView },
+    components: { VariantsView, SizesView, IconView, EmptyView },
     template: `
       <div class="flex w-max flex-col gap-6 bg-bg-default p-6" data-testid="snap-board">
         <VariantsView />
         <SizesView />
         <IconView />
+        <EmptyView />
       </div>
     `,
   }),

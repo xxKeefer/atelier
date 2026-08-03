@@ -66,6 +66,35 @@ test('lg icon steps up to AtIcon md', () => {
   expect(screen.getByTestId('badge-icon')).toHaveClass('text-base')
 })
 
+test('renders as an even-padded square when there is no label', () => {
+  const { container } = render(Badge, { props: { icon: PhCheckSquare } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+  expect(root?.className).not.toMatch(/\bpx-/)
+})
+
+test('renders as an even-padded square when the default slot is empty', () => {
+  const { container } = render(Badge)
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+})
+
+test('treats whitespace-only slot content as empty', () => {
+  const { container } = render(Badge, { slots: { default: () => '   ' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+})
+
+test('keeps the label-shaped padding when the default slot has text', () => {
+  const { container } = render(Badge, { slots: { default: () => 'New' } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).not.toHaveClass('aspect-square')
+})
+
 // The single visual snap for Badge: the Snapshot story's board (every intent x
 // variant, the size ladder, and the icon ladder, on one screen). Baseline:
 // __snaps__/badge-chromium-linux.png. Rebaseline: pnpm test:update.

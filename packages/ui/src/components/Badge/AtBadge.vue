@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type Component } from 'vue'
+import { Comment, computed, useSlots, type Component } from 'vue'
 import {
   BADGE_SOLID_TOKENS,
   STATUS_INTENT_TOKENS,
@@ -41,15 +41,37 @@ const sizes: Record<Size, string> = {
   lg: 'text-sm px-2.5 py-1 gap-1.5',
 }
 
+// Content-less badges (no label, icon-only) use even padding on every side
+// instead of the label-shaped px/py above -- paired with aspect-square below,
+// that forces a circle instead of the oval a wide/short pill produces.
+const emptySizes: Record<Size, string> = {
+  sm: 'text-xs p-1',
+  md: 'text-xs p-1.5',
+  lg: 'text-sm p-2',
+}
+
 // Bumped a step above what sm/md's text-xs would pair with (AtIcon's 'xs' is
 // too small to stay recognisable at this scale) -- same call Breadcrumbs made
 // bumping its item icons to md (commit f44e5c6).
 const iconSizes: Record<Size, 'sm' | 'md'> = { sm: 'sm', md: 'sm', lg: 'md' }
 
+const slots = useSlots()
+
+// A slot fn can return whitespace-only text vnodes or a lone v-if comment
+// placeholder rather than an empty array, so a plain length check isn't
+// enough -- filter those out to tell a genuinely empty slot from real content.
+const hasLabel = computed(() =>
+  (slots.default?.() ?? []).some((vnode) => {
+    if (vnode.type === Comment) return false
+    if (typeof vnode.children === 'string') return vnode.children.trim().length > 0
+    return true
+  }),
+)
+
 const classes = computed(() => [
   'inline-flex items-center justify-center rounded-full font-body font-bold ' +
     'bg-[var(--badge-bg)] text-[var(--badge-fg)]',
-  sizes[props.size],
+  hasLabel.value ? sizes[props.size] : [emptySizes[props.size], 'aspect-square'],
 ])
 </script>
 
