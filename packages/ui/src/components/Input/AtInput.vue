@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
 import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
+import { useFieldAffordances, useFieldRounding } from '../../composables/useFieldAffordances'
 import FieldLabel from '../Field/FieldLabel.vue'
 import FieldMessage from '../Field/FieldMessage.vue'
 
@@ -43,14 +43,7 @@ defineOptions({ inheritAttrs: false })
 
 const { fieldId, messaged } = useFieldChrome(props)
 
-// The #icon slot is optional -- a consumer drops in an AtIcon to mark the
-// field's purpose. Detected via useSlots (mirrors AtButton's iconOnly check)
-// so an unused slot costs the field nothing: no extra padding, no positioning
-// context beyond what's already there.
-const slots = useSlots()
-const hasIcon = computed(() => !!slots.icon)
-const hasPrefix = computed(() => !!slots.prefix)
-const hasSuffix = computed(() => !!slots.suffix)
+const { hasIcon, hasPrefix, hasSuffix } = useFieldAffordances()
 
 const onInput = (e: Event) => {
   emit('update:modelValue', (e.target as HTMLInputElement).value)
@@ -69,13 +62,7 @@ const base =
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'focus:outline-2 focus:outline-offset-2 focus:outline-border-focus'
 
-// The field and its prefix/suffix gang into one flush assembly, cassette-deck
-// style -- each segment butted zero-gap, seam doing the separating instead of
-// a visible gap. Only the whole run's outer ends round.
-const fieldRounding = computed(() => [
-  !hasPrefix.value && 'rounded-l-md',
-  !hasSuffix.value && 'rounded-r-md',
-])
+const fieldRounding = useFieldRounding(hasPrefix, hasSuffix)
 
 // An error shifts the whole recess onto the danger colourway's own recessed
 // rungs -- surface, rim, and shadow together (bg-danger-surface-recess,
