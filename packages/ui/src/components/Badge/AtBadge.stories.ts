@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { PhCheckSquare } from '@phosphor-icons/vue'
 import Badge from './AtBadge.vue'
 import { VariantsView } from './views/VariantsView'
 import { SizesView } from './views/SizesView'
+import { IconView } from './views/IconView'
 import { intents, variants, sizes } from './views/shared'
 
 const meta = {
@@ -36,14 +38,24 @@ export const Sizes: Story = {
   render: () => ({ components: { SizesView }, template: `<SizesView />` }),
 }
 
-// The visual board: every intent x variant, plus the size ladder, on one screen.
+export const WithIcon: Story = {
+  render: (args) => ({
+    components: { Badge },
+    setup: () => ({ args, icon: PhCheckSquare }),
+    template: `<Badge v-bind="args" :icon="icon">Badge</Badge>`,
+  }),
+}
+
+// The visual board: every intent x variant, the size ladder, and the icon
+// ladder, on one screen.
 export const Snapshot: Story = {
   render: () => ({
-    components: { VariantsView, SizesView },
+    components: { VariantsView, SizesView, IconView },
     template: `
       <div class="flex w-max flex-col gap-6 bg-bg-default p-6" data-testid="snap-board">
         <VariantsView />
         <SizesView />
+        <IconView />
       </div>
     `,
   }),
