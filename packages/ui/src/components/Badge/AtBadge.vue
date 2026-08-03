@@ -46,13 +46,16 @@ const emit = defineEmits<{ dismiss: [] }>()
 // solid draws from Button's per-intent fill tokens (the same chip colour a
 // solid Button would use); faded draws from Alert's tinted-panel tokens (a
 // toned-down background for contexts that shouldn't compete for attention).
+// Both variants also carry a hard border colour -- Alert's border token for
+// faded, Button's edge token for solid -- so Badge reads as the same bordered
+// chip shape as the rest of the system, not the borderless pill it started as.
 const badgeVars = computed(() => {
   if (props.variant === 'faded') {
     const tokens = STATUS_INTENT_TOKENS[props.intent]
-    return { '--badge-bg': tokens.bg, '--badge-fg': tokens.fg }
+    return { '--badge-bg': tokens.bg, '--badge-fg': tokens.fg, '--badge-border': tokens.border }
   }
   const tokens = BADGE_SOLID_TOKENS[props.intent]
-  return { '--badge-bg': tokens.bg, '--badge-fg': tokens.fg }
+  return { '--badge-bg': tokens.bg, '--badge-fg': tokens.fg, '--badge-border': tokens.edge }
 })
 
 const sizes: Record<Size, string> = {
@@ -63,7 +66,7 @@ const sizes: Record<Size, string> = {
 
 // Content-less badges (no label, icon-only) use even padding on every side
 // instead of the label-shaped px/py above -- paired with aspect-square below,
-// that forces a circle instead of the oval a wide/short pill produces.
+// that forces a square instead of the oblong a wide/short pill produces.
 const emptySizes: Record<Size, string> = {
   sm: 'text-xs p-1',
   md: 'text-xs p-1.5',
@@ -98,8 +101,8 @@ const positionClasses: Record<Position, string> = {
 }
 
 const classes = computed(() => [
-  'inline-flex items-center justify-center rounded-full font-body font-bold ' +
-    'bg-[var(--badge-bg)] text-[var(--badge-fg)]',
+  'inline-flex items-center justify-center rounded-md border-[3px] border-solid font-body font-bold ' +
+    'bg-[var(--badge-bg)] text-[var(--badge-fg)] border-[color:var(--badge-border)]',
   hasLabel.value ? sizes[props.size] : [emptySizes[props.size], 'aspect-square'],
   props.position ? positionClasses[props.position] : undefined,
 ])
@@ -114,7 +117,7 @@ const classes = computed(() => [
       type="button"
       data-testid="badge-dismiss"
       aria-label="Remove"
-      class="inline-flex items-center justify-center rounded-full hover:opacity-75 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus"
+      class="inline-flex items-center justify-center rounded-sm hover:opacity-75 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus"
       @click="emit('dismiss')"
     >
       <Icon :icon="PhX" :size="iconSizes[size]" />
