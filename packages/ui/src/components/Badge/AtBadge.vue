@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PhX } from '@phosphor-icons/vue'
 import { Comment, computed, useSlots, type Component } from 'vue'
 import {
   BADGE_SOLID_TOKENS,
@@ -19,9 +20,15 @@ const props = withDefaults(
     // isn't tied to intent -- a Badge's role comes from its colour, the icon
     // just illustrates the label, so any glyph is valid.
     icon?: Component
+    // Renders a trailing remove button that emits `dismiss` -- the badge
+    // stays presentational, the consumer owns removing it from whatever list
+    // renders the badges.
+    dismissible?: boolean
   }>(),
-  { intent: 'neutral', variant: 'solid', size: 'md', icon: undefined },
+  { intent: 'neutral', variant: 'solid', size: 'md', icon: undefined, dismissible: false },
 )
+
+const emit = defineEmits<{ dismiss: [] }>()
 
 // solid draws from Button's per-intent fill tokens (the same chip colour a
 // solid Button would use); faded draws from Alert's tinted-panel tokens (a
@@ -79,5 +86,15 @@ const classes = computed(() => [
   <span :class="classes" :style="badgeVars">
     <Icon v-if="icon" data-testid="badge-icon" :icon="icon" :size="iconSizes[size]" />
     <slot />
+    <button
+      v-if="dismissible"
+      type="button"
+      data-testid="badge-dismiss"
+      aria-label="Remove"
+      class="inline-flex items-center justify-center rounded-full hover:opacity-75 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus"
+      @click="emit('dismiss')"
+    >
+      <Icon :icon="PhX" :size="iconSizes[size]" />
+    </button>
   </span>
 </template>

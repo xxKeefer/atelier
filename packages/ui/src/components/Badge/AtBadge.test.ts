@@ -2,6 +2,7 @@ import { composeStories } from '@storybook/vue3-vite'
 import { render, screen } from '@testing-library/vue'
 import { PhCheckSquare } from '@phosphor-icons/vue'
 import { expect, test } from 'vitest'
+import { userEvent } from 'vitest/browser'
 import Badge from './AtBadge.vue'
 import * as stories from './AtBadge.stories'
 import { snapBoard } from '../../test/snap'
@@ -93,6 +94,42 @@ test('keeps the label-shaped padding when the default slot has text', () => {
   // eslint-disable-next-line testing-library/no-node-access
   const root = container.firstElementChild
   expect(root).not.toHaveClass('aspect-square')
+})
+
+test('omits the dismiss button by default', () => {
+  render(Badge, { slots: { default: () => 'New' } })
+  expect(screen.queryByTestId('badge-dismiss')).not.toBeInTheDocument()
+})
+
+test('renders the dismiss button when dismissible', () => {
+  render(Badge, { props: { dismissible: true }, slots: { default: () => 'New' } })
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
+})
+
+test('emits dismiss when the dismiss button is clicked', async () => {
+  const view = render(Badge, {
+    props: { dismissible: true },
+    slots: { default: () => 'New' },
+  })
+  await userEvent.click(screen.getByTestId('badge-dismiss'))
+  expect(view.emitted().dismiss).toHaveLength(1)
+})
+
+test('composes the dismiss button alongside an icon', () => {
+  render(Badge, {
+    props: { dismissible: true, icon: PhCheckSquare },
+    slots: { default: () => 'New' },
+  })
+  expect(screen.getByTestId('badge-icon')).toBeInTheDocument()
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
+})
+
+test('composes the dismiss button with the empty state', () => {
+  const { container } = render(Badge, { props: { dismissible: true } })
+  // eslint-disable-next-line testing-library/no-node-access
+  const root = container.firstElementChild
+  expect(root).toHaveClass('aspect-square')
+  expect(screen.getByTestId('badge-dismiss')).toBeInTheDocument()
 })
 
 // The single visual snap for Badge: the Snapshot story's board (every intent x
