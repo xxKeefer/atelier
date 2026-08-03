@@ -2,6 +2,7 @@
 import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
 import { useFieldAffordances, useFieldRounding } from '../../composables/useFieldAffordances'
+import { FIELD_SIZES } from '../../constants/fieldSizes'
 import FieldLabel from '../Field/FieldLabel.vue'
 import FieldMessage from '../Field/FieldMessage.vue'
 
@@ -72,11 +73,7 @@ const fieldRounding = useFieldRounding(hasPrefix, hasSuffix)
 const errorClasses = 'bg-danger-surface-recess border-danger-border-default shadow-danger-lower'
 
 // Field padding mirrors the button size scale (button gap doesn't apply here).
-const sizes: Record<Size, string> = {
-  sm: 'text-sm px-3 py-1.5',
-  md: 'text-base px-4 py-2',
-  lg: 'text-lg px-6 py-3',
-}
+const sizes = FIELD_SIZES
 
 // The icon sits inside the recess at the field's start, inset by the same
 // amount as the field's own horizontal padding so it lines up with where text
