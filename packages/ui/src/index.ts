@@ -12,6 +12,7 @@ export { default as AtButtonGroupItem } from './components/ButtonGroup/AtButtonG
 export { default as AtBreadcrumbs } from './components/Breadcrumbs/AtBreadcrumbs.vue'
 export { default as AtBreadcrumbItem } from './components/Breadcrumbs/AtBreadcrumbItem.vue'
 export { default as AtCard } from './components/Card/AtCard.vue'
+export { default as AtCombobox } from './components/Combobox/AtCombobox.vue'
 export { default as AtCheckbox } from './components/Checkbox/AtCheckbox.vue'
 export { default as AtCheckboxGroup } from './components/Checkbox/AtCheckboxGroup.vue'
 export { default as AtDivider } from './components/Divider/AtDivider.vue'
