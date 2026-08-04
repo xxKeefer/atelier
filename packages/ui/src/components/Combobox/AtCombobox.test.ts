@@ -54,6 +54,13 @@ test('renders a text input trigger', () => {
   expect(screen.getByRole('combobox', { name: 'Fruit' })).toBeInTheDocument()
 })
 
+// With no visible label, the accessible name falls through from a forwarded
+// aria-label so the field still announces its purpose.
+test('a bare field takes its accessible name from a forwarded aria-label', () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  expect(screen.getByRole('combobox', { name: 'Fruit' })).toBeInTheDocument()
+})
+
 // Typing filters the option list by label substring via reka-ui's built-in
 // filter (ignoreFilter left false).
 test('typing filters the option list', async () => {
