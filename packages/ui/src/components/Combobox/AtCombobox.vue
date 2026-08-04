@@ -13,6 +13,7 @@ import {
 import { computed, ref } from 'vue'
 import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
+import { useFieldAffordances, useFieldRounding } from '../../composables/useFieldAffordances'
 import { FIELD_SIZES } from '../../constants/fieldSizes'
 import FieldLabel from '../Field/FieldLabel.vue'
 import FieldMessage from '../Field/FieldMessage.vue'
@@ -57,6 +58,8 @@ defineOptions({ inheritAttrs: false })
 
 const { fieldId, messaged } = useFieldChrome(props)
 
+const { hasIcon, hasPrefix, hasSuffix } = useFieldAffordances()
+
 const modelValue = computed({
   get: () => props.modelValue,
   set: (v: string) => {
@@ -79,8 +82,9 @@ const onLabelClick = () => {
   if (!props.disabled) open.value = true
 }
 
-// The whole trigger run is the popper's reference -- mirrors AtSelect, kept
-// for parity even though this slice has no prefix/suffix/icon flanking it yet.
+// The whole icon/prefix/trigger/suffix run is the popper's reference, not
+// just the trigger -- mirrors AtSelect's groupEl for the same reason: anchor
+// to the assembled control, not just the trigger's own box.
 const groupEl = ref<HTMLElement>()
 
 // Same low-recess trigger rung as AtSelect's SelectTrigger, applied to a real
@@ -89,7 +93,7 @@ const triggerClasses = FIELD_SIZES
 
 const trigger =
   'w-full font-body text-fg-default bg-surface-default border-[3px] border-solid ' +
-  'border-border-default shadow-low rounded-md ' +
+  'border-border-default shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'placeholder:text-fg-subtle ' +
   'focus:outline-none focus-visible:outline-none'
@@ -97,6 +101,25 @@ const trigger =
 // Mirrors AtSelect's errorClasses: the recess rim re-colours to the danger
 // border token, same border treatment as the trigger's default rim.
 const errorClasses = 'border-danger-border-default'
+
+// Mirrors AtSelect's triggerRounding/iconBoxClasses/prefixSuffixClasses
+// exactly -- the icon/prefix/trigger/suffix run gangs into one flush
+// assembly, only the outer ends round, seam doing the separating.
+const triggerRounding = useFieldRounding(
+  hasPrefix,
+  hasSuffix,
+  computed(() => hasIcon.value || hasPrefix.value),
+)
+
+const iconBoxClasses = computed(() => [
+  'flex items-center justify-center font-body text-fg-subtle ' +
+    'bg-surface-default border-[3px] border-solid border-border-default shadow-flat border-r-0',
+  !hasPrefix.value && 'rounded-l-md',
+])
+
+const prefixSuffixClasses =
+  'flex items-center justify-center font-body text-fg-subtle ' +
+  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
 
 // Mirrors AtSelect's options menu: the GroupedControls vertical gang, each
 // row bordered and rounding only at the stack's outer ends.
@@ -149,6 +172,27 @@ const rightPadding = computed(() => {
     }}</FieldLabel>
 
     <div ref="groupEl" class="flex items-stretch rounded-md">
+      <!-- Prefix: a flush-ganged, flat box flanking the trigger's start, for
+           content that makes the selection more contextual. Always the run's
+           outermost left segment. Mirrors AtSelect's prefix box exactly. -->
+      <span
+        v-if="hasPrefix"
+        data-testid="combobox-prefix"
+        :class="[prefixSuffixClasses, triggerClasses[size], 'rounded-l-md border-r-0']"
+      >
+        <slot name="prefix" />
+      </span>
+
+      <!-- Icon: a flush-ganged, flat box flanking the trigger, e.g. to mark
+           the field's purpose. Mirrors AtSelect's icon box exactly. -->
+      <span
+        v-if="hasIcon"
+        data-testid="combobox-icon"
+        :class="[iconBoxClasses, triggerClasses[size]]"
+      >
+        <slot name="icon" />
+      </span>
+
       <ComboboxRoot
         v-model="modelValue"
         v-model:open="open"
@@ -161,7 +205,13 @@ const rightPadding = computed(() => {
           :display-value="displayValue"
           :placeholder="placeholder"
           :disabled="disabled"
-          :class="[trigger, triggerClasses[size], rightPadding, error && errorClasses]"
+          :class="[
+            trigger,
+            triggerRounding,
+            triggerClasses[size],
+            rightPadding,
+            error && errorClasses,
+          ]"
           v-bind="$attrs"
         />
 
@@ -210,6 +260,17 @@ const rightPadding = computed(() => {
           </ComboboxContent>
         </ComboboxPortal>
       </ComboboxRoot>
+
+      <!-- Suffix: a flush-ganged, flat box flanking the trigger's end.
+           Always the run's outermost right segment. Mirrors AtSelect's
+           suffix box exactly. -->
+      <span
+        v-if="hasSuffix"
+        data-testid="combobox-suffix"
+        :class="[prefixSuffixClasses, triggerClasses[size], 'rounded-r-md border-l-0']"
+      >
+        <slot name="suffix" />
+      </span>
     </div>
 
     <!-- The reserved message line: present only in messaged mode (label,

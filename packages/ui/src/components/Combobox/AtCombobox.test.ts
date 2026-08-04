@@ -221,6 +221,36 @@ test('clicking the label of a disabled combobox does not open the menu', async (
   expect(screen.queryByRole('option', { name: 'Banana' })).not.toBeInTheDocument()
 })
 
+// The #icon slot renders a consumer-supplied icon at the trigger's start, to
+// communicate the field's purpose.
+test('renders slotted icon content at the start of the trigger', () => {
+  render(Combobox, {
+    props: { label: 'Fruit', options },
+    slots: { icon: '<span data-testid="my-icon">*</span>' },
+  })
+  expect(screen.getByTestId('my-icon')).toBeInTheDocument()
+})
+
+// The #prefix slot renders consumer-supplied content flanking the trigger's
+// start, e.g. a country flag ahead of a country code field.
+test('renders slotted prefix content before the trigger', () => {
+  render(Combobox, {
+    props: { label: 'Fruit', options },
+    slots: { prefix: '<span data-testid="my-prefix">$</span>' },
+  })
+  expect(screen.getByTestId('my-prefix')).toBeInTheDocument()
+})
+
+// The #suffix slot renders consumer-supplied content flanking the trigger's
+// end, e.g. a unit label.
+test('renders slotted suffix content after the trigger', () => {
+  render(Combobox, {
+    props: { label: 'Fruit', options },
+    slots: { suffix: '<span data-testid="my-suffix">USD</span>' },
+  })
+  expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
+})
+
 // The single visual snap for Combobox: the Snapshot story's board. Baseline:
 // __snaps__/combobox-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

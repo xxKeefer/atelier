@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { PhShoppingCart } from '@phosphor-icons/vue'
 import Combobox from './AtCombobox.vue'
+import Icon from '../Icon/AtIcon.vue'
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -87,6 +89,37 @@ export const WithError: Story = {
   }),
 }
 
+// A leading icon at the trigger's start marks the field's purpose. The
+// consumer supplies it via the #icon slot (an AtIcon instance) -- the
+// trigger only positions it beside the input.
+export const WithIcon: Story = {
+  render: () => ({
+    components: { Combobox, Icon },
+    setup: () => ({ fruits, PhShoppingCart }),
+    template: `
+      <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80">
+        <template #icon><Icon :icon="PhShoppingCart" /></template>
+      </Combobox>
+    `,
+  }),
+}
+
+// Prefix/suffix: flush-ganged boxes flanking the trigger for content that
+// makes the selection more contextual, e.g. a currency symbol ahead of an
+// amount field and a unit label after it.
+export const WithPrefixSuffix: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template: `
+      <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80">
+        <template #prefix>$</template>
+        <template #suffix>USD</template>
+      </Combobox>
+    `,
+  }),
+}
+
 // A disabled field: inert to typing, opening, and clearing.
 export const Disabled: Story = {
   render: () => ({
@@ -100,8 +133,8 @@ export const Disabled: Story = {
 // The visual board: the bare trigger chrome. Baseline: __snaps__/combobox-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Combobox },
-    setup: () => ({ fruits }),
+    components: { Combobox, Icon },
+    setup: () => ({ fruits, PhShoppingCart }),
     template: `
       <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
@@ -120,6 +153,19 @@ export const Snapshot: Story = {
             <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit" class="w-72" />
             <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit" class="w-72" />
             <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" disabled class="w-72" />
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading text-lg font-bold text-fg-default">Affordances</h2>
+          <div class="flex flex-wrap items-start gap-6">
+            <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72">
+              <template #icon><Icon :icon="PhShoppingCart" /></template>
+            </Combobox>
+            <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72">
+              <template #prefix>$</template>
+              <template #suffix>USD</template>
+            </Combobox>
           </div>
         </section>
       </div>
