@@ -2,8 +2,10 @@ import { composeStories } from '@storybook/vue3-vite'
 import { render, screen, within } from '@testing-library/vue'
 import { userEvent } from 'vitest/browser'
 import { expect, test } from 'vitest'
-import { h } from 'vue'
+import type { PropType } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import Listbox from './AtListbox.vue'
+import ListboxFilter from './AtListboxFilter.vue'
 import ListboxGroup from './AtListboxGroup.vue'
 import ListboxGroupLabel from './AtListboxGroupLabel.vue'
 import ListboxItem from './AtListboxItem.vue'
@@ -17,6 +19,43 @@ const fruitItems = () => [
   h(ListboxItem, { value: 'banana' }, () => 'Banana'),
   h(ListboxItem, { value: 'cherry' }, () => 'Cherry'),
 ]
+
+// A Listbox with a filter wired up, uncontrolled internally (its own
+// filterText ref) but forwarding selection to the harness's v-model so tests
+// can assert on it -- mirrors the Filterable story's shape.
+const FilterableFruit = defineComponent({
+  props: {
+    modelValue: { type: [String, Array] as PropType<string | string[]>, default: undefined },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const filterText = ref('')
+    return () =>
+      h(
+        Listbox,
+        {
+          modelValue: props.modelValue,
+          'onUpdate:modelValue': (v: string | string[]) => {
+            emit('update:modelValue', v)
+          },
+          'aria-label': 'Fruit',
+        },
+        {
+          filter: () =>
+            h(ListboxFilter, {
+              modelValue: filterText.value,
+              'onUpdate:modelValue': (v: string) => (filterText.value = v),
+              'aria-label': 'Filter fruit',
+            }),
+          default: () => [
+            h(ListboxItem, { value: 'apple', label: 'Apple' }, () => 'Apple'),
+            h(ListboxItem, { value: 'banana', label: 'Banana' }, () => 'Banana'),
+            h(ListboxItem, { value: 'cherry', label: 'Cherry' }, () => 'Cherry'),
+          ],
+        },
+      )
+  },
+})
 
 // role="listbox"/"option" and aria-selected come free from reka-ui's Listbox
 // primitives -- this confirms that holds through our wrapper rather than
@@ -238,6 +277,76 @@ test('renders a static empty-state row when there are no items', () => {
   expect(screen.getByTestId('listbox-empty')).toBeInTheDocument()
   expect(screen.getByText('No results')).toBeInTheDocument()
   expect(screen.queryByRole('option')).not.toBeInTheDocument()
+})
+
+// Typing in AtListboxFilter hides items whose label doesn't match, and
+// restores them when the filter text no longer excludes them.
+test('typing in the filter hides items whose label does not match', async () => {
+  render(FilterableFruit)
+
+  expect(screen.getByRole('option', { name: 'Apple' })).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Banana' })).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Cherry' })).toBeInTheDocument()
+
+  await userEvent.type(screen.getByRole('textbox', { name: 'Filter fruit' }), 'ban')
+
+  expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Banana' })).toBeInTheDocument()
+  expect(screen.queryByRole('option', { name: 'Cherry' })).not.toBeInTheDocument()
+})
+
+// Clearing the filter text brings every item back.
+test('clearing the filter restores every item', async () => {
+  render(FilterableFruit)
+
+  const filter = screen.getByRole('textbox', { name: 'Filter fruit' })
+  await userEvent.type(filter, 'ban')
+  expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument()
+
+  await userEvent.clear(filter)
+  expect(screen.getByRole('option', { name: 'Apple' })).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Banana' })).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Cherry' })).toBeInTheDocument()
+})
+
+// A filter matching nothing renders the same static empty-state row a
+// structurally empty list uses.
+test('a filter matching nothing renders the empty-state row', async () => {
+  render(FilterableFruit)
+
+  await userEvent.type(screen.getByRole('textbox', { name: 'Filter fruit' }), 'zzz')
+
+  expect(screen.getByTestId('listbox-empty')).toBeInTheDocument()
+  expect(screen.queryByRole('option')).not.toBeInTheDocument()
+})
+
+// Selecting an item, then filtering it out of view, then clearing the
+// filter: the selection is untouched throughout -- filtering only affects
+// what's rendered, not reka-ui's own selection state.
+test('selection survives the selected item being filtered out and back in', async () => {
+  const view = render(FilterableFruit, { props: { modelValue: 'banana' } })
+
+  await userEvent.type(screen.getByRole('textbox', { name: 'Filter fruit' }), 'apple')
+  expect(screen.queryByRole('option', { name: 'Banana' })).not.toBeInTheDocument()
+
+  await userEvent.clear(screen.getByRole('textbox', { name: 'Filter fruit' }))
+  expect(screen.getByRole('option', { name: 'Banana' })).toHaveAttribute('aria-selected', 'true')
+  expect(view.emitted()['update:modelValue']).toBeUndefined()
+})
+
+// An item with no `label` has nothing to match the filter text against, so
+// it's treated as always visible rather than always-hidden.
+test('an item with no label prop stays visible regardless of filter text', () => {
+  render(Listbox, {
+    attrs: { 'aria-label': 'Fruit' },
+    slots: {
+      filter: () => h(ListboxFilter, { modelValue: 'zzz', 'aria-label': 'Filter fruit' }),
+      default: () => [h(ListboxItem, { value: 'apple' }, () => 'Apple')],
+    },
+  })
+
+  expect(screen.getByRole('option', { name: 'Apple' })).toBeInTheDocument()
+  expect(screen.queryByTestId('listbox-empty')).not.toBeInTheDocument()
 })
 
 // The single visual snap for Listbox: the Snapshot story's board. Baseline:

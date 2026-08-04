@@ -1,17 +1,53 @@
 <script setup lang="ts">
 import { PhCheck } from '@phosphor-icons/vue'
 import { ListboxItem, ListboxItemIndicator } from 'reka-ui'
-import { computed, inject } from 'vue'
+import { computed, inject, onUnmounted, watchEffect } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
-import { LISTBOX_MULTIPLE_KEY } from './AtListbox.vue'
+import { LISTBOX_FILTER_KEY, LISTBOX_MATCH_STATE_KEY, LISTBOX_MULTIPLE_KEY } from './AtListbox.vue'
 
-withDefaults(defineProps<{ value: string; disabled?: boolean }>(), { disabled: false })
+const props = withDefaults(
+  defineProps<{
+    value: string
+    disabled?: boolean
+    // Text an ancestor AtListboxFilter matches against (case-insensitive
+    // substring). Items render arbitrary slotted content (text + icons +
+    // nested components per Phase 1), so this can't be inferred from the
+    // slot itself -- mirrors reka-ui's own textValue-style props elsewhere
+    // (e.g. Select's SelectItemText) rather than inventing a new mechanism.
+    // An item with no label is always considered a match, since there's
+    // nothing to compare the filter text against.
+    label?: string
+  }>(),
+  { disabled: false, label: undefined },
+)
 
 // Multi mode gets an explicit checkmark on top of Phase 1's pinned-rung
 // chrome -- with several rows selected at once, the rung alone doesn't read
 // as clearly as it does for a single selected row.
 const injectedMultiple = inject(LISTBOX_MULTIPLE_KEY)
 const multiple = computed(() => injectedMultiple?.value ?? false)
+
+// Filtering unmounts non-matching items outright (v-if below) rather than
+// hiding them -- this removes them from reka-ui's own keyboard-nav
+// collection for free, same as a disabled item, without needing a second
+// data-attribute-based exclusion mechanism.
+const filterText = inject(LISTBOX_FILTER_KEY)
+const matchState = inject(LISTBOX_MATCH_STATE_KEY)
+const matches = computed(() => {
+  if (!filterText?.value) return true
+  if (!props.label) return true
+  return props.label.toLowerCase().includes(filterText.value.toLowerCase())
+})
+
+if (matchState) {
+  const id = Symbol('listbox-item')
+  watchEffect(() => {
+    matchState.set(id, matches.value)
+  })
+  onUnmounted(() => {
+    matchState.delete(id)
+  })
+}
 
 // The vertical GroupedControls gang (same shape as AtDropdownItem/AtSelect's
 // option list): flush zero-gap stack, border-as-seam. `first:`/`last:` key
@@ -36,7 +72,7 @@ const item =
 </script>
 
 <template>
-  <ListboxItem :value="value" :disabled="disabled" :class="item">
+  <ListboxItem v-if="matches" :value="value" :disabled="disabled" :class="item">
     <slot />
     <ListboxItemIndicator
       v-if="multiple"

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { PhShoppingCart } from '@phosphor-icons/vue'
+import { ref } from 'vue'
 import Listbox from './AtListbox.vue'
+import ListboxFilter from './AtListboxFilter.vue'
 import ListboxGroup from './AtListboxGroup.vue'
 import ListboxGroupLabel from './AtListboxGroupLabel.vue'
 import ListboxItem from './AtListboxItem.vue'
@@ -114,11 +116,48 @@ export const Empty: Story = {
   }),
 }
 
+// Filterable: AtListboxFilter (slotted in via #filter) filters visible items
+// by label substring. Items need a `label` prop for matching, since content
+// is arbitrarily slotted. Selection survives a filter change -- try typing
+// "an" then clearing it, Banana stays selected throughout.
+export const Filterable: Story = {
+  render: () => ({
+    components: { Listbox, ListboxFilter, ListboxItem },
+    setup: () => ({ filterText: ref(''), selected: ref('banana') }),
+    template: `
+      <Listbox v-model="selected" aria-label="Fruit" class="w-64">
+        <template #filter>
+          <ListboxFilter v-model="filterText" aria-label="Filter fruit" placeholder="Search..." />
+        </template>
+        <ListboxItem value="apple" label="Apple">Apple</ListboxItem>
+        <ListboxItem value="banana" label="Banana">Banana</ListboxItem>
+        <ListboxItem value="cherry" label="Cherry">Cherry</ListboxItem>
+        <ListboxItem value="date" label="Date">Date</ListboxItem>
+      </Listbox>
+    `,
+  }),
+}
+
+// A filter matching nothing falls back to the same empty-state row Phase 1
+// uses for a structurally empty list.
+export const FilterNoMatches: Story = {
+  render: () => ({
+    components: { Listbox, ListboxFilter, ListboxItem },
+    template: `
+      <Listbox aria-label="Fruit" class="w-64">
+        <template #filter><ListboxFilter aria-label="Filter fruit" modelValue="zzz" /></template>
+        <ListboxItem value="apple" label="Apple">Apple</ListboxItem>
+        <ListboxItem value="banana" label="Banana">Banana</ListboxItem>
+      </Listbox>
+    `,
+  }),
+}
+
 // The visual board: every axis in one labelled grid. Baseline:
 // __snaps__/listbox-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
-    components: { Listbox, ListboxGroup, ListboxGroupLabel, ListboxItem },
+    components: { Listbox, ListboxFilter, ListboxGroup, ListboxGroupLabel, ListboxItem },
     template: `
       <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
         <section class="flex flex-col gap-4">
@@ -161,6 +200,25 @@ export const Snapshot: Story = {
                 <ListboxItem value="carrot">Carrot</ListboxItem>
                 <ListboxItem value="daikon">Daikon</ListboxItem>
               </ListboxGroup>
+            </Listbox>
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading text-lg font-bold text-fg-default">Filterable</h2>
+          <div class="flex flex-wrap items-start gap-6">
+            <Listbox aria-label="Fruit" modelValue="banana" class="w-64">
+              <template #filter><ListboxFilter aria-label="Filter fruit" modelValue="an" placeholder="Search..." /></template>
+              <ListboxItem value="apple" label="Apple">Apple</ListboxItem>
+              <ListboxItem value="banana" label="Banana">Banana</ListboxItem>
+              <ListboxItem value="cherry" label="Cherry">Cherry</ListboxItem>
+              <ListboxItem value="date" label="Date">Date</ListboxItem>
+            </Listbox>
+
+            <Listbox aria-label="Fruit (no matches)" class="w-64">
+              <template #filter><ListboxFilter aria-label="Filter fruit" modelValue="zzz" /></template>
+              <ListboxItem value="apple" label="Apple">Apple</ListboxItem>
+              <ListboxItem value="banana" label="Banana">Banana</ListboxItem>
             </Listbox>
           </div>
         </section>
