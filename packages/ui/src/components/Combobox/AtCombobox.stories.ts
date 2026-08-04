@@ -12,6 +12,10 @@ const meta = {
   component: Combobox,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },
+  argTypes: {
+    label: { control: 'text' },
+    placeholder: { control: 'text' },
+  },
   args: { options: fruits },
 } satisfies Meta<typeof Combobox>
 
@@ -19,10 +23,32 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
+  args: { label: 'Fruit', placeholder: 'Choose a fruit' },
   render: (args) => ({
     components: { Combobox },
     setup: () => ({ args }),
-    template: '<Combobox v-bind="args" aria-label="Fruit" class="w-80" />',
+    template: '<Combobox v-bind="args" class="w-80" />',
+  }),
+}
+
+// A labelled field: the label sits above on the surface; clicking it opens
+// the combobox, same as AtSelect's WithLabel story.
+export const WithLabel: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-80" />',
+  }),
+}
+
+// A bare field: no label. Accessible name comes from a forwarded aria-label.
+export const Bare: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox aria-label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-64" />',
   }),
 }
 
@@ -36,7 +62,8 @@ export const Snapshot: Story = {
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">Default</h2>
           <div class="flex flex-wrap items-start gap-6">
-            <Combobox aria-label="Fruit" :options="fruits" class="w-72" />
+            <Combobox aria-label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
+            <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
           </div>
         </section>
       </div>

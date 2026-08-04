@@ -12,6 +12,7 @@ import { computed, ref } from 'vue'
 import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
 import { FIELD_SIZES } from '../../constants/fieldSizes'
+import FieldLabel from '../Field/FieldLabel.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -20,11 +21,17 @@ const props = withDefaults(
     // resetSearchTermOnBlur below.
     modelValue?: string
     options: { value: string; label: string }[]
+    // Optional visible label, tied to the input by id so clicking it opens
+    // the combobox. Omit it for a bare field and forward an aria-label instead.
+    label?: string
+    placeholder?: string
     size?: Size
     id?: string
   }>(),
   {
     modelValue: undefined,
+    label: undefined,
+    placeholder: undefined,
     size: 'md',
     id: undefined,
   },
@@ -44,6 +51,13 @@ const modelValue = computed({
 })
 
 const open = ref(false)
+
+// ComboboxInput opens on pointerdown via open-on-click, not the native
+// label-for click-forwarding a <label> gives an <input> -- same gotcha
+// AtSelect's onLabelClick solves, see its comment.
+const onLabelClick = () => {
+  open.value = true
+}
 
 // The whole trigger run is the popper's reference -- mirrors AtSelect, kept
 // for parity even though this slice has no prefix/suffix/icon flanking it yet.
@@ -81,11 +95,16 @@ const displayValue = (value: unknown) =>
 
 <template>
   <div class="flex flex-col gap-1">
+    <FieldLabel v-if="label" :field-id="fieldId" :size="size" @click="onLabelClick">{{
+      label
+    }}</FieldLabel>
+
     <div ref="groupEl" class="flex items-stretch rounded-md">
       <ComboboxRoot v-model="modelValue" v-model:open="open" class="flex-1" open-on-click>
         <ComboboxInput
           :id="fieldId"
           :display-value="displayValue"
+          :placeholder="placeholder"
           :class="[trigger, triggerClasses[size]]"
           v-bind="$attrs"
         />

@@ -91,6 +91,23 @@ test('shows a no-match row when the filter matches zero options', async () => {
   expect(await screen.findByText('No results')).toBeInTheDocument()
 })
 
+// Display-only placeholder text shows in the input when no value is selected.
+test('shows placeholder text when no value is selected', () => {
+  render(Combobox, {
+    props: { options, placeholder: 'Pick a fruit' },
+    attrs: { 'aria-label': 'Fruit' },
+  })
+  expect(screen.getByPlaceholderText('Pick a fruit')).toBeInTheDocument()
+})
+
+// Clicking a visible label focuses/opens the combobox -- reka-ui's trigger
+// reacts to pointerdown, not the native label-for click-forwarding.
+test('clicking the label opens the combobox', async () => {
+  render(Combobox, { props: { options, label: 'Fruit' } })
+  await userEvent.click(screen.getByText('Fruit'))
+  expect(await screen.findByRole('option', { name: 'Banana' })).toBeInTheDocument()
+})
+
 // The single visual snap for Combobox: the Snapshot story's board. Baseline:
 // __snaps__/combobox-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
