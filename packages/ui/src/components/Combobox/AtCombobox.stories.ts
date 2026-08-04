@@ -42,6 +42,17 @@ export const WithLabel: Story = {
   }),
 }
 
+// A pre-selected field: the clear (X) button shows next to a selected value,
+// and resets modelValue back to empty/placeholder when clicked.
+export const WithSelection: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" class="w-80" />',
+  }),
+}
+
 // A bare field: no label. Accessible name comes from a forwarded aria-label.
 export const Bare: Story = {
   render: () => ({
@@ -64,6 +75,7 @@ export const Snapshot: Story = {
           <div class="flex flex-wrap items-start gap-6">
             <Combobox aria-label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
             <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
+            <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" class="w-72" />
           </div>
         </section>
       </div>

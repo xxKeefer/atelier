@@ -1,7 +1,7 @@
 import { composeStories } from '@storybook/vue3-vite'
 import { render, screen } from '@testing-library/vue'
 import { userEvent } from 'vitest/browser'
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, ref } from 'vue'
 import { expect, test } from 'vitest'
 import Combobox from './AtCombobox.vue'
 import * as stories from './AtCombobox.stories'
@@ -19,6 +19,26 @@ const WithSibling = defineComponent({
       h(Combobox, { options: props.options, 'aria-label': 'Fruit' }),
       h('button', 'Elsewhere'),
     ]),
+})
+
+// The clear button is gated on the component's own modelValue prop, not
+// reka-ui's internal (passive-mode) selection state -- exercising it needs a
+// real v-model round trip, unlike the other tests above which only assert on
+// emitted events or the DOM input's own display text.
+const WithModel = defineComponent({
+  props: {
+    options: { type: Array as PropType<{ value: string; label: string }[]>, required: true },
+  },
+  setup: (props) => {
+    const value = ref('')
+    return () =>
+      h(Combobox, {
+        options: props.options,
+        'aria-label': 'Fruit',
+        modelValue: value.value,
+        'onUpdate:modelValue': (v: string) => (value.value = v),
+      })
+  },
 })
 
 const { Snapshot } = composeStories(stories)
@@ -106,6 +126,33 @@ test('clicking the label opens the combobox', async () => {
   render(Combobox, { props: { options, label: 'Fruit' } })
   await userEvent.click(screen.getByText('Fruit'))
   expect(await screen.findByRole('option', { name: 'Banana' })).toBeInTheDocument()
+})
+
+// The clear (X) affordance only shows once a value is selected.
+test('does not show a clear button when no value is selected', () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument()
+})
+
+test('shows a clear button once a value is selected', async () => {
+  render(WithModel, { props: { options } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await userEvent.click(await screen.findByRole('option', { name: 'Banana' }))
+  expect(await screen.findByRole('button', { name: 'Clear' })).toBeInTheDocument()
+})
+
+// Clicking clear resets modelValue and the displayed text, closes the menu,
+// and does not leave a clear button behind (nothing selected any more).
+test('clicking clear resets modelValue and the input display', async () => {
+  render(WithModel, { props: { options } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await userEvent.click(await screen.findByRole('option', { name: 'Banana' }))
+  await userEvent.click(await screen.findByRole('button', { name: 'Clear' }))
+  expect(input).toHaveValue('')
+  expect(screen.queryByRole('option', { name: 'Banana' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument()
 })
 
 // The single visual snap for Combobox: the Snapshot story's board. Baseline:

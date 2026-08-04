@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { PhX } from '@phosphor-icons/vue'
 import {
+  ComboboxCancel,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
@@ -13,6 +15,7 @@ import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
 import { FIELD_SIZES } from '../../constants/fieldSizes'
 import FieldLabel from '../Field/FieldLabel.vue'
+import Icon from '../Icon/AtIcon.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -51,6 +54,12 @@ const modelValue = computed({
 })
 
 const open = ref(false)
+
+// ComboboxCancel (reka-ui) already resets the internal search term and
+// input display -- we only need to clear our own v-model on top of it.
+const onClear = () => {
+  modelValue.value = ''
+}
 
 // ComboboxInput opens on pointerdown via open-on-click, not the native
 // label-for click-forwarding a <label> gives an <input> -- same gotcha
@@ -91,6 +100,15 @@ const itemPosition = (index: number, length: number) => [
 
 const displayValue = (value: unknown) =>
   props.options.find((option) => option.value === value)?.label ?? ''
+
+// The clear button occupies the same right-side slot AtSelect's caret sits
+// in -- reserve room in the input's own padding so typed text never runs
+// under it.
+const clearPadding: Record<Size, string> = {
+  sm: 'pr-8',
+  md: 'pr-9',
+  lg: 'pr-10',
+}
 </script>
 
 <template>
@@ -100,14 +118,24 @@ const displayValue = (value: unknown) =>
     }}</FieldLabel>
 
     <div ref="groupEl" class="flex items-stretch rounded-md">
-      <ComboboxRoot v-model="modelValue" v-model:open="open" class="flex-1" open-on-click>
+      <ComboboxRoot v-model="modelValue" v-model:open="open" class="relative flex-1" open-on-click>
         <ComboboxInput
           :id="fieldId"
           :display-value="displayValue"
           :placeholder="placeholder"
-          :class="[trigger, triggerClasses[size]]"
+          :class="[trigger, triggerClasses[size], modelValue && clearPadding[size]]"
           v-bind="$attrs"
         />
+
+        <ComboboxCancel
+          v-if="modelValue"
+          data-testid="combobox-clear"
+          aria-label="Clear"
+          class="absolute inset-y-0 right-0 flex items-center px-3 text-fg-subtle outline-none hover:opacity-75 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-border-focus"
+          @click="onClear"
+        >
+          <Icon :icon="PhX" size="sm" />
+        </ComboboxCancel>
 
         <ComboboxPortal>
           <ComboboxContent
