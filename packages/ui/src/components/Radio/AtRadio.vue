@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { RadioGroupIndicator, RadioGroupItem } from 'reka-ui'
-import { computed, useId } from 'vue'
+import { computed } from 'vue'
 import { checkedStateLadder } from '../../constants/checkedState'
+import { useFieldId } from '../../composables/useFieldId'
 
 const props = withDefaults(
   defineProps<{
@@ -28,8 +29,7 @@ const props = withDefaults(
 // not the wrapper, so the accessible name and form wiring land on the real control.
 defineOptions({ inheritAttrs: false })
 
-const autoId = useId()
-const fieldId = computed(() => props.id ?? autoId)
+const { fieldId } = useFieldId(props)
 
 // The button: fixed size, circular, on the same skeuomorphic ladder as
 // Checkbox/Button. Unchecked rests popped at `high` (a hovered button's

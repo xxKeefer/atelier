@@ -11,9 +11,11 @@ import {
   SelectValue,
   SelectViewport,
 } from 'reka-ui'
-import { computed, ref, useSlots } from 'vue'
+import { computed, ref } from 'vue'
 import type { Size } from '../../composables/useFieldChrome'
 import { useFieldChrome } from '../../composables/useFieldChrome'
+import { useFieldAffordances, useFieldRounding } from '../../composables/useFieldAffordances'
+import { FIELD_SIZES } from '../../constants/fieldSizes'
 import FieldLabel from '../Field/FieldLabel.vue'
 import FieldMessage from '../Field/FieldMessage.vue'
 import Icon from '../Icon/AtIcon.vue'
@@ -64,16 +66,7 @@ defineOptions({ inheritAttrs: false })
 
 const { fieldId, messaged } = useFieldChrome(props)
 
-// The #icon slot is optional -- a consumer drops in an AtIcon to mark the
-// field's purpose, at the trigger's start. Mirrors AtInput's hasIcon check.
-const slots = useSlots()
-const hasIcon = computed(() => !!slots.icon)
-// #prefix/#suffix are optional flanking boxes for content that makes the
-// selection more contextual (e.g. a country flag ahead of a country code
-// select), distinct from #icon's field-level purpose marker. Mirrors
-// AtInput's hasPrefix/hasSuffix checks.
-const hasPrefix = computed(() => !!slots.prefix)
-const hasSuffix = computed(() => !!slots.suffix)
+const { hasIcon, hasPrefix, hasSuffix } = useFieldAffordances()
 
 const modelValue = computed({
   get: () => props.modelValue,
@@ -98,11 +91,7 @@ const groupEl = ref<HTMLElement>()
 // The trigger sits at the low surface, the same shallow-recess rung a checked
 // checkbox/radio depresses into -- the field reads as already-settled, not an
 // empty bucket like AtInput's deeper recess.
-const triggerClasses: Record<Size, string> = {
-  sm: 'text-sm px-3 py-1.5',
-  md: 'text-base px-4 py-2',
-  lg: 'text-lg px-6 py-3',
-}
+const triggerClasses = FIELD_SIZES
 
 const trigger =
   'flex w-full items-center justify-between gap-2 font-body text-fg-default ' +
@@ -117,11 +106,13 @@ const errorClasses = 'border-danger-border-default'
 
 // The icon/prefix/trigger/suffix run gangs into one flush assembly, mirroring
 // AtInput's seam treatment -- only the whole run's outer ends round, and the
-// neighbouring segment's border is the seam.
-const triggerRounding = computed(() => [
-  !hasIcon.value && !hasPrefix.value && 'rounded-l-md',
-  !hasSuffix.value && 'rounded-r-md',
-])
+// neighbouring segment's border is the seam. The trigger's left edge is
+// guarded by both icon and prefix, since either can sit ahead of it.
+const triggerRounding = useFieldRounding(
+  hasPrefix,
+  hasSuffix,
+  computed(() => hasIcon.value || hasPrefix.value),
+)
 
 // A leading icon box: the same flat, unrecessed rung AtInput's prefix/suffix
 // sit on (shadow-flat) rather than the trigger's own low-recess rung -- a

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
-import { INTENT_ICONS, STATUS_INTENT_TOKENS, type StatusIntent } from '../../constants/intents'
+import { computed, toRef, useSlots } from 'vue'
+import { INTENT_ICONS, type StatusIntent } from '../../constants/intents'
+import { useIntentVars } from '../../composables/useIntentVars'
 import Icon from '../Icon/AtIcon.vue'
 
 const props = withDefaults(
@@ -25,14 +26,7 @@ const hasActions = computed(() => slots.actions !== undefined)
 // Tinted banner: bg + border + fg from the status colour group's canvas-tint
 // shape (not the solid-fill shape Button uses -- Alert sits on the page as a
 // tinted panel, not a filled control).
-const intentVars = computed(() => {
-  const tokens = STATUS_INTENT_TOKENS[props.intent]
-  return {
-    '--alert-bg': tokens.bg,
-    '--alert-border': tokens.border,
-    '--alert-fg': tokens.fg,
-  }
-})
+const intentVars = useIntentVars('alert', toRef(props, 'intent'))
 
 const classes =
   'w-full flex items-start gap-3 rounded-md border-[3px] border-solid p-4 font-body ' +

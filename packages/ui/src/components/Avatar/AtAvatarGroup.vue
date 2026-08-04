@@ -5,7 +5,7 @@ import AtAvatar from './AtAvatar.vue'
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type Shape = 'circle' | 'square'
 
-interface GroupAvatar {
+export interface GroupAvatar {
   src?: string
   alt?: string
   initials?: string

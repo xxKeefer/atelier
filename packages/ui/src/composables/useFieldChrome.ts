@@ -1,4 +1,5 @@
-import { computed, useId } from 'vue'
+import { computed } from 'vue'
+import { useFieldId } from './useFieldId'
 
 export type Size = 'sm' | 'md' | 'lg'
 
@@ -21,8 +22,7 @@ export function useFieldChrome(props: {
   error?: string
   id?: string
 }) {
-  const autoId = useId()
-  const fieldId = computed(() => props.id ?? autoId)
+  const { fieldId } = useFieldId(props)
   const messaged = computed(() => [props.label, props.help, props.error].some(Boolean))
 
   return { fieldId, messaged }

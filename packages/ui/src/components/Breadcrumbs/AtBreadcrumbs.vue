@@ -13,6 +13,7 @@ import { Comment, h, provide, useSlots, type VNode } from 'vue'
 import AtDropdown from '../Dropdown/AtDropdown.vue'
 import AtDropdownItem from '../Dropdown/AtDropdownItem.vue'
 import AtIcon from '../Icon/AtIcon.vue'
+import { COLLAPSED, getBreadcrumbRange } from './useBreadcrumbRange'
 
 const props = withDefaults(defineProps<{ separator?: Component; maxItems?: number }>(), {
   separator: () => PhCaretRight,
@@ -114,9 +115,12 @@ function renderItems() {
   const items = (slots.default?.() ?? []).filter((vnode) => vnode.type !== Comment)
   if (!props.maxItems || items.length <= props.maxItems) return items
 
+  const range = getBreadcrumbRange(items.length, props.maxItems)
   const tailCount = props.maxItems - 1
   const hidden = items.slice(1, items.length - tailCount)
-  return [items[0], buildOverflowItem(hidden), ...items.slice(items.length - tailCount)]
+  return range.map((slot) =>
+    slot === COLLAPSED ? buildOverflowItem(hidden) : items[slot],
+  ) as VNode[]
 }
 </script>
 

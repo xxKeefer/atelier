@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
-import { computed, useId } from 'vue'
+import { computed } from 'vue'
+import { useFieldId } from '../../composables/useFieldId'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -28,8 +29,8 @@ const props = withDefaults(
   },
 )
 
-const autoId = useId()
-const labelId = computed(() => (props.label ? `${autoId}-label` : undefined))
+const { fieldId: autoId } = useFieldId({})
+const labelId = computed(() => (props.label ? `${autoId.value}-label` : undefined))
 
 const indeterminate = computed(() => props.value === undefined || props.value === null)
 

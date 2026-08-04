@@ -7,8 +7,35 @@ import Breadcrumbs from './AtBreadcrumbs.vue'
 import BreadcrumbItem from './AtBreadcrumbItem.vue'
 import * as stories from './AtBreadcrumbs.stories'
 import { snapBoard } from '../../test/snap'
+import { COLLAPSED, getBreadcrumbRange } from './useBreadcrumbRange'
 
 const { Snapshot } = composeStories(stories)
+
+// -- Range calculation (useBreadcrumbRange) ---------------------------------
+
+test('under maxItems, every index renders with no collapsing', () => {
+  expect(getBreadcrumbRange(3, 5)).toEqual([0, 1, 2])
+})
+
+test('at exactly maxItems, no collapsing', () => {
+  expect(getBreadcrumbRange(3, 3)).toEqual([0, 1, 2])
+})
+
+test('over maxItems, middle indices collapse into a single slot', () => {
+  expect(getBreadcrumbRange(5, 3)).toEqual([0, COLLAPSED, 3, 4])
+})
+
+test('a wider maxItems widens the trailing window', () => {
+  expect(getBreadcrumbRange(6, 4)).toEqual([0, COLLAPSED, 3, 4, 5])
+})
+
+test('undefined maxItems never collapses', () => {
+  expect(getBreadcrumbRange(10, undefined)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+})
+
+test('empty itemCount returns an empty range', () => {
+  expect(getBreadcrumbRange(0, 3)).toEqual([])
+})
 
 test('renders a nav landmark labelled Breadcrumb', () => {
   render(Breadcrumbs, { slots: { default: '<li></li>' } })
