@@ -155,6 +155,72 @@ test('clicking clear resets modelValue and the input display', async () => {
   expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument()
 })
 
+// Help text renders in the reserved message line below the field.
+test('renders help text in the message line when present', () => {
+  render(Combobox, { props: { options, label: 'Fruit', help: 'Pick your favourite' } })
+  expect(screen.getByText('Pick your favourite')).toBeInTheDocument()
+})
+
+// Error takes the message line's place over help when both are set.
+test('error text displaces help text in the message line', () => {
+  render(Combobox, {
+    props: { options, label: 'Fruit', help: 'Pick your favourite', error: 'Pick a fruit' },
+  })
+  expect(screen.queryByText('Pick your favourite')).not.toBeInTheDocument()
+  expect(screen.getByText('Pick a fruit')).toBeInTheDocument()
+})
+
+// Error text renders in place of the reserved message line, coloured by the
+// danger status token.
+test('renders error text in the danger colour when present', () => {
+  render(Combobox, { props: { options, label: 'Fruit', error: 'Pick a fruit' } })
+  const msg = screen.getByText('Pick a fruit')
+  expect(msg.className).toContain('text-danger-fg')
+})
+
+// The trigger's border re-colours to the danger border token when an error
+// is present -- the same border treatment AtSelect's trigger takes.
+test('the trigger takes a danger border when an error is present', () => {
+  render(Combobox, { props: { options, label: 'Fruit', error: 'Pick a fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  expect(input.className).toContain('border-danger-border-default')
+})
+
+// An additional warning icon renders alongside the input when an error is
+// present, for better accessibility alongside the error message.
+test('renders an error icon when an error is present', () => {
+  render(Combobox, { props: { options, label: 'Fruit', error: 'Pick a fruit' } })
+  expect(screen.getByTestId('combobox-error-icon')).toBeInTheDocument()
+})
+
+// Disabled goes through reka-ui's disabled prop: the input is a genuinely
+// inert element (the browser itself refuses pointer interaction on it), and
+// its value drops out of the submitted form values.
+test('a disabled combobox is inert', () => {
+  render(Combobox, { props: { options, label: 'Fruit', disabled: true } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  expect(input).toBeDisabled()
+})
+
+// The clear button is gated on disabled, same as typing/opening -- a
+// disabled combobox never exposes the clear affordance, even with a
+// selection already made.
+test('a disabled combobox with a selection does not show a clear button', () => {
+  render(Combobox, { props: { options, label: 'Fruit', modelValue: 'banana', disabled: true } })
+  expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument()
+})
+
+// Clicking a disabled field's label must not open the menu -- mirrors
+// AtSelect's disabled label-click guard.
+// Playwright treats a label associated with a disabled control as itself
+// non-actionable, same as the browser's own behaviour -- force the click
+// through to exercise the component's own onLabelClick guard underneath.
+test('clicking the label of a disabled combobox does not open the menu', async () => {
+  render(Combobox, { props: { options, label: 'Fruit', disabled: true } })
+  await userEvent.click(screen.getByText('Fruit'), { force: true })
+  expect(screen.queryByRole('option', { name: 'Banana' })).not.toBeInTheDocument()
+})
+
 // The single visual snap for Combobox: the Snapshot story's board. Baseline:
 // __snaps__/combobox-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

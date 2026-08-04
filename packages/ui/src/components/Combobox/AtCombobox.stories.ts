@@ -15,6 +15,9 @@ const meta = {
   argTypes: {
     label: { control: 'text' },
     placeholder: { control: 'text' },
+    help: { control: 'text' },
+    error: { control: 'text' },
+    disabled: { control: 'boolean' },
   },
   args: { options: fruits },
 } satisfies Meta<typeof Combobox>
@@ -63,6 +66,37 @@ export const Bare: Story = {
   }),
 }
 
+// Help text renders in the reserved message line below the field.
+export const WithHelp: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" help="Pick your favourite" class="w-80" />',
+  }),
+}
+
+// An error takes the message line's place over help, colours the trigger's
+// border danger, and adds a warning icon.
+export const WithError: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit" class="w-80" />',
+  }),
+}
+
+// A disabled field: inert to typing, opening, and clearing.
+export const Disabled: Story = {
+  render: () => ({
+    components: { Combobox },
+    setup: () => ({ fruits }),
+    template:
+      '<Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" disabled class="w-80" />',
+  }),
+}
+
 // The visual board: the bare trigger chrome. Baseline: __snaps__/combobox-chromium-linux.png.
 export const Snapshot: Story = {
   render: () => ({
@@ -76,6 +110,16 @@ export const Snapshot: Story = {
             <Combobox aria-label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
             <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" class="w-72" />
             <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" class="w-72" />
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading text-lg font-bold text-fg-default">States</h2>
+          <div class="flex flex-wrap items-start gap-6">
+            <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" help="Pick your favourite" class="w-72" />
+            <Combobox label="Fruit" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit" class="w-72" />
+            <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" error="Pick a fruit" class="w-72" />
+            <Combobox label="Fruit" model-value="banana" :options="fruits" placeholder="Choose a fruit" disabled class="w-72" />
           </div>
         </section>
       </div>
