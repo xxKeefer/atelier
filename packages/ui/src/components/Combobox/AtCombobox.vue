@@ -125,16 +125,17 @@ const prefixSuffixClasses =
 // row bordered and rounding only at the stack's outer ends.
 const content = 'overflow-hidden rounded-md bg-surface-default'
 
+// Rounding/border-collapse uses first:/last: structural selectors, not an
+// index into `options` -- reka-ui's filter genuinely removes non-matching
+// ComboboxItems from the DOM (not just hides them), so a fixed index/length
+// pair goes stale mid-filter and strands a lone visible row looking like a
+// cut-off middle item.
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
   'border-[3px] border-solid border-border-default bg-surface-default shadow-flat ' +
+  'border-b-0 last:border-b-[3px] first:rounded-t-md last:rounded-b-md ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
-
-const itemPosition = (index: number, length: number) => [
-  index === 0 && 'rounded-t-md',
-  index === length - 1 ? 'rounded-b-md' : 'border-b-0',
-]
 
 const displayValue = (value: unknown) =>
   props.options.find((option) => option.value === value)?.label ?? ''
@@ -244,11 +245,11 @@ const rightPadding = computed(() => {
           >
             <ComboboxViewport>
               <ComboboxItem
-                v-for="(option, index) in options"
+                v-for="option in options"
                 :key="option.value"
                 :value="option.value"
                 :text-value="option.label"
-                :class="[item, itemPosition(index, options.length)]"
+                :class="item"
               >
                 {{ option.label }}
               </ComboboxItem>

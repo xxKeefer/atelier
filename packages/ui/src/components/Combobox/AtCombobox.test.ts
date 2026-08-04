@@ -72,6 +72,22 @@ test('typing filters the option list', async () => {
   expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument()
 })
 
+// Rounding/border-collapse must key off DOM position (first:/last:), not an
+// index into the full `options` prop -- reka-ui removes filtered-out items
+// from the DOM entirely, so a filter that strands a middle option (Banana,
+// index 1 of 3) as the sole visible row must still round on all four
+// corners and keep its bottom border, not render as a stranded middle row.
+test('a lone filtered-to result gets full rounding and its bottom border', async () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await userEvent.type(input, 'ban')
+  const option = await screen.findByRole('option', { name: 'Banana' })
+  expect(option.className).toContain('first:rounded-t-md')
+  expect(option.className).toContain('last:rounded-b-md')
+  expect(option.className).toContain('last:border-b-[3px]')
+})
+
 // Picking an option emits the option's value, and the input display switches
 // to that option's label.
 test('selecting an option sets modelValue and displays its label', async () => {
