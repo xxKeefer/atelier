@@ -258,6 +258,65 @@ test('renders slotted suffix content after the trigger', () => {
   expect(screen.getByTestId('my-suffix')).toBeInTheDocument()
 })
 
+// Arrow-down opens the menu from closed and highlights the first option.
+test('arrow down opens the menu and highlights the first option', async () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await userEvent.keyboard('{Escape}')
+  await userEvent.keyboard('{ArrowDown}')
+  const option = await screen.findByRole('option', { name: 'Apple' })
+  expect(option).toHaveAttribute('data-highlighted')
+})
+
+// Arrow keys move the highlight between options while the menu stays open.
+// Opening the menu already highlights the first option (Apple), so one
+// ArrowDown moves the highlight on to the next one.
+test('arrow down moves the highlight to the next option', async () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await screen.findByRole('option', { name: 'Apple' })
+  await userEvent.keyboard('{ArrowDown}')
+  const option = await screen.findByRole('option', { name: 'Banana' })
+  expect(option).toHaveAttribute('data-highlighted')
+})
+
+// Enter selects the highlighted option, same as clicking it.
+test('enter selects the highlighted option', async () => {
+  const view = render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await screen.findByRole('option', { name: 'Apple' })
+  await userEvent.keyboard('{ArrowDown}')
+  await userEvent.keyboard('{Enter}')
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual(['banana'])
+  expect(await screen.findByDisplayValue('Banana')).toBeInTheDocument()
+})
+
+// Escape closes the menu.
+test('escape closes the menu', async () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await screen.findByRole('option', { name: 'Apple' })
+  await userEvent.keyboard('{Escape}')
+  expect(screen.queryByRole('option', { name: 'Apple' })).not.toBeInTheDocument()
+})
+
+// Strict selection via keyboard: unmatched typed text reverts on Escape, same
+// as the blur-revert AC above.
+test('escape reverts unmatched typed text to the last valid selection', async () => {
+  render(Combobox, { props: { options }, attrs: { 'aria-label': 'Fruit' } })
+  const input = screen.getByRole('combobox', { name: 'Fruit' })
+  await userEvent.click(input)
+  await userEvent.click(await screen.findByRole('option', { name: 'Banana' }))
+  await screen.findByDisplayValue('Banana')
+  await userEvent.type(input, 'zzz')
+  await userEvent.keyboard('{Escape}')
+  await screen.findByDisplayValue('Banana')
+})
+
 // The single visual snap for Combobox: the Snapshot story's board. Baseline:
 // __snaps__/combobox-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
