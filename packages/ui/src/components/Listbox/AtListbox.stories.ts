@@ -89,6 +89,22 @@ export const WithDisabledItem: Story = {
   }),
 }
 
+// Multi-select: modelValue is an array, selecting an item toggles its
+// membership instead of replacing the selection. Selected rows get an
+// explicit checkmark on top of the Phase 1 pinned-rung chrome.
+export const Multiple: Story = {
+  render: () => ({
+    components: { Listbox, ListboxItem },
+    template: `
+      <Listbox aria-label="Fruit" multiple :model-value="['banana', 'cherry']" class="w-64">
+        <ListboxItem value="apple">Apple</ListboxItem>
+        <ListboxItem value="banana">Banana</ListboxItem>
+        <ListboxItem value="cherry">Cherry</ListboxItem>
+      </Listbox>
+    `,
+  }),
+}
+
 // Zero items: a static, non-interactive row takes the place of the list,
 // with the same recessed/flat chrome as a normal row.
 export const Empty: Story = {
@@ -116,6 +132,18 @@ export const Snapshot: Story = {
             </Listbox>
 
             <Listbox aria-label="Empty" class="w-64" />
+          </div>
+        </section>
+
+        <section class="flex flex-col gap-4">
+          <h2 class="font-heading text-lg font-bold text-fg-default">Multi-select</h2>
+          <div class="flex flex-wrap items-start gap-6">
+            <Listbox aria-label="Fruit (multi)" multiple :model-value="['banana', 'cherry']" class="w-64">
+              <ListboxItem value="apple">Apple</ListboxItem>
+              <ListboxItem value="banana">Banana</ListboxItem>
+              <ListboxItem value="cherry">Cherry</ListboxItem>
+              <ListboxItem value="date" disabled>Date</ListboxItem>
+            </Listbox>
           </div>
         </section>
 

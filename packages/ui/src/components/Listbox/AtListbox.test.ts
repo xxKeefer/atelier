@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/vue3-vite'
-import { render, screen } from '@testing-library/vue'
+import { render, screen, within } from '@testing-library/vue'
 import { userEvent } from 'vitest/browser'
 import { expect, test } from 'vitest'
 import { h } from 'vue'
@@ -118,6 +118,97 @@ test('a disabled item is skipped by keyboard navigation and cannot be selected',
 
   await userEvent.click(screen.getByRole('option', { name: 'Banana' }))
   expect(view.emitted()['update:modelValue']).toBeUndefined()
+})
+
+// Multi mode: modelValue is an array, and selecting an item toggles its
+// membership instead of replacing the previous selection.
+test('in multiple mode, clicking an item toggles its membership in the array', async () => {
+  const view = render(Listbox, {
+    props: { multiple: true, modelValue: ['apple'] },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  await userEvent.click(screen.getByRole('option', { name: 'Banana' }))
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['apple', 'banana']])
+})
+
+// Toggling an already-selected item off, rather than replacing the array.
+test('in multiple mode, clicking a selected item removes it from the array', async () => {
+  const view = render(Listbox, {
+    props: { multiple: true, modelValue: ['apple', 'banana'] },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  await userEvent.click(screen.getByRole('option', { name: 'Apple' }))
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['banana']])
+})
+
+// Multi mode's selected items each get an explicit checkmark indicator, on
+// top of Phase 1's pinned-rung chrome.
+test('in multiple mode, selected items show a checkmark indicator', () => {
+  render(Listbox, {
+    props: { multiple: true, modelValue: ['apple'] },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  const apple = screen.getByRole('option', { name: 'Apple' })
+  const banana = screen.getByRole('option', { name: 'Banana' })
+  expect(within(apple).getByTestId('listbox-item-indicator')).toBeInTheDocument()
+  expect(within(banana).queryByTestId('listbox-item-indicator')).not.toBeInTheDocument()
+})
+
+// Single mode never renders the indicator -- Phase 1's pinned-rung chrome
+// alone still carries the selected state.
+test('in single mode, selected items do not show the checkmark indicator', () => {
+  render(Listbox, {
+    props: { modelValue: 'apple' },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  const apple = screen.getByRole('option', { name: 'Apple' })
+  expect(within(apple).queryByTestId('listbox-item-indicator')).not.toBeInTheDocument()
+})
+
+// Arrow/Home/End navigation continue to work identically in multi mode.
+test('arrow/Home/End keyboard navigation still works in multiple mode', async () => {
+  render(Listbox, {
+    props: { multiple: true },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  await userEvent.tab()
+  await expect.element(screen.getByRole('option', { name: 'Apple' })).toHaveFocus()
+
+  await userEvent.keyboard('{ArrowDown}')
+  await expect.element(screen.getByRole('option', { name: 'Banana' })).toHaveFocus()
+
+  await userEvent.keyboard('{End}')
+  await expect.element(screen.getByRole('option', { name: 'Cherry' })).toHaveFocus()
+
+  await userEvent.keyboard('{Home}')
+  await expect.element(screen.getByRole('option', { name: 'Apple' })).toHaveFocus()
+})
+
+// Enter/Space still toggle-select the highlighted item in multi mode --
+// against an empty selection, toggling adds the item.
+test('pressing Enter or Space toggle-selects the highlighted item in multiple mode', async () => {
+  const view = render(Listbox, {
+    props: { multiple: true },
+    attrs: { 'aria-label': 'Fruit' },
+    slots: { default: fruitItems },
+  })
+
+  await userEvent.tab()
+  await userEvent.keyboard('{Enter}')
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['apple']])
+
+  await userEvent.keyboard(' ')
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([[]])
 })
 
 // Groups organise items under a labelled heading, exposed as role="group"

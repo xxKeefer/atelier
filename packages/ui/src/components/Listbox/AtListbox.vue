@@ -1,31 +1,48 @@
+<script lang="ts">
+import type { ComputedRef, InjectionKey } from 'vue'
+
+// AtListboxItem reads multi-select mode off this instead of a prop drilled
+// through arbitrary slotted composition (items can sit under AtListboxGroup,
+// not just directly under AtListbox).
+export const LISTBOX_MULTIPLE_KEY: InjectionKey<ComputedRef<boolean>> = Symbol('listbox-multiple')
+</script>
+
 <script setup lang="ts">
 import { ListboxContent, ListboxRoot } from 'reka-ui'
-import { Comment, Text, computed, useSlots } from 'vue'
+import { Comment, Text, computed, provide, useSlots } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    // v-model: the selected item's value. Single-select only in Phase 1 --
-    // reka-ui's ListboxRoot `multiple` stays unset (falsy) here.
-    modelValue?: string
+    // v-model: a single value normally, or an array of values when `multiple`.
+    modelValue?: string | string[]
+    // Toggles reka-ui's ListboxRoot `multiple` -- selecting an item then
+    // toggles its membership in the array instead of replacing the selection.
+    multiple?: boolean
     // Row shown in place of the slot when it renders no items.
     emptyMessage?: string
   }>(),
   {
     modelValue: undefined,
+    multiple: false,
     emptyMessage: 'No results',
   },
 )
 
-const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+const emit = defineEmits<{ 'update:modelValue': [value: string | string[]] }>()
 
 defineOptions({ inheritAttrs: false })
 
 const modelValue = computed({
   get: () => props.modelValue,
-  set: (v: string) => {
+  set: (v: string | string[]) => {
     emit('update:modelValue', v)
   },
 })
+
+provide(
+  LISTBOX_MULTIPLE_KEY,
+  computed(() => props.multiple),
+)
 
 // Slotted composition means AtListbox never sees an items array to check the
 // length of -- detect emptiness from the slot's own rendered output instead,
@@ -57,7 +74,7 @@ const emptyRow =
 </script>
 
 <template>
-  <ListboxRoot v-model="modelValue">
+  <ListboxRoot v-model="modelValue" :multiple="multiple">
     <ListboxContent :class="content" v-bind="$attrs">
       <template v-if="hasItems">
         <slot />

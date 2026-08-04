@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { ListboxItem } from 'reka-ui'
+import { PhCheck } from '@phosphor-icons/vue'
+import { ListboxItem, ListboxItemIndicator } from 'reka-ui'
+import { computed, inject } from 'vue'
+import Icon from '../Icon/AtIcon.vue'
+import { LISTBOX_MULTIPLE_KEY } from './AtListbox.vue'
 
 withDefaults(defineProps<{ value: string; disabled?: boolean }>(), { disabled: false })
+
+// Multi mode gets an explicit checkmark on top of Phase 1's pinned-rung
+// chrome -- with several rows selected at once, the rung alone doesn't read
+// as clearly as it does for a single selected row.
+const injectedMultiple = inject(LISTBOX_MULTIPLE_KEY)
+const multiple = computed(() => injectedMultiple?.value ?? false)
 
 // The vertical GroupedControls gang (same shape as AtDropdownItem/AtSelect's
 // option list): flush zero-gap stack, border-as-seam. `first:`/`last:` key
@@ -17,7 +27,7 @@ withDefaults(defineProps<{ value: string; disabled?: boolean }>(), { disabled: f
 // happens to be highlighted -- ordered after the highlight rule so it wins
 // when both data attributes are present.
 const item =
-  'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
+  'flex cursor-pointer items-center justify-between gap-2 px-4 py-2 font-body text-base text-fg-default outline-none ' +
   'border-[3px] border-solid border-border-default bg-surface-default shadow-flat border-b-0 ' +
   'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
@@ -28,5 +38,12 @@ const item =
 <template>
   <ListboxItem :value="value" :disabled="disabled" :class="item">
     <slot />
+    <ListboxItemIndicator
+      v-if="multiple"
+      data-testid="listbox-item-indicator"
+      class="flex shrink-0 items-center text-primary-fg"
+    >
+      <Icon :icon="PhCheck" size="sm" />
+    </ListboxItemIndicator>
   </ListboxItem>
 </template>
