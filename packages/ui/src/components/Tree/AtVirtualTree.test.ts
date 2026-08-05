@@ -120,6 +120,27 @@ test('multiple mode toggles a rendered node into the array selection', async () 
   expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['file-0', 'file-1']])
 })
 
+// TreeVirtualizer positions rows by a fixed estimateSize (28px default) with
+// no built-in remeasurement -- if a row's real rendered height exceeds that
+// estimate, the next row's absolute offset is computed too early and the two
+// overlap. AtTreeItem's real height (icon + label + vertical padding) is
+// taller than 28px, so this only surfaces once real content is on screen.
+test('rendered rows do not overlap vertically', async () => {
+  render(VirtualTree, {
+    props: { items: bigTree, defaultExpanded: ['src'] },
+    attrs: { 'aria-label': 'Files', ...fixedHeight },
+    slots: labelSlot,
+  })
+  const rendered = await screen.findAllByRole('treeitem')
+  const rects = rendered.map((el) => el.getBoundingClientRect())
+  for (let i = 1; i < rects.length; i++) {
+    const current = rects[i]
+    const previous = rects[i - 1]
+    if (!current || !previous) continue
+    expect(current.top).toBeGreaterThanOrEqual(previous.bottom - 0.5)
+  }
+})
+
 // The single visual snap for VirtualTree: the Snapshot story's board.
 // Baseline: __snaps__/virtual-tree-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {

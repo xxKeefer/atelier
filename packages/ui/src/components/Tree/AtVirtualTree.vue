@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
 import type { FlattenedItem } from 'reka-ui'
 import { TreeRoot, TreeVirtualizer } from 'reka-ui'
 import { computed, provide, toRef } from 'vue'
@@ -58,6 +59,26 @@ const { getKey, getChildren, selectedItem, toModelValue } = useTreeSelection(
 function asTreeItem(item: FlattenedItem<Record<string, unknown>>) {
   return item as FlattenedItem<TreeItemData>
 }
+
+// TreeVirtualizer positions rows by a fixed estimateSize with no built-in
+// remeasurement -- a row's real height (icon + label + padding, and whatever
+// arbitrary content a consumer's slot renders) is whatever the estimate
+// guessed it'd be. measureElement (tanstack-virtual's own API for this,
+// keyed off the `data-index` TreeVirtualizer already stamps on each cloned
+// row) reports each row's true rendered height back, correcting subsequent
+// rows' offsets instead of guessing one fixed number that never fits every
+// consumer's content. Typed structurally (not against `Virtualizer` from
+// '@tanstack/vue-virtual') because reka-ui and this package can resolve to
+// different installed copies of '@tanstack/virtual-core' in the pnpm store,
+// and its `Virtualizer` class has private fields that make two same-shaped
+// instances from different copies nominally incompatible under vue-tsc.
+function measureRow(
+  virtualizer: { measureElement: (node: Element) => void },
+  el: Element | ComponentPublicInstance | null,
+) {
+  if (!el) return
+  virtualizer.measureElement('$el' in el ? (el.$el as Element) : el)
+}
 </script>
 
 <template>
@@ -75,8 +96,16 @@ function asTreeItem(item: FlattenedItem<Record<string, unknown>>) {
     @update:model-value="(value) => emit('update:modelValue', toModelValue(value))"
     @update:expanded="(value) => emit('update:expanded', value)"
   >
-    <TreeVirtualizer v-slot="{ item: flat }" :estimate-size="estimateSize" :overscan="overscan">
-      <TreeItem v-bind="asTreeItem(flat).bind" :has-children="flat.hasChildren">
+    <TreeVirtualizer
+      v-slot="{ item: flat, virtualizer }"
+      :estimate-size="estimateSize"
+      :overscan="overscan"
+    >
+      <TreeItem
+        :ref="(el) => measureRow(virtualizer, el)"
+        v-bind="asTreeItem(flat).bind"
+        :has-children="flat.hasChildren"
+      >
         <template #default="scope">
           <slot v-bind="scope" />
         </template>
