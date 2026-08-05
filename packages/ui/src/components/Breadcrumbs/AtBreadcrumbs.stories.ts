@@ -8,7 +8,7 @@ import { CustomSeparatorView } from './views/CustomSeparatorView'
 import { CollapsedView } from './views/CollapsedView'
 
 const meta = {
-  title: 'Components/Breadcrumbs',
+  title: 'Navigation/Breadcrumbs',
   component: Breadcrumbs,
   parameters: { a11y: { test: 'error' } },
 } satisfies Meta<typeof Breadcrumbs>

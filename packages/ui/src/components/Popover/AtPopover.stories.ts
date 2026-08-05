@@ -7,7 +7,7 @@ const sides = ['top', 'right', 'bottom', 'left'] as const
 const aligns = ['start', 'center', 'end'] as const
 
 const meta = {
-  title: 'Components/Popover',
+  title: 'Overlay/Popover',
   component: Popover,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

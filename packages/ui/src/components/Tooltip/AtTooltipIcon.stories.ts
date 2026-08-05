@@ -5,7 +5,7 @@ const variants = ['warning', 'info', 'question'] as const
 const sides = ['top', 'right', 'bottom', 'left'] as const
 
 const meta = {
-  title: 'Components/TooltipIcon',
+  title: 'Overlay/TooltipIcon',
   component: TooltipIcon,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

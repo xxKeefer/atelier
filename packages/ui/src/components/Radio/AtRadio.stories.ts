@@ -7,7 +7,7 @@ import RadioGroup from './AtRadioGroup.vue'
 // group-only by construction (single-select), unlike Checkbox which is
 // self-sufficient standalone. Every story wraps it in AtRadioGroup.
 const meta = {
-  title: 'Components/Radio',
+  title: 'Forms/Radio',
   component: Radio,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

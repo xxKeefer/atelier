@@ -12,7 +12,7 @@ const variants = ['default', 'flat'] as const
 const sizes = ['sm', 'md', 'lg', 'xl'] as const
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Actions/Button',
   component: Button,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

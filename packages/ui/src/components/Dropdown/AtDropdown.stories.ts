@@ -4,7 +4,7 @@ import Dropdown from './AtDropdown.vue'
 import DropdownItem from './AtDropdownItem.vue'
 
 const meta = {
-  title: 'Components/Dropdown',
+  title: 'Overlay/Dropdown',
   component: Dropdown,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

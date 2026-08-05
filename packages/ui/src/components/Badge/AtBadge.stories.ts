@@ -10,7 +10,7 @@ import { PositionView } from './views/PositionView'
 import { intents, variants, sizes } from './views/shared'
 
 const meta = {
-  title: 'Components/Badge',
+  title: 'Data Display/Badge',
   component: Badge,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

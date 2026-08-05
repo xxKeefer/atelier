@@ -4,7 +4,7 @@ import { SizesView } from './views/SizesView'
 import { StatesView } from './views/StatesView'
 
 const meta = {
-  title: 'Components/ProgressBar',
+  title: 'Feedback/ProgressBar',
   component: ProgressBar,
   parameters: { a11y: { test: 'error' } },
   argTypes: {

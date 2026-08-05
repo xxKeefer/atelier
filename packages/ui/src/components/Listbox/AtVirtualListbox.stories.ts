@@ -5,7 +5,7 @@ import VirtualListbox from './AtVirtualListbox.vue'
 const options = Array.from({ length: 1000 }, (_, i) => `Option ${String(i + 1)}`)
 
 const meta = {
-  title: 'Components/VirtualListbox',
+  title: 'Forms/VirtualListbox',
   component: VirtualListbox,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

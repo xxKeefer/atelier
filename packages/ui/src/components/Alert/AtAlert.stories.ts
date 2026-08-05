@@ -5,7 +5,7 @@ import { ActionsView } from './views/ActionsView'
 import { PlainView } from './views/PlainView'
 
 const meta = {
-  title: 'Components/Alert',
+  title: 'Feedback/Alert',
   component: Alert,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

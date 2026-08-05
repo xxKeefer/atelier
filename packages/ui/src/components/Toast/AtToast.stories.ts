@@ -7,7 +7,7 @@ import { NoCloseView } from './views/NoCloseView'
 import { ActionsView } from './views/ActionsView'
 
 const meta = {
-  title: 'Components/Toast',
+  title: 'Feedback/Toast',
   component: Toast,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

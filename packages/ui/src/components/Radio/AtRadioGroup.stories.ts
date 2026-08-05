@@ -4,7 +4,7 @@ import RadioGroup from './AtRadioGroup.vue'
 import Radio from './AtRadio.vue'
 
 const meta = {
-  title: 'Components/RadioGroup',
+  title: 'Forms/RadioGroup',
   component: RadioGroup,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

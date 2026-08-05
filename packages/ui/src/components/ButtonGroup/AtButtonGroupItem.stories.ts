@@ -8,7 +8,7 @@ import ButtonGroupItem from './AtButtonGroupItem.vue'
 // it in AtButtonGroup, whose registration context also gives it its
 // first/middle/last position in the run.
 const meta = {
-  title: 'Components/ButtonGroupItem',
+  title: 'Actions/ButtonGroupItem',
   component: ButtonGroupItem,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

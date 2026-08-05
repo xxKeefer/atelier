@@ -4,7 +4,7 @@ import ButtonGroup from './AtButtonGroup.vue'
 import ButtonGroupItem from './AtButtonGroupItem.vue'
 
 const meta = {
-  title: 'Components/ButtonGroup',
+  title: 'Actions/ButtonGroup',
   component: ButtonGroup,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

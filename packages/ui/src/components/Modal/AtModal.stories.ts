@@ -6,7 +6,7 @@ const positions = ['center', 'left', 'right', 'top', 'bottom'] as const
 const sizes = ['sm', 'md', 'lg', 'full'] as const
 
 const meta = {
-  title: 'Components/Modal',
+  title: 'Overlay/Modal',
   component: Modal,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

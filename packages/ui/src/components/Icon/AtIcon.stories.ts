@@ -7,7 +7,7 @@ import { ColorsView } from './views/ColorsView'
 import { SemanticView } from './views/SemanticView'
 
 const meta = {
-  title: 'Components/Icon',
+  title: 'Data Display/Icon',
   component: Icon,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

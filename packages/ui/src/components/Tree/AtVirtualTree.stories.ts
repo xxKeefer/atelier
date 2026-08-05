@@ -17,7 +17,7 @@ const bigTree: TreeItemData[] = Array.from({ length: 20 }, (_, folderIndex) => (
 }))
 
 const meta = {
-  title: 'Components/VirtualTree',
+  title: 'Data Display/VirtualTree',
   component: VirtualTree,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

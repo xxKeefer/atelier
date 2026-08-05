@@ -5,7 +5,7 @@ import Textarea from './AtTextarea.vue'
 const sizes = ['sm', 'md', 'lg'] as const
 
 const meta = {
-  title: 'Components/Textarea',
+  title: 'Forms/Textarea',
   component: Textarea,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },
