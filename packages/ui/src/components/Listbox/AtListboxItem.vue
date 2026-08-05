@@ -63,7 +63,12 @@ if (matchState) {
 // happens to be highlighted -- ordered after the highlight rule so it wins
 // when both data attributes are present.
 const item =
-  'flex cursor-pointer items-center justify-between gap-2 px-4 py-2 font-body text-base text-fg-default outline-none ' +
+  // w-full matters for AtVirtualListbox: reka-ui's ListboxVirtualizer
+  // absolutely-positions each item (no width set), so without an explicit
+  // width it shrinks to its own content instead of filling the row -- a
+  // flex-col AtListbox already stretches children by default and is
+  // unaffected by the extra class.
+  'flex w-full cursor-pointer items-center justify-between gap-2 px-4 py-2 font-body text-base text-fg-default outline-none ' +
   'border-[3px] border-solid border-border-default bg-surface-default shadow-flat border-b-0 ' +
   'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +

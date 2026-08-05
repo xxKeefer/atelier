@@ -107,6 +107,20 @@ test('arrow keys move focus between options', async () => {
   await expect.element(screen.getByRole('option', { name: 'Option 1' })).toHaveFocus()
 })
 
+// Absolutely-positioned virtualized rows have no ambient width the way a
+// flex-col child would -- each option must fill the listbox's own width
+// (the widest possible content) rather than shrinking to its own text.
+test('rendered options fill the listbox width rather than shrinking to their own content', async () => {
+  render(FixedHeightListbox)
+
+  const listbox = await screen.findByRole('listbox')
+  const options = await screen.findAllByRole('option')
+  const listboxWidth = listbox.getBoundingClientRect().width
+  for (const option of options) {
+    expect(option.getBoundingClientRect().width).toBeCloseTo(listboxWidth, 0)
+  }
+})
+
 // Zero options renders the same static empty-state row AtListbox uses.
 test('renders a static empty-state row when there are no options', () => {
   render(FixedHeightListbox, { props: { options: [] } })
