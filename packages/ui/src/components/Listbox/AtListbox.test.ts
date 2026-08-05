@@ -276,7 +276,12 @@ test('renders a static empty-state row when there are no items', () => {
   render(Listbox, { attrs: { 'aria-label': 'Fruit' } })
   expect(screen.getByTestId('listbox-empty')).toBeInTheDocument()
   expect(screen.getByText('No results')).toBeInTheDocument()
-  expect(screen.queryByRole('option')).not.toBeInTheDocument()
+  // role="option" so the listbox satisfies ARIA's required-children rule,
+  // aria-disabled so it doesn't read as a real, selectable option.
+  expect(screen.getByRole('option', { name: 'No results' })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  )
 })
 
 // Typing in AtListboxFilter hides items whose label doesn't match, and
@@ -317,7 +322,10 @@ test('a filter matching nothing renders the empty-state row', async () => {
   await userEvent.type(screen.getByRole('textbox', { name: 'Filter fruit' }), 'zzz')
 
   expect(screen.getByTestId('listbox-empty')).toBeInTheDocument()
-  expect(screen.queryByRole('option')).not.toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'No results' })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  )
 })
 
 // Selecting an item, then filtering it out of view, then clearing the

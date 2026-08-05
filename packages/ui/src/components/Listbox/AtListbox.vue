@@ -112,9 +112,19 @@ const emptyRow =
     <ListboxContent :class="content" v-bind="$attrs">
       <template v-if="hasItems">
         <slot />
-        <div v-if="noMatches" :class="emptyRow" data-testid="listbox-empty">{{ emptyMessage }}</div>
+        <div
+          v-if="noMatches"
+          role="option"
+          aria-disabled="true"
+          :class="emptyRow"
+          data-testid="listbox-empty"
+        >
+          {{ emptyMessage }}
+        </div>
       </template>
-      <div v-else :class="emptyRow" data-testid="listbox-empty">{{ emptyMessage }}</div>
+      <div v-else role="option" aria-disabled="true" :class="emptyRow" data-testid="listbox-empty">
+        {{ emptyMessage }}
+      </div>
     </ListboxContent>
   </ListboxRoot>
 </template>
