@@ -26,6 +26,7 @@ export { default as AtListboxFilter } from './components/Listbox/AtListboxFilter
 export { default as AtListboxGroup } from './components/Listbox/AtListboxGroup.vue'
 export { default as AtListboxGroupLabel } from './components/Listbox/AtListboxGroupLabel.vue'
 export { default as AtListboxItem } from './components/Listbox/AtListboxItem.vue'
+export { default as AtVirtualListbox } from './components/Listbox/AtVirtualListbox.vue'
 export { default as AtList } from './components/List/AtList.vue'
 export { default as AtListItem } from './components/List/AtListItem.vue'
 export { default as AtVirtualList } from './components/List/AtVirtualList.vue'
