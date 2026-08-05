@@ -46,3 +46,6 @@ export { default as AtToastProvider } from './components/Toast/AtToastProvider.v
 export { useToast } from './components/Toast/useToast'
 export { default as AtTooltip } from './components/Tooltip/AtTooltip.vue'
 export { default as AtTooltipIcon } from './components/Tooltip/AtTooltipIcon.vue'
+export { default as AtTree } from './components/Tree/AtTree.vue'
+export type { TreeItemData } from './components/Tree/AtTree.vue'
+export { default as AtTreeItem } from './components/Tree/AtTreeItem.vue'
