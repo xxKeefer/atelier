@@ -12,7 +12,7 @@ const fruits = [
 ]
 
 const meta = {
-  title: 'Components/Select',
+  title: 'Forms/Select',
   component: Select,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

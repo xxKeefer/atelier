@@ -10,7 +10,7 @@ const fruits = [
 ]
 
 const meta = {
-  title: 'Components/Combobox',
+  title: 'Forms/Combobox',
   component: Combobox,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

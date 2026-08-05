@@ -12,7 +12,7 @@ const people = [
 ]
 
 const meta = {
-  title: 'Components/AvatarGroup',
+  title: 'Data Display/AvatarGroup',
   component: AvatarGroup,
   parameters: { a11y: { test: 'error' } },
   argTypes: {

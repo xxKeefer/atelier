@@ -5,7 +5,7 @@ import VirtualList from './AtVirtualList.vue'
 const items = Array.from({ length: 1000 }, (_, i) => `Row ${String(i + 1)}`)
 
 const meta = {
-  title: 'Components/VirtualList',
+  title: 'Data Display/VirtualList',
   component: VirtualList,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import Checkbox from './AtCheckbox.vue'
 
 const meta = {
-  title: 'Components/Checkbox',
+  title: 'Forms/Checkbox',
   component: Checkbox,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

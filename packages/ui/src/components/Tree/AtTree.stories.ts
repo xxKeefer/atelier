@@ -31,7 +31,7 @@ const fileTree: TreeItemData[] = [
 ]
 
 const meta = {
-  title: 'Components/Tree',
+  title: 'Data Display/Tree',
   component: Tree,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

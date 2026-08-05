@@ -5,7 +5,7 @@ import Button from '../Button/AtButton.vue'
 const sides = ['top', 'right', 'bottom', 'left'] as const
 
 const meta = {
-  title: 'Components/Tooltip',
+  title: 'Overlay/Tooltip',
   component: Tooltip,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

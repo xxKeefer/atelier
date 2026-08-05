@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import Pagination from './AtPagination.vue'
 
 const meta = {
-  title: 'Components/Pagination',
+  title: 'Navigation/Pagination',
   component: Pagination,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

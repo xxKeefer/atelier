@@ -8,7 +8,7 @@ import { SvgView } from './views/SvgView'
 import { placeholderSrc } from './views/PlaceholderSrc'
 
 const meta = {
-  title: 'Components/Image',
+  title: 'Data Display/Image',
   component: Image,
   parameters: { a11y: { test: 'error' } },
   argTypes: {

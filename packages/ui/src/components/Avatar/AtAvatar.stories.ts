@@ -6,7 +6,7 @@ import { FallbackView } from './views/FallbackView'
 import { placeholderSrc } from './views/PlaceholderSrc'
 
 const meta = {
-  title: 'Components/Avatar',
+  title: 'Data Display/Avatar',
   component: Avatar,
   parameters: { a11y: { test: 'error' } },
   argTypes: {

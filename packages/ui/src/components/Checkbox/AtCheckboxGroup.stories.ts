@@ -4,7 +4,7 @@ import CheckboxGroup from './AtCheckboxGroup.vue'
 import Checkbox from './AtCheckbox.vue'
 
 const meta = {
-  title: 'Components/CheckboxGroup',
+  title: 'Forms/CheckboxGroup',
   component: CheckboxGroup,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

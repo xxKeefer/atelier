@@ -6,7 +6,7 @@ import Button from '../Button/AtButton.vue'
 const sizes = ['sm', 'md', 'lg'] as const
 
 const meta = {
-  title: 'Components/EmptyState',
+  title: 'Feedback/EmptyState',
   component: EmptyState,
   parameters: { a11y: { test: 'error' } },
   argTypes: {

@@ -4,7 +4,7 @@ import List from './AtList.vue'
 import ListItem from './AtListItem.vue'
 
 const meta = {
-  title: 'Components/List',
+  title: 'Data Display/List',
   component: List,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

@@ -6,7 +6,7 @@ const orientations = ['vertical', 'horizontal', 'both'] as const
 const types = ['auto', 'always', 'scroll', 'hover'] as const
 
 const meta = {
-  title: 'Components/ScrollArea',
+  title: 'Data Display/ScrollArea',
   component: ScrollArea,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

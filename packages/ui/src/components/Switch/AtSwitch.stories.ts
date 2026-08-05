@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import Switch from './AtSwitch.vue'
 
 const meta = {
-  title: 'Components/Switch',
+  title: 'Forms/Switch',
   component: Switch,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

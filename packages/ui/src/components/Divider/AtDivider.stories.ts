@@ -7,7 +7,7 @@ import { ColorsView } from './views/ColorsView'
 const orientations = ['horizontal', 'vertical'] as const
 
 const meta = {
-  title: 'Components/Divider',
+  title: 'Data Display/Divider',
   component: Divider,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

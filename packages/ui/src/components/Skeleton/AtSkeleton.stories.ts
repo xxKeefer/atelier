@@ -5,7 +5,7 @@ import { CompositionView } from './views/CompositionView'
 const shapes = ['rect', 'circle', 'text'] as const
 
 const meta = {
-  title: 'Components/Skeleton',
+  title: 'Feedback/Skeleton',
   component: Skeleton,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

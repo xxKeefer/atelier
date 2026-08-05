@@ -5,7 +5,7 @@ const intents = ['primary', 'secondary', 'neutral', 'danger', 'success', 'warnin
 const sizes = ['sm', 'md', 'lg'] as const
 
 const meta = {
-  title: 'Components/Spinner',
+  title: 'Feedback/Spinner',
   component: Spinner,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

@@ -10,7 +10,7 @@ import { InteractiveView } from './views/InteractiveView'
 const mediaPositions = ['top', 'left', 'right'] as const
 
 const meta = {
-  title: 'Components/Card',
+  title: 'Data Display/Card',
   component: Card,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

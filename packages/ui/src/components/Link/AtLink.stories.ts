@@ -18,7 +18,7 @@ const intents = [
 ] as const
 
 const meta = {
-  title: 'Components/Link',
+  title: 'Navigation/Link',
   component: Link,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

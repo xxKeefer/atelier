@@ -9,7 +9,7 @@ import ListboxItem from './AtListboxItem.vue'
 import Icon from '../Icon/AtIcon.vue'
 
 const meta = {
-  title: 'Components/Listbox',
+  title: 'Forms/Listbox',
   component: Listbox,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },

@@ -15,7 +15,7 @@ import { ActionsView } from './views/ActionsView'
 // every story drives it indirectly via useToast().toast() from buttons, the
 // same way real consumers would.
 const meta = {
-  title: 'Components/ToastProvider',
+  title: 'Feedback/ToastProvider',
   component: ToastProvider,
   // Fail the Vitest run on any axe violation, not just warn.
   parameters: { a11y: { test: 'error' } },
