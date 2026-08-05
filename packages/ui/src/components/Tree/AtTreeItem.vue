@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { PhCaretDown } from '@phosphor-icons/vue'
+import { PhCaretDown, PhCheck, PhMinus } from '@phosphor-icons/vue'
 import { TreeItem } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import Icon from '../Icon/AtIcon.vue'
+import { TREE_MULTIPLE_KEY } from './AtTree.vue'
 import type { TreeItemData } from './AtTree.vue'
 
 const props = defineProps<{
@@ -10,6 +11,12 @@ const props = defineProps<{
   level: number
   hasChildren: boolean
 }>()
+
+// Multi mode gets an explicit checkmark (or a dash when a bubbleSelect
+// parent is only partially selected) on top of the pinned-rung chrome --
+// same rationale as AtListboxItem's own indicator.
+const injectedMultiple = inject(TREE_MULTIPLE_KEY)
+const multiple = computed(() => injectedMultiple?.value ?? false)
 
 // reka-ui's TreeItem has no built-in disabled concept. `select`/`toggle` are
 // cancelable custom events it emits before acting on them (checks
@@ -38,7 +45,7 @@ const row =
 
 <template>
   <TreeItem
-    v-slot="{ isExpanded, isSelected, handleToggle }"
+    v-slot="{ isExpanded, isSelected, isIndeterminate, handleToggle }"
     :value="value"
     :level="level"
     :data-disabled="value.disabled ? '' : undefined"
@@ -78,6 +85,15 @@ const row =
       :has-children="hasChildren"
       :is-expanded="isExpanded"
       :is-selected="isSelected"
+      :is-indeterminate="isIndeterminate"
     />
+    <span
+      v-if="multiple"
+      data-testid="tree-item-indicator"
+      class="ml-auto flex shrink-0 items-center text-primary-fg"
+    >
+      <Icon v-if="isIndeterminate" :icon="PhMinus" size="sm" />
+      <Icon v-else-if="isSelected" :icon="PhCheck" size="sm" />
+    </span>
   </TreeItem>
 </template>

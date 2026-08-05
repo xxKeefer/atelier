@@ -73,6 +73,31 @@ export const DisabledItem: Story = {
   }),
 }
 
+// Multiple selection with propagateSelect (selecting a folder selects its
+// files too) and bubbleSelect (a folder shows indeterminate until every file
+// under it is selected, then shows fully checked).
+export const MultiSelect: Story = {
+  render: (args) => ({
+    components: { Tree, Icon },
+    setup: () => ({ args, PhFile, PhFolder }),
+    template: `
+      <Tree
+        v-bind="args"
+        multiple
+        propagate-select
+        bubble-select
+        :default-expanded="['src', 'components']"
+        :model-value="['button']"
+      >
+        <template #default="{ item, hasChildren }">
+          <Icon :icon="hasChildren ? PhFolder : PhFile" size="sm" />
+          {{ item.label }}
+        </template>
+      </Tree>
+    `,
+  }),
+}
+
 // The visual board: a collapsed tree, one with nested nodes expanded and a
 // selection, and a disabled-item row -- one screen, one screenshot.
 const SnapshotView = defineComponent({
@@ -93,6 +118,25 @@ const SnapshotView = defineComponent({
       <section class="flex w-72 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Expanded, with a selection</h2>
         <Tree :items="fileTree" :default-expanded="['src', 'components']" model-value="button">
+          <template #default="{ item, hasChildren }">
+            <Icon :icon="hasChildren ? PhFolder : PhFile" size="sm" />
+            {{ item.label }}
+          </template>
+        </Tree>
+      </section>
+
+      <section class="flex w-72 flex-col gap-3">
+        <h2 class="font-heading text-lg font-bold text-fg-default">
+          Multi-select, propagate + bubble
+        </h2>
+        <Tree
+          :items="fileTree"
+          multiple
+          propagate-select
+          bubble-select
+          :default-expanded="['src', 'components']"
+          :model-value="['button']"
+        >
           <template #default="{ item, hasChildren }">
             <Icon :icon="hasChildren ? PhFolder : PhFile" size="sm" />
             {{ item.label }}

@@ -244,6 +244,98 @@ test('Enter and Space select the focused node', async () => {
   expect(view.emitted()['update:modelValue']?.at(-1)).toEqual(['readme'])
 })
 
+// multiple: modelValue is an array, selecting a node toggles its membership
+// instead of replacing the selection.
+test('multiple mode toggles a node into and out of the array selection', async () => {
+  const view = render(Tree, {
+    props: { items: fileTree, multiple: true, modelValue: ['readme'] },
+    attrs: { 'aria-label': 'Files' },
+    slots: labelSlot,
+  })
+
+  await userEvent.click(screen.getByRole('treeitem', { name: 'src' }))
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['readme', 'src']])
+
+  await view.rerender({ items: fileTree, multiple: true, modelValue: ['readme', 'src'] })
+  await userEvent.click(screen.getByRole('treeitem', { name: 'README.md' }))
+  expect(view.emitted()['update:modelValue']?.at(-1)).toEqual([['src']])
+})
+
+// propagateSelect: selecting a parent also selects (and deselecting also
+// deselects) all its descendants -- TreeRoot's own built-in behavior.
+test('propagateSelect selects all descendants when a parent is selected', async () => {
+  const view = render(Tree, {
+    props: {
+      items: fileTree,
+      multiple: true,
+      propagateSelect: true,
+      modelValue: [],
+      defaultExpanded: ['src'],
+    },
+    attrs: { 'aria-label': 'Files' },
+    slots: labelSlot,
+  })
+
+  await userEvent.click(screen.getByRole('treeitem', { name: 'src' }))
+  const call = view.emitted()['update:modelValue']?.at(-1) as [string[]]
+  expect(call[0].sort()).toEqual(['button', 'icon', 'src'])
+})
+
+// bubbleSelect: a parent's own selection state reflects its children --
+// selecting every child selects the parent too, deselecting one drops it
+// back out. Also built into TreeRoot.
+test('bubbleSelect selects the parent once every child is selected', async () => {
+  const view = render(Tree, {
+    props: {
+      items: fileTree,
+      multiple: true,
+      bubbleSelect: true,
+      modelValue: ['button'],
+      defaultExpanded: ['src'],
+    },
+    attrs: { 'aria-label': 'Files' },
+    slots: labelSlot,
+  })
+
+  await userEvent.click(screen.getByRole('treeitem', { name: 'Icon.vue' }))
+  const call = view.emitted()['update:modelValue']?.at(-1) as [string[]]
+  expect(call[0].sort()).toEqual(['button', 'icon', 'src'])
+})
+
+// In multi mode, a selected item shows a checkmark indicator; a bubbleSelect
+// parent with only some children selected shows an indeterminate dash
+// instead. Single-select mode renders no indicator at all.
+test('multi-select items show a checkmark or indeterminate indicator', () => {
+  render(Tree, {
+    props: {
+      items: fileTree,
+      multiple: true,
+      bubbleSelect: true,
+      modelValue: ['button'],
+      defaultExpanded: ['src'],
+    },
+    attrs: { 'aria-label': 'Files' },
+    slots: labelSlot,
+  })
+
+  const button = screen.getByRole('treeitem', { name: 'Button.vue' })
+  expect(within(button).getByTestId('tree-item-indicator')).toBeInTheDocument()
+
+  const src = screen.getByRole('treeitem', { name: 'src' })
+  expect(within(src).getByTestId('tree-item-indicator')).toBeInTheDocument()
+})
+
+test('single-select mode renders no indicator', () => {
+  render(Tree, {
+    props: { items: fileTree, modelValue: 'readme' },
+    attrs: { 'aria-label': 'Files' },
+    slots: labelSlot,
+  })
+
+  const readme = screen.getByRole('treeitem', { name: 'README.md' })
+  expect(within(readme).queryByTestId('tree-item-indicator')).not.toBeInTheDocument()
+})
+
 // The single visual snap for Tree: the Snapshot story's board.
 // Baseline: __snaps__/tree-chromium-linux.png. Rebaseline: pnpm test:update.
 test('Snapshot matches the visual board baseline', async () => {
