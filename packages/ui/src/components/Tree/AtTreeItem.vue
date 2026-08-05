@@ -29,17 +29,19 @@ function guardDisabled(event: Event) {
 
 const indent = computed(() => `calc(var(--spacing-6) * ${String(props.level - 1)})`)
 
-// Same vertical-gang treatment as AtListboxItem: flush zero-gap stack,
-// border-as-seam, first/last corners rounded. Tree has no `data-highlighted`
-// attribute (that's a Listbox/Menu concept) -- roving focus lands real DOM
-// focus on the active row, so focus-visible is the highlight equivalent here.
-// `data-selected` is set by reka-ui's TreeItem itself.
+// Accent-rail treatment (won a 3-way aesthetic prototype against a
+// vertical-gang boxed-row style borrowed from AtListboxItem, which read as a
+// listbox rather than a tree). No row border/shadow at all -- hierarchy reads
+// via indentation, selection via a left accent bar instead of a full box.
+// Tree has no `data-highlighted` attribute (that's a Listbox/Menu concept) --
+// roving focus lands real DOM focus on the active row, so focus-visible is
+// the highlight equivalent here. `data-selected` is set by reka-ui's
+// TreeItem itself.
 const row =
-  'flex cursor-pointer items-center gap-1 px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat border-b-0 ' +
-  'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
+  'flex cursor-pointer items-center gap-1.5 rounded-r-md border-l-[3px] border-transparent py-1.5 pr-3 ' +
+  'font-body text-base text-fg-default outline-none hover:bg-surface-subtle ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus ' +
-  'data-[selected]:border-primary-border-default data-[selected]:bg-primary-surface-recess data-[selected]:shadow-primary-low ' +
+  'data-[selected]:border-primary-default data-[selected]:bg-primary-surface-recess ' +
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
 </script>
 

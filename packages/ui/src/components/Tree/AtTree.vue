@@ -84,7 +84,7 @@ const { getKey, getChildren, selectedItem, toModelValue } = useTreeSelection(
     :bubble-select="bubbleSelect"
     :expanded="expanded"
     :default-expanded="defaultExpanded"
-    class="flex flex-col"
+    class="flex flex-col gap-0.5"
     @update:model-value="(value) => emit('update:modelValue', toModelValue(value))"
     @update:expanded="(value) => emit('update:expanded', value)"
   >
