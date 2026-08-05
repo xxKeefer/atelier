@@ -18,6 +18,7 @@ export { default as AtCheckboxGroup } from './components/Checkbox/AtCheckboxGrou
 export { default as AtDivider } from './components/Divider/AtDivider.vue'
 export { default as AtDropdown } from './components/Dropdown/AtDropdown.vue'
 export { default as AtDropdownItem } from './components/Dropdown/AtDropdownItem.vue'
+export { default as AtEmptyState } from './components/EmptyState/AtEmptyState.vue'
 export { default as AtIcon } from './components/Icon/AtIcon.vue'
 export { default as AtImage } from './components/Image/AtImage.vue'
 export { default as AtInput } from './components/Input/AtInput.vue'
