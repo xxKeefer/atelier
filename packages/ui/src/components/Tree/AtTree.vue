@@ -1,12 +1,11 @@
 <script lang="ts">
 import type { ComputedRef, InjectionKey } from 'vue'
 
-export interface TreeItemData {
-  id: string
-  children?: TreeItemData[]
-  disabled?: boolean
-  [key: string]: unknown
-}
+// Defined in useTreeSelection.ts, re-exported here since AtTree.vue is this
+// type's established public entry point (see src/index.ts) -- keeping the
+// definition itself there instead avoids a circular import, since
+// useTreeSelection.ts is shared by both AtTree.vue and AtVirtualTree.vue.
+export type { TreeItemData } from './useTreeSelection'
 
 // AtTreeItem reads multi-select mode off this instead of a prop, since it's
 // only ever rendered from AtTree's own flattenItems loop, matching
@@ -16,8 +15,10 @@ export const TREE_MULTIPLE_KEY: InjectionKey<ComputedRef<boolean>> = Symbol('tre
 
 <script setup lang="ts">
 import { TreeRoot } from 'reka-ui'
-import { computed, provide } from 'vue'
+import { computed, provide, toRef } from 'vue'
 import TreeItem from './AtTreeItem.vue'
+import type { TreeItemData } from './useTreeSelection'
+import { useTreeSelection } from './useTreeSelection'
 
 const props = withDefaults(
   defineProps<{
@@ -59,38 +60,16 @@ provide(
   computed(() => props.multiple),
 )
 
-const getKey = (item: TreeItemData) => item.id
-const getChildren = (item: TreeItemData) => item.children
-
 // TreeRoot's own v-model operates on the full item object(s) (its `value`
 // prop is the object, `getKey` is only used internally for aria/comparison)
 // -- AtTree exposes plain id(s) instead, matching AtListbox/AtAccordion's
-// string-based v-model convention, so this translates both ways.
-function findItem(nodes: TreeItemData[], id: string): TreeItemData | undefined {
-  for (const node of nodes) {
-    if (node.id === id) return node
-    const found = node.children && findItem(node.children, id)
-    if (found) return found
-  }
-  return undefined
-}
-
-const selectedItem = computed(() => {
-  if (props.multiple) {
-    const ids = Array.isArray(props.modelValue) ? props.modelValue : []
-    return ids
-      .map((id) => findItem(props.items, id))
-      .filter((item): item is TreeItemData => item !== undefined)
-  }
-  return typeof props.modelValue === 'string' ? findItem(props.items, props.modelValue) : undefined
-})
-
-function toModelValue(
-  value: TreeItemData | TreeItemData[] | undefined,
-): string | string[] | undefined {
-  if (Array.isArray(value)) return value.map(getKey)
-  return value ? getKey(value) : undefined
-}
+// string-based v-model convention. Shared with AtVirtualTree, which needs the
+// same translation.
+const { getKey, getChildren, selectedItem, toModelValue } = useTreeSelection(
+  toRef(props, 'items'),
+  toRef(props, 'modelValue'),
+  toRef(props, 'multiple'),
+)
 </script>
 
 <template>
