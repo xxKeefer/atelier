@@ -73,7 +73,10 @@ const item =
   'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[state=checked]:border-primary-border-default data-[state=checked]:bg-primary-surface-recess data-[state=checked]:shadow-primary-low ' +
-  'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
+  // opacity-50 blends fg-default text down to a 4.28:1 ratio against this
+  // row's own bg -- just under WCAG AA's 4.5:1. 60 is the lowest step that
+  // clears it (~5.48:1) while still reading as visually dimmed.
+  'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60'
 </script>
 
 <template>
