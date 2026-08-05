@@ -72,7 +72,7 @@ const a11y = computed(() => {
 
 <template>
   <span
-    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-[var(--color-secondary-default)] text-[var(--color-secondary-fg)]"
+    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-secondary-default text-secondary-fg"
     :class="[sizes[size].box, shapes[shape]]"
     v-bind="a11y"
   >

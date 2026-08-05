@@ -57,7 +57,7 @@ const overflowCount = computed(() =>
       v-bind="avatar"
       :size="size"
       :shape="shape"
-      :class="[index > 0 && overlap[size], 'ring-2 ring-[var(--color-surface-default)]']"
+      :class="[index > 0 && overlap[size], 'ring-2 ring-surface-default']"
       :style="{ zIndex: visible.length - index }"
     />
     <AtAvatar
@@ -65,7 +65,7 @@ const overflowCount = computed(() =>
       :initials="`+${overflowCount}`"
       :size="size"
       :shape="shape"
-      :class="[overlap[size], 'ring-2 ring-[var(--color-surface-default)]']"
+      :class="[overlap[size], 'ring-2 ring-surface-default']"
       :style="{ zIndex: 0 }"
     />
   </div>

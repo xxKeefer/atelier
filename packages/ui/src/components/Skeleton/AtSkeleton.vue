@@ -19,11 +19,11 @@ const props = withDefaults(
 const radiusClass = computed(() => {
   switch (props.shape) {
     case 'circle':
-      return 'rounded-[var(--radius-full)]'
+      return 'rounded-full'
     case 'text':
-      return 'rounded-[var(--radius-sm)]'
+      return 'rounded-sm'
     default:
-      return 'rounded-[var(--radius-md)]'
+      return 'rounded-md'
   }
 })
 
@@ -34,7 +34,7 @@ const style = computed(() => ({ width: props.width, height: props.height }))
   <div
     aria-hidden="true"
     data-testid="skeleton"
-    class="bg-[var(--color-surface-subtle)] animate-pulse motion-reduce:animate-none"
+    class="bg-surface-subtle animate-pulse motion-reduce:animate-none"
     :class="radiusClass"
     :style="style"
   />

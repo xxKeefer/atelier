@@ -42,13 +42,13 @@ const rootProps = computed(() =>
 // as standalone text; secondary's "default" already clears AA, so needs no
 // equivalent.
 const intentColors: Record<Intent, string> = {
-  primary: 'text-[var(--color-primary-text)]',
-  secondary: 'text-[var(--color-secondary-default)]',
-  neutral: 'text-[var(--color-fg-default)]',
-  danger: 'text-[var(--color-danger-fg)]',
-  success: 'text-[var(--color-success-fg)]',
-  warning: 'text-[var(--color-warning-fg)]',
-  info: 'text-[var(--color-info-fg)]',
+  primary: 'text-primary-text',
+  secondary: 'text-secondary-default',
+  neutral: 'text-fg-default',
+  danger: 'text-danger-fg',
+  success: 'text-success-fg',
+  warning: 'text-warning-fg',
+  info: 'text-info-fg',
 }
 
 // No display utility here (no inline-flex/inline-block): the root stays a

@@ -15,17 +15,17 @@ test('is hidden from the a11y tree', () => {
 
 test('rect shape (default) uses the md radius token', () => {
   render(Skeleton)
-  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-[var(--radius-md)]')
+  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-md')
 })
 
 test('circle shape uses the full radius token', () => {
   render(Skeleton, { props: { shape: 'circle' } })
-  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-[var(--radius-full)]')
+  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-full')
 })
 
 test('text shape uses the sm radius token', () => {
   render(Skeleton, { props: { shape: 'text' } })
-  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-[var(--radius-sm)]')
+  expect(screen.getByTestId('skeleton')).toHaveClass('rounded-sm')
 })
 
 test('applies width and height from props', () => {
@@ -40,7 +40,7 @@ test('defaults height to a text-line size when not passed', () => {
 
 test('renders on the recessed surface token', () => {
   render(Skeleton)
-  expect(screen.getByTestId('skeleton')).toHaveClass('bg-[var(--color-surface-subtle)]')
+  expect(screen.getByTestId('skeleton')).toHaveClass('bg-surface-subtle')
 })
 
 test('pulses to signal loading, but respects reduced-motion preference', () => {
