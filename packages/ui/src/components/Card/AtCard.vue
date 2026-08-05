@@ -49,7 +49,7 @@ const rowClass = computed(() => {
 // cards rest at high, one tier below a button's higher; interactive ones extrude).
 const base =
   'relative flex flex-col bg-surface-default text-fg-default font-body ' +
-  'border-[3px] border-solid border-[color:var(--color-border-default)] rounded-md overflow-hidden'
+  'border-thick rounded-md overflow-hidden'
 
 // Static card: high on the elevation ladder, one tier quieter than a button (higher).
 const staticShadow = 'shadow-high'

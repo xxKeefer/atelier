@@ -33,9 +33,7 @@ const variant = computed(() => injectedVariant?.value ?? 'default')
     class="relative flex items-stretch"
     :class="[
       fullWidth ? 'w-full [&>button]:flex-1 [&>button]:basis-0' : 'w-max',
-      variant === 'flat'
-        ? 'border-b-[3px] border-solid border-[color:var(--color-border-default)]'
-        : '',
+      variant === 'flat' ? 'border-b-[3px] border-solid border-border-default' : '',
     ]"
   >
     <slot />

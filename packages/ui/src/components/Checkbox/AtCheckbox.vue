@@ -56,7 +56,7 @@ const modelValue = computed({
 // whatever rung the state is naturally at and dims it -- it never transitions.
 const base =
   'relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md ' +
-  'border-[3px] border-solid text-fg-default ' +
+  'border-thick text-fg-default ' +
   'transition-[transform,box-shadow] transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'

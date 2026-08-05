@@ -52,7 +52,7 @@ const track: Record<Size, string> = {
 // well like Switch's track -- the empty portion reads as a carved-out channel.
 const trackClasses = computed(
   () =>
-    `relative w-full overflow-hidden rounded-md border-[3px] border-solid border-border-default bg-surface-default shadow-low ${track[props.size]}`,
+    `relative w-full overflow-hidden rounded-md border-thick bg-surface-default shadow-low ${track[props.size]}`,
 )
 
 // Indeterminate: no known value, so the fill can't track progress -- a full-width

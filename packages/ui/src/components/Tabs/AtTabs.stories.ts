@@ -125,7 +125,7 @@ export const ContentComposition: Story = {
           </ul>
         </TabsContent>
         <TabsContent value="card">
-          <div class="flex items-center gap-2 rounded-md border-[3px] border-solid border-border-default bg-surface-default p-4">
+          <div class="flex items-center gap-2 rounded-md border-thick bg-surface-default p-4">
             <Icon :icon="PhHouse" />
             <span>Composed content inside a card-like block.</span>
           </div>

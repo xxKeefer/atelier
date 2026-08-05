@@ -143,7 +143,7 @@ const showFallback = computed(() => !props.src || failed.value)
   />
   <div
     v-else
-    class="flex items-center justify-center border-[3px] border-solid border-border-default bg-surface-subtle text-fg-subtle"
+    class="flex items-center justify-center border-thick bg-surface-subtle text-fg-subtle"
     :style="style"
     role="img"
     :aria-label="alt || undefined"

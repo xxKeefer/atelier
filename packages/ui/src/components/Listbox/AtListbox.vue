@@ -103,7 +103,7 @@ const content = 'flex flex-col bg-surface-default'
 // just non-interactive and alone, so it rounds on every corner.
 const emptyRow =
   'flex items-center rounded-md px-4 py-2 font-body text-base text-fg-subtle ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat'
+  'border-thick bg-surface-default shadow-flat'
 </script>
 
 <template>

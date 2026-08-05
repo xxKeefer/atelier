@@ -129,7 +129,7 @@ test('renders a fallback when the SVG fails to parse', async () => {
   // Unclosed tag makes this invalid XML, so DOMParser reports a parsererror.
   render(Image, { props: { src: svgDataUri('<circle r="4"'), alt: 'A circle' } })
   await vi.waitFor(() => {
-    expect(screen.getByRole('img', { name: 'A circle' })).toHaveClass('border-border-default')
+    expect(screen.getByRole('img', { name: 'A circle' })).toHaveClass('border-thick')
   })
 })
 

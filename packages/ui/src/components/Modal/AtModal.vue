@@ -82,7 +82,7 @@ const sizeClasses: Record<Position, Record<Size, string>> = {
 // narrower/shorter than its requested size, with a small margin either side.
 const panelClasses = computed(() => [
   'fixed z-50 flex max-h-[90vh] max-w-[calc(100vw-2rem)] flex-col overflow-hidden bg-surface-default text-fg-default font-body',
-  'border-[3px] border-solid border-[color:var(--color-border-default)] shadow-higher',
+  'border-thick shadow-higher',
   positionClasses[props.position],
   sizeClasses[props.position][props.size],
 ])
@@ -108,7 +108,7 @@ const panelClasses = computed(() => [
         <div
           v-if="title !== undefined || showCloseButton"
           data-testid="modal-header"
-          class="flex items-start justify-between gap-4 border-b-[3px] border-solid border-[color:var(--color-border-default)] px-4 py-3"
+          class="flex items-start justify-between gap-4 border-b-[3px] border-solid border-border-default px-4 py-3"
         >
           <div class="flex min-w-0 flex-1 flex-col gap-1">
             <DialogTitle
@@ -140,7 +140,7 @@ const panelClasses = computed(() => [
         <div
           v-if="hasFooter"
           data-testid="modal-footer"
-          class="flex items-center justify-end gap-2 border-t-[3px] border-solid border-[color:var(--color-border-default)] px-4 py-3"
+          class="flex items-center justify-end gap-2 border-t-[3px] border-solid border-border-default px-4 py-3"
         >
           <slot name="footer" />
         </div>

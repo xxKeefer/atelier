@@ -92,8 +92,8 @@ const groupEl = ref<HTMLElement>()
 const triggerClasses = FIELD_SIZES
 
 const trigger =
-  'w-full font-body text-fg-default bg-surface-default border-[3px] border-solid ' +
-  'border-border-default shadow-low ' +
+  'w-full font-body text-fg-default bg-surface-default border-thick ' +
+  'shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'placeholder:text-fg-subtle ' +
   'focus:outline-none focus-visible:outline-none'
@@ -113,13 +113,13 @@ const triggerRounding = useFieldRounding(
 
 const iconBoxClasses = computed(() => [
   'flex items-center justify-center font-body text-fg-subtle ' +
-    'bg-surface-default border-[3px] border-solid border-border-default shadow-flat border-r-0',
+    'bg-surface-default border-thick shadow-flat border-r-0',
   !hasPrefix.value && 'rounded-l-md',
 ])
 
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
+  'bg-surface-default border-thick shadow-flat'
 
 // Mirrors AtSelect's options menu: the GroupedControls vertical gang, each
 // row bordered and rounding only at the stack's outer ends.
@@ -132,7 +132,7 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
 // cut-off middle item.
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat ' +
+  'border-thick bg-surface-default shadow-flat ' +
   'border-b-0 last:border-b-[3px] first:rounded-t-md last:rounded-b-md ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'

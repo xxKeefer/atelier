@@ -95,7 +95,7 @@ const triggerClasses = FIELD_SIZES
 
 const trigger =
   'flex w-full items-center justify-between gap-2 font-body text-fg-default ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-low ' +
+  'bg-surface-default border-thick shadow-low ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
   'data-[placeholder]:text-fg-subtle ' +
   'focus:outline-none focus-visible:outline-none'
@@ -121,7 +121,7 @@ const triggerRounding = useFieldRounding(
 // only rounds when there's no prefix further out to its left.
 const iconBoxClasses = computed(() => [
   'flex items-center justify-center font-body text-fg-subtle ' +
-    'bg-surface-default border-[3px] border-solid border-border-default shadow-flat border-r-0',
+    'bg-surface-default border-thick shadow-flat border-r-0',
   !hasPrefix.value && 'rounded-l-md',
 ])
 
@@ -130,7 +130,7 @@ const iconBoxClasses = computed(() => [
 // inner edge (against icon/trigger) never carries a border.
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
+  'bg-surface-default border-thick shadow-flat'
 
 // The options menu is the GroupedControls vertical gang (Foundations/GroupedControls
 // Vertical story): each option carries its own border and rounds only at the
@@ -141,7 +141,7 @@ const content = 'overflow-hidden rounded-md bg-surface-default'
 
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat ' +
+  'border-thick bg-surface-default shadow-flat ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
 
