@@ -77,3 +77,64 @@ export const colorTokenFamilies: { family: string; entries: ColorTokenEntry[] }[
     family,
     entries: colorTokenEntries.filter((entry) => entry.family === family),
   }))
+
+// Family-level $description isn't carried on ColorTokenEntry (it's a group
+// property, not a leaf one) -- color-semantic.json only sets it on the
+// top-level "color" node and the "surface" family, so a small literal lookup
+// beats threading a new field through flatten() for two values.
+const FAMILY_DESCRIPTIONS: Record<string, string> = {
+  surface: 'Element surface ramp: the three planes the elevation ladder draws from.',
+}
+
+const ROOT_DESCRIPTION =
+  'Tier-2 semantic roles, dark-first; all values reference the tier-1 palette.'
+
+interface DtcgLeaf {
+  $value: string
+  $description?: string
+}
+interface DtcgNode {
+  $description?: string
+  [key: string]: DtcgLeaf | DtcgNode | string | undefined
+}
+
+/**
+ * Inverse of flatten(): rebuilds color-semantic.json's nested DTCG shape from
+ * the playground's flat cssVar -> value override map. Overrides are already
+ * fully-resolved values (no aliases), so exported leaves carry literal colors
+ * rather than the source file's `{palette.*}` alias strings -- expected, not
+ * a bug, since resolving back to an alias isn't reversible in general.
+ */
+export function buildColorSemanticJson(
+  overrides: Record<string, string>,
+  entries: ColorTokenEntry[] = colorTokenEntries,
+): { $schema: string; color: DtcgNode } {
+  const color: DtcgNode = { $type: 'color', $description: ROOT_DESCRIPTION }
+
+  for (const entry of entries) {
+    if (!(entry.family in color)) {
+      const familyNode: DtcgNode = {}
+      if (FAMILY_DESCRIPTIONS[entry.family])
+        familyNode.$description = FAMILY_DESCRIPTIONS[entry.family]
+      color[entry.family] = familyNode
+    }
+    const familyNode = color[entry.family] as DtcgNode
+
+    // entry.path is the dot path from the family down (e.g. "primary.hover",
+    // "surface.subtle") -- its first segment is always the family name itself,
+    // already used as the outer key, so drop it before walking the rest.
+    const segments = entry.path.split('.').slice(1)
+    const leafKey = segments.at(-1) ?? entry.path
+    let node = familyNode
+    for (const segment of segments.slice(0, -1)) {
+      if (!(segment in node)) node[segment] = {}
+      node = node[segment] as DtcgNode
+    }
+
+    const leaf: DtcgLeaf = { $value: overrides[entry.cssVar] ?? entry.value }
+    if (entry.description) leaf.$description = entry.description
+    node[leafKey] = leaf
+  }
+
+  return { $schema: 'https://tr.designtokens.org/format/', color }
+}

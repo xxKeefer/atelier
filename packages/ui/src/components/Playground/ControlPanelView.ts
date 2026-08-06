@@ -1,5 +1,11 @@
-import { defineComponent, type PropType } from 'vue'
-import { colorTokenFamilies, toPickerHex } from './tokenList'
+import { defineComponent, ref, type PropType } from 'vue'
+import Button from '../Button/AtButton.vue'
+import {
+  buildColorSemanticJson,
+  colorTokenEntries,
+  colorTokenFamilies,
+  toPickerHex,
+} from './tokenList'
 import type { useTokenOverrides } from './useTokenOverrides'
 
 // Renders one control per color-semantic.json leaf token, grouped by family
@@ -8,6 +14,8 @@ import type { useTokenOverrides } from './useTokenOverrides'
 // caller (useTokenOverrides) and passed in, so a wrapper around
 // ProductPageView can read the same state to apply it as live CSS vars.
 export const ControlPanelView = defineComponent({
+  // eslint-disable-next-line vue/no-reserved-component-names -- registering the imported AtButton component, not defining one named that
+  components: { Button },
   props: {
     overrides: {
       type: Object as PropType<ReturnType<typeof useTokenOverrides>['overrides']>,
@@ -18,10 +26,26 @@ export const ControlPanelView = defineComponent({
       required: true,
     },
   },
-  setup: () => ({ families: colorTokenFamilies, toPickerHex }),
+  setup: (props) => {
+    // "Copied!" is a timed label swap, not persistent state -- a plain ref is
+    // enough, no need to route it through useTokenOverrides.
+    const copied = ref(false)
+    async function exportJson() {
+      const json = buildColorSemanticJson({ ...props.overrides }, colorTokenEntries)
+      await navigator.clipboard.writeText(JSON.stringify(json, null, 2))
+      copied.value = true
+      setTimeout(() => (copied.value = false), 1500)
+    }
+    return { families: colorTokenFamilies, toPickerHex, copied, exportJson }
+  },
   template: `
     <div class="flex w-80 flex-col gap-2 bg-surface-default p-4 font-body text-fg-default" data-testid="control-panel">
-      <h2 class="font-heading text-base font-bold text-fg-default">Color tokens</h2>
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="font-heading text-base font-bold text-fg-default">Color tokens</h2>
+        <Button size="sm" variant="flat" data-testid="export-json" @click="exportJson">
+          {{ copied ? 'Copied!' : 'Export JSON' }}
+        </Button>
+      </div>
       <p class="text-xs text-fg-subtle">One control per color-semantic.json token, grouped by family.</p>
 
       <details v-for="group in families" :key="group.family" class="rounded-md border border-border-default" open>
