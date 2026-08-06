@@ -3,6 +3,7 @@ import { ProductPageView } from './ProductPageView'
 import { ControlPanelView } from './ControlPanelView'
 import { PlaygroundView } from './PlaygroundView'
 import { useTokenOverrides } from './useTokenOverrides'
+import { RampPlaygroundView } from './RampPlaygroundView'
 
 // The token playground has no component of its own -- like Colour and
 // Elevation, it's a foundation-layer story that exercises real @atelier/ui
@@ -37,4 +38,12 @@ export const ControlPanel: Story = {
 // criterion of the Token Playground epic).
 export const ProductPageWithControls: Story = {
   render: () => ({ components: { PlaygroundView }, template: `<PlaygroundView />` }),
+}
+
+// Phase 2: ramp-level palette controls (lightness/chroma/hue-shift per hue
+// family) layered on the phase 1 semantic panel -- both read/write one
+// overrides map, so shifting a ramp updates the semantic panel's swatches and
+// the product page live, in the same story.
+export const RampControls: Story = {
+  render: () => ({ components: { RampPlaygroundView }, template: `<RampPlaygroundView />` }),
 }
