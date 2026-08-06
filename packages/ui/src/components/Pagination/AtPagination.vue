@@ -104,7 +104,7 @@ function onPageSizeChange(value: string) {
 const pageButtonBase =
   'inline-flex h-9 min-w-9 items-center justify-center rounded-md border-thick px-2 ' +
   'font-body text-sm font-bold text-fg-default ' +
-  'transition-[transform,box-shadow,filter] transition-press ' +
+  'transition-shape-press ' +
   'cursor-pointer enabled:shadow-higher hover:enabled:shadow-high hover:enabled:brightness-[1.08] ' +
   'enabled:-translate-y-lift-full hover:enabled:-translate-y-lift-half ' +
   'active:enabled:translate-y-0 active:enabled:brightness-95 ' +

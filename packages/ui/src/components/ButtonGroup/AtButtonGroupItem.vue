@@ -10,7 +10,7 @@ defineOptions({ inheritAttrs: false })
 
 const base =
   'relative inline-flex h-10 items-center justify-center border-[3px] border-solid px-4 font-body font-bold text-sm text-fg-default ' +
-  'transition-[transform,box-shadow,filter] transition-press ' +
+  'transition-shape-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   // z-10 so the focus outline isn't painted over by a later (rightward)
   // sibling, which otherwise sits on top in normal paint order.

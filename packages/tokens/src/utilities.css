@@ -20,6 +20,21 @@
 }
 
 /*
+ * Shape + glow press transition (Card, ButtonGroupItem, Pagination): the
+ * transform/box-shadow/filter property list repeated verbatim at all 3 call
+ * sites alongside transition-press, so it is bundled here instead.
+ */
+@utility transition-shape-press {
+  transition-property: transform, box-shadow, filter;
+  transition-duration: 120ms;
+  transition-timing-function: ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/*
  * 2-rung checked-state press ladder (AtCheckbox/AtRadio via checkedState.ts).
  * Each utility bundles the translate/bg/border/shadow tuple for one rung;
  * callers apply them behind data-state/enabled/disabled variants.
