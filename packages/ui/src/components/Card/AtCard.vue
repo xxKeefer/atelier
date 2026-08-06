@@ -59,9 +59,9 @@ const staticShadow = 'shadow-high'
 // canvas-coloured lip would vanish into it; the border tone reads as thickness.
 const interactive =
   'cursor-pointer transition-shape-press ' +
-  'shadow-[0_6px_0_0_var(--color-border-default),0_8px_8px_0_rgba(0,0,0,0.4)] ' +
-  'hover:translate-y-[2px] hover:shadow-[0_4px_0_0_var(--color-border-default),0_5px_6px_0_rgba(0,0,0,0.4)] hover:brightness-[1.08] ' +
-  'active:translate-y-[6px] active:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)] active:brightness-95 ' +
+  'shadow-[0_6px_0_0_var(--color-border-default),var(--shadow-ambient-higher)] ' +
+  'hover:translate-y-[2px] hover:shadow-[0_4px_0_0_var(--color-border-default),var(--shadow-ambient-high)] hover:brightness-[1.08] ' +
+  'active:translate-y-[6px] active:shadow-[var(--shadow-ambient-low)] active:brightness-95 ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
 const classes = computed(() => [base, isInteractive.value ? interactive : staticShadow])
