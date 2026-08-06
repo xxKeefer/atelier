@@ -7,6 +7,7 @@ import ListboxGroup from './AtListboxGroup.vue'
 import ListboxGroupLabel from './AtListboxGroupLabel.vue'
 import ListboxItem from './AtListboxItem.vue'
 import Icon from '../Icon/AtIcon.vue'
+import { SNAP_BOARD_WIDTH } from '../../test/snap'
 
 const meta = {
   title: 'Forms/Listbox',
@@ -158,8 +159,9 @@ export const FilterNoMatches: Story = {
 export const Snapshot: Story = {
   render: () => ({
     components: { Listbox, ListboxFilter, ListboxGroup, ListboxGroupLabel, ListboxItem },
+    setup: () => ({ SNAP_BOARD_WIDTH }),
     template: `
-      <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
+      <div class="flex flex-col gap-8 bg-bg-default p-6" :style="{ width: SNAP_BOARD_WIDTH + 'px' }" data-testid="snap-board">
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">Single-select</h2>
           <div class="flex flex-wrap items-start gap-6">

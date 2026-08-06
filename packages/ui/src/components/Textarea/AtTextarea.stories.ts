@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { defineComponent } from 'vue'
 import Textarea from './AtTextarea.vue'
+import { SNAP_BOARD_WIDTH } from '../../test/snap'
 
 const sizes = ['sm', 'md', 'lg'] as const
 
@@ -123,8 +124,9 @@ export const Sizes: Story = {
 export const Snapshot: Story = {
   render: () => ({
     components: { Textarea, SizesView },
+    setup: () => ({ SNAP_BOARD_WIDTH }),
     template: `
-      <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
+      <div class="flex flex-col gap-8 bg-bg-default p-6" :style="{ width: SNAP_BOARD_WIDTH + 'px' }" data-testid="snap-board">
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">States</h2>
           <div class="flex flex-wrap items-start gap-6">

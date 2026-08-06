@@ -4,7 +4,28 @@
  * else in this package is Style Dictionary output from the JSON tokens.
  */
 
+@utility border-thick {
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--color-border-default);
+}
+
 @utility transition-press {
+  transition-duration: 120ms;
+  transition-timing-function: ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/*
+ * Shape + glow press transition (Card, ButtonGroupItem, Pagination): the
+ * transform/box-shadow/filter property list repeated verbatim at all 3 call
+ * sites alongside transition-press, so it is bundled here instead.
+ */
+@utility transition-shape-press {
+  transition-property: transform, box-shadow, filter;
   transition-duration: 120ms;
   transition-timing-function: ease;
 

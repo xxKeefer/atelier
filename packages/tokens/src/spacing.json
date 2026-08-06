@@ -28,6 +28,24 @@
         "$value": "4px",
         "$description": "higher edge height: full press-to-flush displacement"
       }
+    },
+    "modal-center": {
+      "$description": "AtModal width cap for the center position (dialogs).",
+      "sm": { "$value": "24rem", "$description": "384px" },
+      "md": { "$value": "32rem", "$description": "512px" },
+      "lg": { "$value": "48rem", "$description": "768px" }
+    },
+    "modal-edge-width": {
+      "$description": "AtModal width cap for the left/right positions (sheets sliding along the horizontal axis).",
+      "sm": { "$value": "20rem", "$description": "320px" },
+      "md": { "$value": "28rem", "$description": "448px" },
+      "lg": { "$value": "36rem", "$description": "576px" }
+    },
+    "modal-edge-height": {
+      "$description": "AtModal height cap for the top/bottom positions (sheets sliding along the vertical axis).",
+      "sm": { "$value": "12rem", "$description": "192px" },
+      "md": { "$value": "18rem", "$description": "288px" },
+      "lg": { "$value": "24rem", "$description": "384px" }
     }
   },
   "radius": {

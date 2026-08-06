@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { PhShoppingCart } from '@phosphor-icons/vue'
 import Combobox from './AtCombobox.vue'
 import Icon from '../Icon/AtIcon.vue'
+import { SNAP_BOARD_WIDTH } from '../../test/snap'
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -134,9 +135,9 @@ export const Disabled: Story = {
 export const Snapshot: Story = {
   render: () => ({
     components: { Combobox, Icon },
-    setup: () => ({ fruits, PhShoppingCart }),
+    setup: () => ({ fruits, PhShoppingCart, SNAP_BOARD_WIDTH }),
     template: `
-      <div class="flex w-[960px] flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
+      <div class="flex flex-col gap-8 bg-bg-default p-6" :style="{ width: SNAP_BOARD_WIDTH + 'px' }" data-testid="snap-board">
         <section class="flex flex-col gap-4">
           <h2 class="font-heading text-lg font-bold text-fg-default">Default</h2>
           <div class="flex flex-wrap items-start gap-6">

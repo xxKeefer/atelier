@@ -33,15 +33,13 @@ const variant = computed(() => injectedVariant?.value ?? 'default')
     class="relative flex items-stretch"
     :class="[
       fullWidth ? 'w-full [&>button]:flex-1 [&>button]:basis-0' : 'w-max',
-      variant === 'flat'
-        ? 'border-b-[3px] border-solid border-[color:var(--color-border-default)]'
-        : '',
+      variant === 'flat' ? 'border-b-[3px] border-solid border-border-default' : '',
     ]"
   >
     <slot />
     <TabsIndicator
       v-if="variant === 'flat'"
-      class="absolute bottom-0 h-[3px] w-[var(--reka-tabs-indicator-size)] translate-x-[var(--reka-tabs-indicator-position)] bg-[color:var(--color-primary-default)] transition-[transform,width] transition-press"
+      class="absolute bottom-0 h-[3px] w-[var(--reka-tabs-indicator-size)] translate-x-[var(--reka-tabs-indicator-position)] bg-primary-default transition-[transform,width] transition-press"
     />
   </TabsList>
 </template>

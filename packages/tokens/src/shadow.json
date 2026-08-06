@@ -55,6 +55,40 @@
       },
       "$description": "higher: prominent lift. resting default buttons. Pair with surface.strong; press with lift.full."
     },
+    "ambient": {
+      "$description": "Soft blur companion layer, stacked with a hard-edge rung to float a surface above the canvas. Rung names borrow the elevation ladder's tiers.",
+      "higher": {
+        "$value": {
+          "color": "rgba(0,0,0,0.4)",
+          "offsetX": "0",
+          "offsetY": "8px",
+          "blur": "8px",
+          "spread": "0"
+        },
+        "$description": "ambient.higher: rest-state glow, most floated. Pair with the higher/lower hard edge."
+      },
+      "high": {
+        "$value": {
+          "color": "rgba(0,0,0,0.4)",
+          "offsetX": "0",
+          "offsetY": "5px",
+          "blur": "6px",
+          "spread": "0"
+        },
+        "$description": "ambient.high: hover-state glow, settles closer to the surface. Pair with the high/low hard edge."
+      },
+      "low": {
+        "$value": {
+          "color": "rgba(0,0,0,0.5)",
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "4px",
+          "spread": "0",
+          "inset": true
+        },
+        "$description": "ambient.low: pressed-state glow, inset. Stands alone, no hard edge pair."
+      }
+    },
     "primary": {
       "$description": "Primary-brand coloured elevation ladder: magenta.800 recess inset, bright magenta.600 lift.",
       "lower": {

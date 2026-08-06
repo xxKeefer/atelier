@@ -102,10 +102,9 @@ function onPageSizeChange(value: string) {
 // <button>), so it can never be re-clicked or refocused as an actionable
 // control per the AC.
 const pageButtonBase =
-  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border-[3px] border-solid px-2 ' +
+  'inline-flex h-9 min-w-9 items-center justify-center rounded-md border-thick px-2 ' +
   'font-body text-sm font-bold text-fg-default ' +
-  'transition-[transform,box-shadow,filter] transition-press ' +
-  'border-border-default ' +
+  'transition-shape-press ' +
   'cursor-pointer enabled:shadow-higher hover:enabled:shadow-high hover:enabled:brightness-[1.08] ' +
   'enabled:-translate-y-lift-full hover:enabled:-translate-y-lift-half ' +
   'active:enabled:translate-y-0 active:enabled:brightness-95 ' +
@@ -122,8 +121,8 @@ const currentPageClasses =
 // no hover -- so it still reads as "not a page". Three static dots rather
 // than a text glyph, evenly spaced like the icon buttons either side of it.
 const ellipsisClasses =
-  'inline-flex h-9 min-w-9 items-center justify-center gap-0.5 rounded-md border-[3px] border-solid px-2 ' +
-  'border-border-default shadow-flat opacity-50 select-none'
+  'inline-flex h-9 min-w-9 items-center justify-center gap-0.5 rounded-md border-thick px-2 ' +
+  'shadow-flat opacity-50 select-none'
 const ellipsisDotClasses = 'size-1 rounded-full bg-fg-subtle'
 </script>
 

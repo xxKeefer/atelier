@@ -10,7 +10,7 @@ withDefaults(defineProps<{ disabled?: boolean }>(), { disabled: false })
 // of items composes correctly.
 const item =
   'flex cursor-pointer items-center px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat border-b-0 ' +
+  'border-thick bg-surface-default shadow-flat border-b-0 ' +
   'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'

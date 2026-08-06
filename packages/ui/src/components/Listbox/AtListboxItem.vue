@@ -69,7 +69,7 @@ const item =
   // flex-col AtListbox already stretches children by default and is
   // unaffected by the extra class.
   'flex w-full cursor-pointer items-center justify-between gap-2 px-4 py-2 font-body text-base text-fg-default outline-none ' +
-  'border-[3px] border-solid border-border-default bg-surface-default shadow-flat border-b-0 ' +
+  'border-thick bg-surface-default shadow-flat border-b-0 ' +
   'first:rounded-t-md last:rounded-b-md last:border-b-[3px] ' +
   'data-[highlighted]:bg-surface-subtle data-[highlighted]:shadow-low ' +
   'data-[state=checked]:border-primary-border-default data-[state=checked]:bg-primary-surface-recess data-[state=checked]:shadow-primary-low ' +

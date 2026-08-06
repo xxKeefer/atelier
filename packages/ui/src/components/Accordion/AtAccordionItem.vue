@@ -21,7 +21,7 @@ withDefaults(
   <AccordionItem
     :value="value"
     :disabled="disabled"
-    class="[&:not(:last-child)]:border-b-[3px] [&:not(:last-child)]:border-solid [&:not(:last-child)]:border-[color:var(--color-border-default)]"
+    class="[&:not(:last-child)]:border-b-[3px] [&:not(:last-child)]:border-solid [&:not(:last-child)]:border-border-default"
   >
     <AccordionHeader>
       <!-- group: the caret below reads the trigger's own data-state to flip,

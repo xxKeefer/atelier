@@ -46,7 +46,7 @@ watch(
 const base =
   'w-full font-body text-fg-default ' +
   'bg-surface-default placeholder:text-fg-subtle ' +
-  'border-[3px] border-solid border-border-default rounded-md ' +
+  'border-thick rounded-md ' +
   'shadow-lower disabled:shadow-low ' +
   'transition-[box-shadow,border-color,background-color] transition-press ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +

@@ -46,7 +46,7 @@ const modelValue = computed({
 // raised one -- mirrors Checkbox's checked state, so primary uses
 // bg-primary-surface-recess here, not surface-strong.
 const track =
-  'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-[3px] border-solid px-1 shadow-low ' +
+  'relative inline-flex h-6 w-11 shrink-0 items-center rounded-md border-thick px-1 shadow-low ' +
   'transition-colors transition-press ' +
   'cursor-pointer disabled:cursor-not-allowed disabled:transition-none ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus ' +

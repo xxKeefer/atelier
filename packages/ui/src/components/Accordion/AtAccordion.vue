@@ -26,7 +26,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string | string[] | unde
     :collapsible="collapsible"
     :disabled="disabled"
     :model-value="modelValue"
-    class="flex w-full flex-col overflow-hidden rounded-md border-[3px] border-solid border-[color:var(--color-border-default)] bg-surface-default font-body"
+    class="flex w-full flex-col overflow-hidden rounded-md border-thick bg-surface-default font-body"
     @update:model-value="(value) => emit('update:modelValue', value)"
   >
     <slot />

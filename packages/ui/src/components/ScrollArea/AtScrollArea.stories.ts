@@ -25,7 +25,7 @@ export const Playground: Story = {
     components: { ScrollArea },
     setup: () => ({ args }),
     template: `
-      <ScrollArea v-bind="args" class="h-48 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+      <ScrollArea v-bind="args" class="h-48 w-64 rounded-md border-thick">
         <div class="flex flex-col gap-2 p-4 font-body text-fg-default">
           <p v-for="n in 20" :key="n">Line {{ n }} of scrollable content.</p>
         </div>
@@ -40,7 +40,7 @@ export const Horizontal: Story = {
     components: { ScrollArea },
     setup: () => ({ args }),
     template: `
-      <ScrollArea v-bind="args" class="h-24 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+      <ScrollArea v-bind="args" class="h-24 w-64 rounded-md border-thick">
         <div class="flex w-max gap-2 p-4 font-body text-fg-default">
           <span v-for="n in 20" :key="n" class="w-24 shrink-0">Card {{ n }}</span>
         </div>
@@ -55,7 +55,7 @@ export const Both: Story = {
     components: { ScrollArea },
     setup: () => ({ args }),
     template: `
-      <ScrollArea v-bind="args" class="h-48 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+      <ScrollArea v-bind="args" class="h-48 w-64 rounded-md border-thick">
         <div class="flex w-[600px] flex-col gap-2 p-4 font-body text-fg-default">
           <p v-for="n in 20" :key="n">Line {{ n }} of wide, tall scrollable content.</p>
         </div>
@@ -73,7 +73,7 @@ const SnapshotView = defineComponent({
     <div class="flex w-max flex-col gap-8 bg-bg-default p-6" data-testid="snap-board">
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Vertical</h2>
-        <ScrollArea orientation="vertical" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="vertical" class="h-32 w-64 rounded-md border-thick">
           <div class="flex flex-col gap-2 p-4 font-body text-fg-default">
             <p v-for="n in 20" :key="n">Line {{ n }}</p>
           </div>
@@ -82,7 +82,7 @@ const SnapshotView = defineComponent({
 
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Horizontal</h2>
-        <ScrollArea orientation="horizontal" class="h-20 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="horizontal" class="h-20 w-64 rounded-md border-thick">
           <div class="flex w-max gap-2 p-4 font-body text-fg-default">
             <span v-for="n in 20" :key="n" class="w-24 shrink-0">Card {{ n }}</span>
           </div>
@@ -91,7 +91,7 @@ const SnapshotView = defineComponent({
 
       <section class="flex w-64 flex-col gap-3">
         <h2 class="font-heading text-lg font-bold text-fg-default">Both</h2>
-        <ScrollArea orientation="both" class="h-32 w-64 rounded-md border-[3px] border-solid border-[color:var(--color-border-default)]">
+        <ScrollArea orientation="both" class="h-32 w-64 rounded-md border-thick">
           <div class="flex w-[400px] flex-col gap-2 p-4 font-body text-fg-default">
             <p v-for="n in 20" :key="n">Line {{ n }}</p>
           </div>

@@ -57,7 +57,7 @@ const onInput = (e: Event) => {
 const base =
   'w-full font-body text-fg-default ' +
   'bg-surface-default placeholder:text-fg-subtle ' +
-  'border-[3px] border-solid border-border-default ' +
+  'border-thick ' +
   'shadow-lower disabled:shadow-low ' +
   'transition-[box-shadow,border-color,background-color] transition-press ' +
   'disabled:cursor-not-allowed disabled:opacity-50 ' +
@@ -99,7 +99,7 @@ const iconPadding: Record<Size, string> = {
 // is the seam.
 const prefixSuffixClasses =
   'flex items-center justify-center font-body text-fg-subtle ' +
-  'bg-surface-default border-[3px] border-solid border-border-default shadow-flat'
+  'bg-surface-default border-thick shadow-flat'
 </script>
 
 <template>

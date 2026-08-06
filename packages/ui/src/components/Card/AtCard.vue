@@ -49,7 +49,7 @@ const rowClass = computed(() => {
 // cards rest at high, one tier below a button's higher; interactive ones extrude).
 const base =
   'relative flex flex-col bg-surface-default text-fg-default font-body ' +
-  'border-[3px] border-solid border-[color:var(--color-border-default)] rounded-md overflow-hidden'
+  'border-thick rounded-md overflow-hidden'
 
 // Static card: high on the elevation ladder, one tier quieter than a button (higher).
 const staticShadow = 'shadow-high'
@@ -58,10 +58,10 @@ const staticShadow = 'shadow-high'
 // card's border colour, not the canvas shade -- the page is near-black, so a
 // canvas-coloured lip would vanish into it; the border tone reads as thickness.
 const interactive =
-  'cursor-pointer transition-[transform,box-shadow,filter] transition-press ' +
-  'shadow-[0_6px_0_0_var(--color-border-default),0_8px_8px_0_rgba(0,0,0,0.4)] ' +
-  'hover:translate-y-[2px] hover:shadow-[0_4px_0_0_var(--color-border-default),0_5px_6px_0_rgba(0,0,0,0.4)] hover:brightness-[1.04] ' +
-  'active:translate-y-[6px] active:shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)] active:brightness-95 ' +
+  'cursor-pointer transition-shape-press ' +
+  'shadow-[0_6px_0_0_var(--color-border-default),var(--shadow-ambient-higher)] ' +
+  'hover:translate-y-[2px] hover:shadow-[0_4px_0_0_var(--color-border-default),var(--shadow-ambient-high)] hover:brightness-[1.08] ' +
+  'active:translate-y-[6px] active:shadow-[var(--shadow-ambient-low)] active:brightness-95 ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus'
 
 const classes = computed(() => [base, isInteractive.value ? interactive : staticShadow])

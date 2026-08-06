@@ -62,7 +62,7 @@ test('inherit intent applies no colour class', () => {
 
 test('a named intent paints from that intent token', () => {
   render(Link, { props: { intent: 'danger' }, slots: { default: () => 'Delete account' } })
-  expect(screen.getByText('Delete account').className).toContain('text-[var(--color-danger-fg)]')
+  expect(screen.getByText('Delete account').className).toContain('text-danger-fg')
 })
 
 // #left renders before the label; #right after -- mirrors AtButton's slot

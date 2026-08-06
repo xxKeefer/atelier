@@ -20,8 +20,8 @@ const props = withDefaults(
 // collapsing the rule.
 const classes = computed(() =>
   props.orientation === 'vertical'
-    ? 'w-[3px] self-stretch shrink-0 bg-[var(--color-border-strong)]'
-    : 'h-[3px] w-full shrink-0 bg-[var(--color-border-strong)]',
+    ? 'w-[3px] self-stretch shrink-0 bg-border-strong'
+    : 'h-[3px] w-full shrink-0 bg-border-strong',
 )
 </script>
 

@@ -71,18 +71,43 @@ const positionClasses: Record<Position, string> = {
 // Sizes cap the panel's cross-axis dimension. Edge sheets size along the axis
 // perpendicular to the edge they slide from; center dialogs cap width.
 const sizeClasses: Record<Position, Record<Size, string>> = {
-  center: { sm: 'w-[24rem]', md: 'w-[32rem]', lg: 'w-[48rem]', full: 'w-[calc(100vw-2rem)]' },
-  left: { sm: 'w-[20rem]', md: 'w-[28rem]', lg: 'w-[36rem]', full: 'w-screen' },
-  right: { sm: 'w-[20rem]', md: 'w-[28rem]', lg: 'w-[36rem]', full: 'w-screen' },
-  top: { sm: 'h-[12rem]', md: 'h-[18rem]', lg: 'h-[24rem]', full: 'h-screen' },
-  bottom: { sm: 'h-[12rem]', md: 'h-[18rem]', lg: 'h-[24rem]', full: 'h-screen' },
+  center: {
+    sm: 'w-modal-center-sm',
+    md: 'w-modal-center-md',
+    lg: 'w-modal-center-lg',
+    full: 'w-[calc(100vw-2rem)]',
+  },
+  left: {
+    sm: 'w-modal-edge-width-sm',
+    md: 'w-modal-edge-width-md',
+    lg: 'w-modal-edge-width-lg',
+    full: 'w-screen',
+  },
+  right: {
+    sm: 'w-modal-edge-width-sm',
+    md: 'w-modal-edge-width-md',
+    lg: 'w-modal-edge-width-lg',
+    full: 'w-screen',
+  },
+  top: {
+    sm: 'h-modal-edge-height-sm',
+    md: 'h-modal-edge-height-md',
+    lg: 'h-modal-edge-height-lg',
+    full: 'h-screen',
+  },
+  bottom: {
+    sm: 'h-modal-edge-height-sm',
+    md: 'h-modal-edge-height-md',
+    lg: 'h-modal-edge-height-lg',
+    full: 'h-screen',
+  },
 }
 
 // max-w/h-[calc(100vw/vh-2rem)] keeps the panel on-screen on viewports
 // narrower/shorter than its requested size, with a small margin either side.
 const panelClasses = computed(() => [
   'fixed z-50 flex max-h-[90vh] max-w-[calc(100vw-2rem)] flex-col overflow-hidden bg-surface-default text-fg-default font-body',
-  'border-[3px] border-solid border-[color:var(--color-border-default)] shadow-higher',
+  'border-thick shadow-higher',
   positionClasses[props.position],
   sizeClasses[props.position][props.size],
 ])
@@ -108,7 +133,7 @@ const panelClasses = computed(() => [
         <div
           v-if="title !== undefined || showCloseButton"
           data-testid="modal-header"
-          class="flex items-start justify-between gap-4 border-b-[3px] border-solid border-[color:var(--color-border-default)] px-4 py-3"
+          class="flex items-start justify-between gap-4 border-b-[3px] border-solid border-border-default px-4 py-3"
         >
           <div class="flex min-w-0 flex-1 flex-col gap-1">
             <DialogTitle
@@ -133,14 +158,14 @@ const panelClasses = computed(() => [
           </DialogClose>
         </div>
 
-        <ScrollArea data-testid="modal-body" class="flex-1 px-4 py-4">
+        <ScrollArea data-testid="modal-body" type="auto" class="flex-1 px-4 py-4">
           <slot />
         </ScrollArea>
 
         <div
           v-if="hasFooter"
           data-testid="modal-footer"
-          class="flex items-center justify-end gap-2 border-t-[3px] border-solid border-[color:var(--color-border-default)] px-4 py-3"
+          class="flex items-center justify-end gap-2 border-t-[3px] border-solid border-border-default px-4 py-3"
         >
           <slot name="footer" />
         </div>
