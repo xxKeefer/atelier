@@ -1,6 +1,6 @@
-import { defineComponent, type PropType } from 'vue'
+import { defineComponent, ref, type PropType } from 'vue'
 import Button from '../Button/AtButton.vue'
-import { paletteFamilies } from './paletteList'
+import { buildPaletteJson, paletteFamilies } from './paletteList'
 import type { useRampOverrides } from './useRampOverrides'
 
 // Ramp-level controls: one section per hue family with lightness/chroma/hue
@@ -30,7 +30,7 @@ export const RampControlPanelView = defineComponent({
       required: true,
     },
   },
-  setup: () => {
+  setup: (props) => {
     // String `template:` (vs. an SFC <template> block) compiles expressions
     // with the plain JS parser, not the TS-aware one -- a `foo as Bar` cast
     // inline in the template is a runtime SyntaxError, not just a lint
@@ -38,11 +38,25 @@ export const RampControlPanelView = defineComponent({
     function sliderValue(event: Event): number {
       return Number((event.target as HTMLInputElement).value)
     }
-    return { families: paletteFamilies, sliderValue }
+    // "Copied!" is a timed label swap, not persistent state -- a plain ref is
+    // enough, no need to route it through useRampOverrides.
+    const copied = ref(false)
+    async function exportJson() {
+      const json = buildPaletteJson({ ...props.paletteOverrides })
+      await navigator.clipboard.writeText(JSON.stringify(json, null, 2))
+      copied.value = true
+      setTimeout(() => (copied.value = false), 1500)
+    }
+    return { families: paletteFamilies, sliderValue, copied, exportJson }
   },
   template: `
     <div class="flex w-80 flex-col gap-2 bg-surface-default p-4 font-body text-fg-default" data-testid="ramp-control-panel">
-      <h2 class="font-heading text-base font-bold text-fg-default">Palette ramps</h2>
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="font-heading text-base font-bold text-fg-default">Palette ramps</h2>
+        <Button size="sm" variant="flat" data-testid="export-palette-json" @click="exportJson">
+          {{ copied ? 'Copied!' : 'Export JSON' }}
+        </Button>
+      </div>
       <p class="text-xs text-fg-subtle">Lightness, chroma, and hue-shift controls per hue family.</p>
 
       <details v-for="group in families" :key="group.family" class="rounded-md border border-border-default" open>

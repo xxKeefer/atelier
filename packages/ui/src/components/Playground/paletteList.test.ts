@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest'
-import { paletteAliasMap, paletteFamilies, paletteStepEntries } from './paletteList'
+import paletteRawSource from '../../../../tokens/src/palette.json'
+import {
+  buildPaletteJson,
+  paletteAliasMap,
+  paletteFamilies,
+  paletteStepEntries,
+} from './paletteList'
 
 test('flattens every palette.json step across all families', () => {
   expect(paletteStepEntries.length).toBe(7 * 11) // 7 hues, 11 steps each
@@ -36,4 +42,43 @@ test('every alias target is a real cssVar with the --color- prefix', () => {
 test('every alias source key is a real --palette- cssVar', () => {
   const validKeys = new Set(paletteStepEntries.map((e) => e.cssVar))
   for (const key of Object.keys(paletteAliasMap)) expect(validKeys.has(key)).toBe(true)
+})
+
+test('buildPaletteJson reconstructs palette.json exactly from identity overrides', () => {
+  const overrides = Object.fromEntries(paletteStepEntries.map((e) => [e.cssVar, e.value]))
+  const result = buildPaletteJson(overrides)
+  expect(result).toEqual(paletteRawSource)
+})
+
+test('buildPaletteJson reflects overridden values, not the originals', () => {
+  const overrides = Object.fromEntries(paletteStepEntries.map((e) => [e.cssVar, e.value]))
+  overrides['--palette-magenta-500'] = '#abcdef'
+  const result = buildPaletteJson(overrides)
+  const magenta = result.palette.magenta
+  if (!magenta) throw new Error('expected magenta family in result')
+  expect(magenta['500']).toEqual({ $value: '#abcdef' })
+  // untouched steps/families are unaffected
+  expect(magenta['600']).toEqual({ $value: overrides['--palette-magenta-600'] })
+  expect(result.palette.neutral?.$description).toBe(paletteRawSource.palette.neutral.$description)
+})
+
+test('buildPaletteJson emits every family and every step, no drops', () => {
+  const overrides = Object.fromEntries(paletteStepEntries.map((e) => [e.cssVar, e.value]))
+  const result = buildPaletteJson(overrides)
+  expect(Object.keys(result.palette).sort()).toEqual(paletteFamilies.map((f) => f.family).sort())
+
+  let stepCount = 0
+  for (const family of Object.values(result.palette)) {
+    for (const key of Object.keys(family)) {
+      if (!key.startsWith('$')) stepCount++
+    }
+  }
+  expect(stepCount).toBe(paletteStepEntries.length)
+})
+
+test('buildPaletteJson output round-trips through JSON.stringify/parse', () => {
+  const overrides = Object.fromEntries(paletteStepEntries.map((e) => [e.cssVar, e.value]))
+  const result = buildPaletteJson(overrides)
+  const parsed = JSON.parse(JSON.stringify(result))
+  expect(parsed).toEqual(result)
 })
