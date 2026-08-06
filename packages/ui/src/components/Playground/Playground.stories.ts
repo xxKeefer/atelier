@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ProductPageView } from './ProductPageView'
 import { ControlPanelView } from './ControlPanelView'
+import { PlaygroundView } from './PlaygroundView'
+import { useTokenOverrides } from './useTokenOverrides'
 
 // The token playground has no component of its own -- like Colour and
 // Elevation, it's a foundation-layer story that exercises real @atelier/ui
@@ -20,23 +22,19 @@ export const ProductPage: Story = {
 }
 
 // Control panel generated from color-semantic.json, one control per token
-// (2nd criterion of the Token Playground epic). Inputs are locally reactive
-// only so far -- live CSS-var override wiring onto ProductPageView is the
-// next slice.
+// (2nd criterion of the Token Playground epic). Standalone here with its own
+// overrides instance -- nothing to apply them to in this story.
 export const ControlPanel: Story = {
-  render: () => ({ components: { ControlPanelView }, template: `<ControlPanelView />` }),
+  render: () => ({
+    components: { ControlPanelView },
+    setup: () => useTokenOverrides(),
+    template: `<ControlPanelView :overrides="overrides" :set-from-picker="setFromPicker" />`,
+  }),
 }
 
-// Both halves side by side, previewing the eventual playground layout even
-// though edits don't cross over to the page yet.
+// Page and panel sharing one overrides instance -- edits apply live as CSS
+// custom-property overrides on the wrapper around ProductPageView (3rd
+// criterion of the Token Playground epic).
 export const ProductPageWithControls: Story = {
-  render: () => ({
-    components: { ProductPageView, ControlPanelView },
-    template: `
-      <div class="flex items-start gap-4">
-        <ProductPageView />
-        <ControlPanelView />
-      </div>
-    `,
-  }),
+  render: () => ({ components: { PlaygroundView }, template: `<PlaygroundView />` }),
 }

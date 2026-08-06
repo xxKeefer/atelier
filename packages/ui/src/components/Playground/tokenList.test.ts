@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { colorTokenEntries, colorTokenFamilies, toPickerHex } from './tokenList'
+import { colorTokenEntries, colorTokenFamilies, toPickerHex, withPreservedAlpha } from './tokenList'
 
 test('flattens every color-semantic.json leaf token', () => {
   expect(colorTokenEntries.length).toBeGreaterThan(50)
@@ -23,4 +23,9 @@ test('picker hex is always a valid 6-digit color, even for alpha values', () => 
   expect(toPickerHex('#0a0a0fcc')).toBe('#0a0a0f')
   expect(toPickerHex('#ff2e97')).toBe('#ff2e97')
   expect(toPickerHex('rgba(10, 10, 15, 0.8)')).toBe('#000000')
+})
+
+test('preserves the original alpha byte on write-back from an opaque picker value', () => {
+  expect(withPreservedAlpha('#0a0a0fcc', '#123456')).toBe('#123456cc')
+  expect(withPreservedAlpha('#ff2e97', '#123456')).toBe('#123456')
 })

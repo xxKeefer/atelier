@@ -21,6 +21,16 @@ export function toPickerHex(value: string): string {
   return HEX_RE.test(value) ? value.slice(0, 7) : '#000000'
 }
 
+// input[type=color] can only ever emit an opaque 6-digit hex, so writing its
+// value straight back into the override map would silently drop alpha on the
+// one token that has it. Re-append the original value's alpha byte (if any)
+// so editing color.bg.scrim's RGB doesn't also flatten it to fully opaque.
+export function withPreservedAlpha(originalValue: string, pickerValue: string): string {
+  const alpha =
+    HEX_RE.test(originalValue) && originalValue.length === 9 ? originalValue.slice(7) : ''
+  return pickerValue + alpha
+}
+
 interface RawToken {
   $value?: unknown
   $description?: string
