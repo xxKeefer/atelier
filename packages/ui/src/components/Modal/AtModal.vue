@@ -158,7 +158,7 @@ const panelClasses = computed(() => [
           </DialogClose>
         </div>
 
-        <ScrollArea data-testid="modal-body" class="flex-1 px-4 py-4">
+        <ScrollArea data-testid="modal-body" type="auto" class="flex-1 px-4 py-4">
           <slot />
         </ScrollArea>
 
