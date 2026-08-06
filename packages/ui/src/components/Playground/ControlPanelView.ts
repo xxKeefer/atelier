@@ -36,7 +36,13 @@ export const ControlPanelView = defineComponent({
       copied.value = true
       setTimeout(() => (copied.value = false), 1500)
     }
-    return { families: colorTokenFamilies, toPickerHex, copied, exportJson }
+    // String `template:` compiles expressions with the plain JS parser, not
+    // the TS-aware one an SFC <template> block gets -- a `foo as Bar` cast
+    // inline here is a runtime SyntaxError on mount, not just a lint nitpick.
+    function pickerValue(event: Event): string {
+      return (event.target as HTMLInputElement).value
+    }
+    return { families: colorTokenFamilies, toPickerHex, copied, exportJson, pickerValue }
   },
   template: `
     <div class="flex w-80 flex-col gap-2 bg-surface-default p-4 font-body text-fg-default" data-testid="control-panel">
@@ -67,7 +73,7 @@ export const ControlPanelView = defineComponent({
               <input
                 type="color"
                 :value="toPickerHex(overrides[entry.cssVar])"
-                @input="setFromPicker(entry.cssVar, entry.value, ($event.target as HTMLInputElement).value)"
+                @input="setFromPicker(entry.cssVar, entry.value, pickerValue($event))"
                 class="h-6 w-8 cursor-pointer rounded-sm border border-border-default bg-transparent p-0"
                 :aria-label="'Edit ' + entry.cssVar"
               />
