@@ -110,7 +110,11 @@
       },
       "fg": {
         "$value": "{palette.neutral.950}",
-        "$description": "text on primary fill"
+        "$description": "text on primary fill (default/500 step only -- surface-recess sits a step darker and needs fg-recess instead)"
+      },
+      "fg-recess": {
+        "$value": "{palette.neutral.50}",
+        "$description": "text/icon on surface-recess (600 step) -- neutral.950 clears AA against the 500 step but drops to ~3.8:1 against 600, so the recess fill flips to light text"
       },
       "text": {
         "$value": "{palette.magenta.400}",
@@ -162,7 +166,11 @@
       },
       "fg": {
         "$value": "{palette.neutral.950}",
-        "$description": "text on secondary fill"
+        "$description": "text on secondary fill (default/400 step only -- surface-recess sits a step darker and needs fg-recess instead)"
+      },
+      "fg-recess": {
+        "$value": "{palette.neutral.50}",
+        "$description": "text/icon on surface-recess (600 step) -- neutral.950 clears AA against the 400 step but drops to ~3.8:1 against 600, so the recess fill flips to light text"
       }
     },
     "danger": {
