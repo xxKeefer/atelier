@@ -31,3 +31,8 @@ test('oklchToHex clamps out-of-gamut values to a valid 6-digit hex', () => {
   const hex = oklchToHex({ l: 0.7, c: 0.5, h: 30 })
   expect(hex).toMatch(/^#[0-9a-f]{6}$/)
 })
+
+test('oklchToHex handles degenerate L=0/L=1 with nonzero chroma, as a ramp slider clamped to the extreme would produce', () => {
+  expect(oklchToHex({ l: 0, c: 0.00213076, h: 286.323 })).toBe('#000000')
+  expect(oklchToHex({ l: 1, c: 0.05, h: 120 })).toBe('#ffffff')
+})

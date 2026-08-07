@@ -36,6 +36,12 @@ export function hexToOklch(hex: string): Oklch {
 }
 
 export function oklchToHex(oklch: Oklch): string {
+  // L is achromatic at both ends regardless of chroma/hue -- ramp sliders
+  // clamp L into [0, 1] but leave chroma untouched, so a slider dragged to
+  // the extreme can hand this a degenerate value like oklch(0 0.002 286)
+  // that Chromium's relative-color round trip fails to serialize.
+  if (oklch.l <= 0) return '#000000'
+  if (oklch.l >= 1) return '#ffffff'
   const el = probe()
   const h = Number.isNaN(oklch.h) ? 0 : oklch.h
   // getComputedStyle echoes back whatever color space the value was set in

@@ -208,7 +208,7 @@ export const ProductPageView = defineComponent({
                       <span class="text-xs text-fg-muted">{{ person.role }}</span>
                     </div>
                   </div>
-                  <Badge :intent="person.role === 'Owner' ? 'primary' : 'neutral'" variant="faded">
+                  <Badge :intent="person.role === 'Owner' ? 'info' : 'neutral'" variant="faded">
                     {{ person.role }}
                   </Badge>
                 </li>
