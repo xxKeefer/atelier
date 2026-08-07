@@ -20,7 +20,10 @@ export interface Oklch {
   h: number // 0-360, NaN for achromatic (chroma ~0)
 }
 
-const OKLCH_RE = /oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+|none)/
+// Chromium serializes very small magnitudes in scientific notation
+// (e.g. "8.39382e-7"), which a bare [\d.]+ run can't match past the "e".
+const NUM = '-?[\\d.]+(?:e[+-]?\\d+)?'
+const OKLCH_RE = new RegExp(`oklch\\((${NUM})\\s+(${NUM})\\s+(${NUM}|none)`)
 
 export function hexToOklch(hex: string): Oklch {
   const el = probe()
@@ -52,7 +55,7 @@ export function oklchToHex(oklch: Oklch): string {
   // Out-of-gamut oklch inputs (e.g. from ramp sliders pushed to extremes)
   // serialize with negative or >1 components here -- clamp at the byte step
   // below rather than rejecting, so callers get a valid hex, not an error.
-  const match = /color\(srgb (-?[\d.]+) (-?[\d.]+) (-?[\d.]+)/.exec(rgb)
+  const match = new RegExp(`color\\(srgb (${NUM}) (${NUM}) (${NUM})`).exec(rgb)
   if (!match)
     throw new Error(
       `could not parse srgb from computed color for oklch(${String(oklch.l)} ${String(oklch.c)} ${String(h)})`,

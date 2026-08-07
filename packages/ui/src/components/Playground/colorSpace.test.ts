@@ -36,3 +36,8 @@ test('oklchToHex handles degenerate L=0/L=1 with nonzero chroma, as a ramp slide
   expect(oklchToHex({ l: 0, c: 0.00213076, h: 286.323 })).toBe('#000000')
   expect(oklchToHex({ l: 1, c: 0.05, h: 120 })).toBe('#ffffff')
 })
+
+test('oklchToHex handles near-zero (but nonzero) L, which Chromium serializes in scientific notation', () => {
+  const hex = oklchToHex({ l: 0.005247999999999975, c: 0.00213076, h: 286.323 })
+  expect(hex).toMatch(/^#[0-9a-f]{6}$/)
+})
