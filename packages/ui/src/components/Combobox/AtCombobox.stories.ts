@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { PhShoppingCart } from '@phosphor-icons/vue'
 import Combobox from './AtCombobox.vue'
 import Icon from '../Icon/AtIcon.vue'
-import { SNAP_BOARD_WIDTH } from '../../test/snap'
+import { SNAP_BOARD_WIDTH } from '../../test/snap-constants'
 
 const fruits = [
   { value: 'apple', label: 'Apple' },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { PhShoppingCart } from '@phosphor-icons/vue'
 import Select from './AtSelect.vue'
 import Icon from '../Icon/AtIcon.vue'
-import { SNAP_BOARD_WIDTH } from '../../test/snap'
+import { SNAP_BOARD_WIDTH } from '../../test/snap-constants'
 
 const sizes = ['sm', 'md', 'lg'] as const
 

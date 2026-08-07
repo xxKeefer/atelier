@@ -3,7 +3,7 @@ import { PhMagnifyingGlass } from '@phosphor-icons/vue'
 import { defineComponent } from 'vue'
 import Input from './AtInput.vue'
 import Icon from '../Icon/AtIcon.vue'
-import { SNAP_BOARD_WIDTH } from '../../test/snap'
+import { SNAP_BOARD_WIDTH } from '../../test/snap-constants'
 
 const sizes = ['sm', 'md', 'lg'] as const
 
