@@ -92,7 +92,7 @@ const row =
     <span
       v-if="multiple"
       data-testid="tree-item-indicator"
-      class="ml-auto flex shrink-0 items-center text-primary-fg"
+      class="ml-auto flex shrink-0 items-center text-primary-fg-recess"
     >
       <Icon v-if="isIndeterminate" :icon="PhMinus" size="sm" />
       <Icon v-else-if="isSelected" :icon="PhCheck" size="sm" />

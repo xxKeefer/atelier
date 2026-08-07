@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { defineComponent } from 'vue'
 import Textarea from './AtTextarea.vue'
-import { SNAP_BOARD_WIDTH } from '../../test/snap'
+import { SNAP_BOARD_WIDTH } from '../../test/snap-constants'
 
 const sizes = ['sm', 'md', 'lg'] as const
 

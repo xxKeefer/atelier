@@ -2,12 +2,7 @@ import { page } from 'vitest/browser'
 import { expect } from 'vitest'
 import { freezeMotion } from './freeze-motion'
 
-// Shared snap-board width for Snapshot stories wide enough to need a fixed
-// width (form-control boards with dropdowns/popovers). Set via inline style,
-// not a `w-[960px]` class -- Tailwind only generates arbitrary-value
-// utilities it finds as literal text, so an interpolated class here would
-// silently fail to generate the CSS.
-export const SNAP_BOARD_WIDTH = 960
+export { SNAP_BOARD_WIDTH } from './snap-constants'
 
 // Snap a board element at 1:1, sized to the board itself. The test viewport is a
 // fixed-size iframe: a board taller than it gets scroll-clipped, a board far

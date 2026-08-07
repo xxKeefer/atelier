@@ -7,7 +7,7 @@ import ListboxGroup from './AtListboxGroup.vue'
 import ListboxGroupLabel from './AtListboxGroupLabel.vue'
 import ListboxItem from './AtListboxItem.vue'
 import Icon from '../Icon/AtIcon.vue'
-import { SNAP_BOARD_WIDTH } from '../../test/snap'
+import { SNAP_BOARD_WIDTH } from '../../test/snap-constants'
 
 const meta = {
   title: 'Forms/Listbox',

@@ -85,7 +85,7 @@ const item =
     <ListboxItemIndicator
       v-if="multiple"
       data-testid="listbox-item-indicator"
-      class="flex shrink-0 items-center text-primary-fg"
+      class="flex shrink-0 items-center text-primary-fg-recess"
     >
       <Icon :icon="PhCheck" size="sm" />
     </ListboxItemIndicator>
